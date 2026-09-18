@@ -60,6 +60,21 @@
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen flex overflow-hidden">
 
+    <!-- Login Screen -->
+    <div id="login-screen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
+            <div class="bg-blue-600 text-white p-4 rounded-2xl inline-block mb-4">
+                <i data-lucide="layers" class="w-8 h-8"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 mb-2">Fnd Apps</h1>
+            <p class="text-slate-500 mb-8">Family & Life Planner</p>
+            <button id="login-btn" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-3">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5">
+                Masuk dengan Google
+            </button>
+        </div>
+    </div>
+
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex-col h-full relative z-30 flex fixed md:relative -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
         <div class="p-6 border-b border-slate-100 flex items-center justify-between md:justify-start gap-3">
@@ -72,7 +87,7 @@
                     <p class="text-xs text-slate-500 font-medium">Family & Life Planner</p>
                 </div>
             </div>
-            <button id="close-sidebar" class="md:hidden text-slate-400 hover:text-slate-600">
+            <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-slate-600">
                 <i data-lucide="x"></i>
             </button>
         </div>
@@ -108,18 +123,18 @@
         </nav>
         
         <div class="p-4 border-t border-slate-100">
-            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer">
-                <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="Profile" class="w-10 h-10 rounded-full">
-                <div class="overflow-hidden">
-                    <p class="text-sm font-semibold text-slate-900 truncate">Family Admin</p>
-                    <p class="text-xs text-slate-500 truncate">Pro Plan Active</p>
+            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors">
+                <img id="user-profile-img" src="" alt="Profile" class="w-10 h-10 rounded-full">
+                <div class="overflow-hidden flex-1">
+                    <p id="user-profile-name" class="text-sm font-semibold text-slate-900 truncate">Loading...</p>
+                    <button onclick="logout()" class="text-xs text-rose-500 hover:text-rose-600 font-medium truncate text-left">Sign Out</button>
                 </div>
             </div>
         </div>
     </aside>
 
     <!-- Overlay for mobile sidebar -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden"></div>
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden"></div>
 
     <!-- Main Content -->
     <main class="flex-1 h-full overflow-y-auto relative w-full">
@@ -131,7 +146,7 @@
                 </div>
                 <h1 class="text-lg font-bold">Fnd Apps</h1>
             </div>
-            <button id="mobile-menu-btn" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+            <button onclick="toggleSidebar()" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
                 <i data-lucide="menu"></i>
             </button>
         </div>
@@ -415,16 +430,35 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script>
+    <!-- Firebase Scripts & Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
         // Initialize Icons
         lucide.createIcons();
+
+        // Firebase Setup
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeh7eSepWzzw39aO9YFjrceH-suyiJpC4",
+            authDomain: "fndapps-c7623.firebaseapp.com",
+            projectId: "fndapps-c7623",
+            storageBucket: "fndapps-c7623.firebasestorage.app",
+            messagingSenderId: "609494676416",
+            appId: "1:609494676416:web:c7973c6658a3293eaa8e25"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+        
+        let currentUser = null;
 
         // Mobile Menu Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const closeSidebarBtn = document.getElementById('close-sidebar');
 
         function toggleSidebar() {
             const isClosed = sidebar.classList.contains('-translate-x-full');
@@ -436,14 +470,9 @@
                 overlay.classList.add('hidden');
             }
         }
+        window.toggleSidebar = toggleSidebar; // export for onclick
 
-        mobileMenuBtn.addEventListener('click', toggleSidebar);
-        closeSidebarBtn.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
-
-        // Constants & Utilities
-        const STORAGE_KEY = 'fnd_apps_data';
-        
+        // Utilities
         function formatIDR(amount) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
         }
@@ -461,6 +490,7 @@
             }
             input.value = new Intl.NumberFormat('id-ID').format(val);
         }
+        window.formatCurrencyInput = formatCurrencyInput;
 
         function generateId() {
             return Math.random().toString(36).substr(2, 9);
@@ -471,44 +501,57 @@
             transactions: [],
             goals: [],
             marriedBudget: {
-                categories: {
-                    venue: 0,
-                    catering: 0,
-                    dokumentasi: 0,
-                    attire: 0,
-                    lainnya: 0
-                },
+                categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 },
                 target: 50000000
             }
         };
 
-        function loadData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try { state = JSON.parse(saved); } catch(e) {}
+        async function loadData() {
+            if(!currentUser) return;
+            try {
+                const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+                if (docSnap.exists()) {
+                    state = docSnap.data();
+                    // Defaults check
+                    if(!state.transactions) state.transactions = [];
+                    if(!state.goals) state.goals = [];
+                    if(!state.marriedBudget) state.marriedBudget = { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 0 };
+                } else {
+                    // Try to migrate from localStorage if this is their first cloud save
+                    const saved = localStorage.getItem('fnd_apps_data');
+                    if (saved) {
+                        try { state = JSON.parse(saved); } catch(e) {}
+                        saveData(); // Save to cloud
+                    }
+                }
+                
+                initMarriedBudgetUI();
+                updateAllViews();
+            } catch(e) {
+                console.error("Gagal load data", e);
             }
-            // Defaults check
-            if(!state.marriedBudget) state.marriedBudget = { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 0 };
         }
 
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            updateAllViews();
+        async function saveData() {
+            if(!currentUser) return;
+            try {
+                await setDoc(doc(db, "users", currentUser.uid), state);
+                updateAllViews();
+            } catch(e) {
+                console.error("Gagal save data", e);
+            }
         }
 
         // Navigation
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
-                // Update active state in nav
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'font-medium', 'border-r-2', 'border-blue-600'));
                 e.currentTarget.classList.add('active', 'bg-blue-50', 'text-blue-600', 'font-medium', 'border-r-2', 'border-blue-600');
                 
-                // Show section
                 const targetId = e.currentTarget.getAttribute('data-target');
                 document.querySelectorAll('.section-view').forEach(s => s.classList.remove('active'));
                 document.getElementById(targetId).classList.add('active');
                 
-                // Close sidebar on mobile after clicking
                 if(window.innerWidth < 768 && !sidebar.classList.contains('-translate-x-full')) {
                     toggleSidebar();
                 }
@@ -528,7 +571,6 @@
             const currentMonth = now.getMonth();
             const currentYear = now.getFullYear();
 
-            // Prepare chart data (last 6 months)
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
             const last6Months = [];
             const chartData = { income: [0,0,0,0,0,0], expense: [0,0,0,0,0,0] };
@@ -549,7 +591,6 @@
                     else currentMonthExpense += amount;
                 }
 
-                // Chart calculation
                 for(let i = 0; i < 6; i++) {
                     let mDate = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
                     if(tDate.getMonth() === mDate.getMonth() && tDate.getFullYear() === mDate.getFullYear()) {
@@ -566,7 +607,6 @@
             document.getElementById('dash-expense').innerText = formatIDR(currentMonthExpense);
             document.getElementById('dash-surplus').innerText = formatIDR(currentMonthIncome - currentMonthExpense);
 
-            // Update Chart
             const ctx = document.getElementById('cashflowChart').getContext('2d');
             if (cashflowChart) cashflowChart.destroy();
             
@@ -575,26 +615,11 @@
                 data: {
                     labels: last6Months,
                     datasets: [
-                        {
-                            label: 'Pemasukan',
-                            data: chartData.income,
-                            backgroundColor: '#3b82f6',
-                            borderRadius: 4
-                        },
-                        {
-                            label: 'Pengeluaran',
-                            data: chartData.expense,
-                            backgroundColor: '#e11d48',
-                            borderRadius: 4
-                        }
+                        { label: 'Pemasukan', data: chartData.income, backgroundColor: '#3b82f6', borderRadius: 4 },
+                        { label: 'Pengeluaran', data: chartData.expense, backgroundColor: '#e11d48', borderRadius: 4 }
                     ]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top' } },
-                    scales: { y: { beginAtZero: true } }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
             });
         }
 
@@ -608,14 +633,10 @@
             const note = document.getElementById('trans-note').value;
 
             state.transactions.push({ id: generateId(), date, type, category, amount, note });
-            
-            // Sort by date desc
             state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
             
             saveData();
             e.target.reset();
-            
-            // Set default date to today
             document.getElementById('trans-date').valueAsDate = new Date();
         });
 
@@ -625,6 +646,7 @@
                 saveData();
             }
         }
+        window.deleteTransaction = deleteTransaction;
 
         function updateFinancialTable() {
             const tbody = document.getElementById('transaction-table-body');
@@ -674,7 +696,6 @@
             const dpAmount = price * (dpPercent / 100);
             const loanAmount = price - dpAmount;
             
-            // Formula KPR (Bunga Efektif/Anuitas sederhana)
             const months = tenure * 12;
             const interestMonthly = (interestYearly / 100) / 12;
             let installment = 0;
@@ -691,6 +712,7 @@
             document.getElementById('hp-loan-amount').innerText = formatIDR(loanAmount);
             document.getElementById('hp-installment').innerText = formatIDR(installment);
         }
+        window.calcHouse = calcHouse;
 
         // --- MARRIED BUDGET LOGIC ---
         const mbCategories = [
@@ -734,6 +756,7 @@
             });
             saveData();
         }
+        window.updateMarriedBudget = updateMarriedBudget;
 
         function renderMarriedBudgetProgress() {
             const target = state.marriedBudget.target;
@@ -779,6 +802,7 @@
                 saveData();
             }
         }
+        window.deleteGoal = deleteGoal;
 
         function updateGoalsView() {
             const container = document.getElementById('goals-container');
@@ -796,8 +820,6 @@
 
                     const targetDate = new Date(g.date);
                     const now = new Date();
-                    
-                    // Reset time to ignore hours/mins
                     now.setHours(0,0,0,0);
                     targetDate.setHours(0,0,0,0);
                     
@@ -849,17 +871,40 @@
             updateGoalsView();
         }
 
-        // Init
-        window.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            
-            // Set defaults
-            document.getElementById('trans-date').valueAsDate = new Date();
-            document.getElementById('goal-date').valueAsDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-            
-            initMarriedBudgetUI();
-            calcHouse();
-            updateAllViews();
+        // Setup Init Defaults
+        document.getElementById('trans-date').valueAsDate = new Date();
+        document.getElementById('goal-date').valueAsDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+        calcHouse();
+
+        // Auth Listeners
+        document.getElementById('login-btn').addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch(error => {
+                alert("Login gagal: " + error.message);
+            });
+        });
+
+        window.logout = function() {
+            signOut(auth);
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('user-profile-name').innerText = user.displayName;
+                document.getElementById('user-profile-img').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=0D8ABC&color=fff`;
+                loadData();
+            } else {
+                currentUser = null;
+                document.getElementById('login-screen').classList.remove('hidden');
+                // Reset state when logged out
+                state = {
+                    transactions: [],
+                    goals: [],
+                    marriedBudget: { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 50000000 }
+                };
+                updateAllViews();
+            }
         });
 
     </script>
