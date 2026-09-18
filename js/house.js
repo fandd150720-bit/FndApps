@@ -1,4 +1,4 @@
-// --- HOUSE PLANNER LOGIC ---
+﻿// --- HOUSE PLANNER LOGIC ---
 window.calcGeneralLoan = function() {
     const p = window.parseIDR(document.getElementById('loan-amount').value);
     const r = parseFloat(document.getElementById('loan-rate').value) / 100 / 12;
@@ -27,7 +27,7 @@ window.saveHouseTargets = function() {
     alert('Target House Planner berhasil disimpan!');
 }
 
-document.getElementById('reno-form').addEventListener('submit', (e) => {
+document.getElementById('reno-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('reno-name').value;
     const est = window.parseIDR(document.getElementById('reno-est').value);
@@ -53,7 +53,7 @@ document.getElementById('reno-form').addEventListener('submit', (e) => {
     window.updateDashboard();
     
     e.target.reset();
-    document.getElementById('reno-modal').classList.add('hidden');
+    document.getElementById('reno-modal')?.classList.add('hidden');
 });
 
 window.deleteReno = function(id) {
@@ -134,3 +134,5 @@ window.updateHouseView = function() {
 
     if (window.lucide) window.lucide.createIcons();
 }
+
+

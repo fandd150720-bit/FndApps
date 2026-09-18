@@ -1,4 +1,4 @@
-// --- WEDDING PLANNER LOGIC ---
+﻿// --- WEDDING PLANNER LOGIC ---
 let wedChartInstance = null;
 
 window.switchWedTab = function(tabId) {
@@ -172,7 +172,7 @@ window.saveWeddingAnggaran = function() {
 }
 
 // Checklist Forms
-document.getElementById('wed-chk-form').addEventListener('submit', (e) => {
+document.getElementById('wed-chk-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('wed-chk-name').value;
     const status = document.getElementById('wed-chk-status').value;
@@ -232,7 +232,7 @@ window.renderWedChecklist = function() {
 }
 
 // Guest Forms
-document.getElementById('wed-tamu-form').addEventListener('submit', (e) => {
+document.getElementById('wed-tamu-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('wed-tamu-name').value;
     const status = document.getElementById('wed-tamu-status').value;
@@ -297,7 +297,7 @@ window.openWedVendorModal = function(type) {
     document.getElementById('wed-vendor-modal').classList.remove('hidden');
 }
 
-document.getElementById('wed-vendor-form').addEventListener('submit', (e) => {
+document.getElementById('wed-vendor-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const type = document.getElementById('wed-vendor-type').value;
     const category = document.getElementById('wed-vendor-cat').value;
@@ -361,7 +361,7 @@ window.renderWedVendors = function() {
 }
 
 // Seserahan Forms
-document.getElementById('wed-ses-form').addEventListener('submit', (e) => {
+document.getElementById('wed-ses-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const item = document.getElementById('wed-ses-item').value;
     const status = document.getElementById('wed-ses-status').value;
@@ -415,3 +415,4 @@ window.renderWedSeserahan = function() {
     }
     if (window.lucide) window.lucide.createIcons();
 }
+

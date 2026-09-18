@@ -1,4 +1,4 @@
-// Financial Sub-Nav Logic
+﻿// Financial Sub-Nav Logic
 window.switchFinTab = function(tabId) {
     ['transaksi', 'aset', 'investasi', 'hutang'].forEach(id => {
         document.getElementById(`fin-${id}`).classList.add('hidden');
@@ -17,7 +17,7 @@ window.switchFinTab = function(tabId) {
 }
 
 // --- FINANCIAL LOGIC: TRANSACTIONS ---
-document.getElementById('transaction-form').addEventListener('submit', (e) => {
+document.getElementById('transaction-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const date = document.getElementById('trans-date').value;
     const type = document.getElementById('trans-type').value;
@@ -35,7 +35,7 @@ document.getElementById('transaction-form').addEventListener('submit', (e) => {
     
     e.target.reset();
     document.getElementById('trans-date').valueAsDate = new Date();
-    document.getElementById('trans-modal').classList.add('hidden');
+    document.getElementById('trans-modal')?.classList.add('hidden');
 });
 
 window.deleteTransaction = function(id) {
@@ -80,7 +80,7 @@ window.updateFinancialTable = function() {
 }
 
 // --- FINANCIAL LOGIC: ASSETS ---
-document.getElementById('asset-form').addEventListener('submit', (e) => {
+document.getElementById('asset-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('asset-name').value;
     const value = window.parseIDR(document.getElementById('asset-value').value);
@@ -90,7 +90,7 @@ document.getElementById('asset-form').addEventListener('submit', (e) => {
     window.updateAssetsView();
     
     e.target.reset();
-    document.getElementById('asset-modal').classList.add('hidden');
+    document.getElementById('asset-modal')?.classList.add('hidden');
 });
 
 window.deleteAsset = function(id) {
@@ -129,7 +129,7 @@ window.updateAssetsView = function() {
 }
 
 // --- FINANCIAL LOGIC: INVESTMENTS ---
-document.getElementById('invest-form').addEventListener('submit', (e) => {
+document.getElementById('invest-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('invest-name').value;
     const amount = window.parseIDR(document.getElementById('invest-amount').value);
@@ -140,7 +140,7 @@ document.getElementById('invest-form').addEventListener('submit', (e) => {
     window.updateInvestmentsView();
     
     e.target.reset();
-    document.getElementById('invest-modal').classList.add('hidden');
+    document.getElementById('invest-modal')?.classList.add('hidden');
 });
 
 window.deleteInvest = function(id) {
@@ -180,7 +180,7 @@ window.updateInvestmentsView = function() {
 }
 
 // --- FINANCIAL LOGIC: DEBTS ---
-document.getElementById('debt-form').addEventListener('submit', (e) => {
+document.getElementById('debt-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const type = document.getElementById('debt-type').value; // hutang atau piutang
     const name = document.getElementById('debt-name').value;
@@ -192,7 +192,7 @@ document.getElementById('debt-form').addEventListener('submit', (e) => {
     window.updateDebtsView();
     
     e.target.reset();
-    document.getElementById('debt-modal').classList.add('hidden');
+    document.getElementById('debt-modal')?.classList.add('hidden');
 });
 
 window.deleteDebt = function(id) {
@@ -238,3 +238,5 @@ window.updateDebtsView = function() {
     document.getElementById('debt-piutang-total').innerText = window.formatIDR(totalPiutang);
     if (window.lucide) window.lucide.createIcons();
 }
+
+

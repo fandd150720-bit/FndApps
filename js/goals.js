@@ -1,5 +1,5 @@
-// --- GOALS LOGIC ---
-document.getElementById('goal-form').addEventListener('submit', (e) => {
+﻿// --- GOALS LOGIC ---
+document.getElementById('goal-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('goal-name').value;
     const target = window.parseIDR(document.getElementById('goal-target').value);
@@ -69,3 +69,4 @@ window.updateGoalsView = function() {
     }
     if (window.lucide) window.lucide.createIcons();
 }
+
