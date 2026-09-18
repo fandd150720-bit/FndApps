@@ -1,7 +1,4 @@
-﻿import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
+// Firebase Compat SDK - works with regular script tags (no race condition)
 const firebaseConfig = {
     apiKey: "AIzaSyCeh7eSepWzzw39aO9YFjrceH-suyiJpC4",
     authDomain: "fndapps-c7623.firebaseapp.com",
@@ -11,20 +8,23 @@ const firebaseConfig = {
     appId: "1:609494676416:web:c7973c6658a3293eaa8e25"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const provider = new firebase.auth.GoogleAuthProvider();
 
-// Expose to global scope so other standard script tags can use them
+// Expose to global scope for other scripts
 window.auth = auth;
 window.db = db;
 window.provider = provider;
-window.signInWithPopup = signInWithPopup;
-window.signOut = signOut;
-window.onAuthStateChanged = onAuthStateChanged;
-window.doc = doc;
-window.setDoc = setDoc;
-window.getDoc = getDoc;
 
-window.dispatchEvent(new Event('firebaseReady'));
+// Compat API functions mapped to window
+window.signInWithPopup = (auth, provider) => auth.signInWithPopup(provider);
+window.signOut = () => auth.signOut();
+window.onAuthStateChanged = (auth, callback) => auth.onAuthStateChanged(callback);
+window.doc = (db, col, id) => db.collection(col).doc(id);
+window.setDoc = (ref, data) => ref.set(data);
+window.getDoc = async (ref) => {
+    const snap = await ref.get();
+    return { exists: () => snap.exists, data: () => snap.data() };
+};

@@ -27,24 +27,27 @@ window.state = {
     }
 };
 
+// Save to Firestore and localStorage (Firebase Compat API)
 window.saveData = async function() {
     if (window.currentUser) {
         try {
-            await window.setDoc(window.doc(window.db, "users", window.currentUser.uid), window.state);
+            await window.db.collection('users').doc(window.currentUser.uid).set(window.state);
         } catch (e) { console.error("Error saving to Firestore", e); }
     }
     localStorage.setItem('fnd_state', JSON.stringify(window.state));
 }
 
+// Load from Firestore or localStorage (Firebase Compat API)
 window.loadData = async function() {
     if (window.currentUser) {
         try {
-            const docSnap = await window.getDoc(window.doc(window.db, "users", window.currentUser.uid));
-            if (docSnap.exists()) {
-                window.state = { ...window.state, ...docSnap.data() };
-                
+            const docSnap = await window.db.collection('users').doc(window.currentUser.uid).get();
+            if (docSnap.exists) {
+                const data = docSnap.data();
+                window.state = { ...window.state, ...data };
+
                 // Compatibility for old marriedBudget state vs new wedding state
-                if(!window.state.wedding && window.state.marriedBudget) {
+                if (!window.state.wedding && window.state.marriedBudget) {
                     window.state.wedding = {
                         budget: {
                             venue: { name: '1. Venue & Makanan', estimasi: window.state.marriedBudget.categories?.venue || 20000000, realisasi: 0 },
@@ -58,12 +61,12 @@ window.loadData = async function() {
                 }
 
                 // Default fallbacks if empty
-                if(!window.state.wedding) window.state.wedding = {};
-                if(!window.state.wedding.checklist) window.state.wedding.checklist = [];
-                if(!window.state.wedding.guests) window.state.wedding.guests = [];
-                if(!window.state.wedding.vendors) window.state.wedding.vendors = [];
-                if(!window.state.wedding.kandidatVendors) window.state.wedding.kandidatVendors = [];
-                if(!window.state.wedding.seserahan) window.state.wedding.seserahan = [];
+                if (!window.state.wedding) window.state.wedding = {};
+                if (!window.state.wedding.checklist) window.state.wedding.checklist = [];
+                if (!window.state.wedding.guests) window.state.wedding.guests = [];
+                if (!window.state.wedding.vendors) window.state.wedding.vendors = [];
+                if (!window.state.wedding.kandidatVendors) window.state.wedding.kandidatVendors = [];
+                if (!window.state.wedding.seserahan) window.state.wedding.seserahan = [];
 
                 if (window.updateAllViews) window.updateAllViews();
                 return;
@@ -73,12 +76,12 @@ window.loadData = async function() {
     const local = localStorage.getItem('fnd_state');
     if (local) {
         window.state = { ...window.state, ...JSON.parse(local) };
-        if(!window.state.wedding) window.state.wedding = {};
-        if(!window.state.wedding.checklist) window.state.wedding.checklist = [];
-        if(!window.state.wedding.guests) window.state.wedding.guests = [];
-        if(!window.state.wedding.vendors) window.state.wedding.vendors = [];
-        if(!window.state.wedding.kandidatVendors) window.state.wedding.kandidatVendors = [];
-        if(!window.state.wedding.seserahan) window.state.wedding.seserahan = [];
+        if (!window.state.wedding) window.state.wedding = {};
+        if (!window.state.wedding.checklist) window.state.wedding.checklist = [];
+        if (!window.state.wedding.guests) window.state.wedding.guests = [];
+        if (!window.state.wedding.vendors) window.state.wedding.vendors = [];
+        if (!window.state.wedding.kandidatVendors) window.state.wedding.kandidatVendors = [];
+        if (!window.state.wedding.seserahan) window.state.wedding.seserahan = [];
     }
     if (window.updateAllViews) window.updateAllViews();
 }
