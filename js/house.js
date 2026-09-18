@@ -1,4 +1,32 @@
-﻿// --- HOUSE PLANNER LOGIC ---
+// --- HOUSE PLANNER LOGIC ---
+window.switchHouseTab = function(tabId) {
+    ['kpr', 'maintenance', 'utilities', 'loan'].forEach(id => {
+        const view = document.getElementById(`view-house-${id}`);
+        if (view) {
+            view.classList.add('hidden');
+            view.classList.remove('block');
+        }
+        
+        const tab = document.getElementById(`tab-house-${id}`);
+        if (tab) {
+            tab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+            tab.classList.add('text-slate-500');
+        }
+    });
+
+    const targetView = document.getElementById(`view-house-${tabId}`);
+    if (targetView) {
+        targetView.classList.remove('hidden');
+        targetView.classList.add('block');
+    }
+    
+    const targetTab = document.getElementById(`tab-house-${tabId}`);
+    if (targetTab) {
+        targetTab.classList.remove('text-slate-500');
+        targetTab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+    }
+};
+
 window.calcGeneralLoan = function() {
     const price = window.parseIDR(document.getElementById('loan-price')?.value || '0');
     const dp = window.parseIDR(document.getElementById('loan-dp')?.value || '0');
@@ -95,19 +123,27 @@ window.updateHouseView = function() {
     });
 
     // Overview Cards
-    document.getElementById('hp-kpr-paid').innerText = window.formatIDR(kprPaid);
-    document.getElementById('hp-dp-paid').innerText = window.formatIDR(dpPaid);
-    document.getElementById('hp-util-paid').innerText = window.formatIDR(utilPaid);
+    const kprPaidEl = document.getElementById('hp-kpr-paid');
+    const dpPaidEl = document.getElementById('hp-dp-paid');
+    const utilPaidEl = document.getElementById('hp-util-paid');
+    
+    if (kprPaidEl) kprPaidEl.innerText = window.formatIDR(kprPaid);
+    if (dpPaidEl) dpPaidEl.innerText = window.formatIDR(dpPaid);
+    if (utilPaidEl) utilPaidEl.innerText = window.formatIDR(utilPaid);
 
     let kprPct = window.state.house.kprTarget > 0 ? (kprPaid / window.state.house.kprTarget) * 100 : 0;
     if(kprPct > 100) kprPct = 100;
-    document.getElementById('hp-kpr-bar').style.width = kprPct + '%';
-    document.getElementById('hp-kpr-pct').innerText = kprPct.toFixed(1) + '%';
+    const kprBarEl = document.getElementById('hp-kpr-bar');
+    const kprPctEl = document.getElementById('hp-kpr-pct');
+    if (kprBarEl) kprBarEl.style.width = kprPct + '%';
+    if (kprPctEl) kprPctEl.innerText = kprPct.toFixed(1) + '%';
 
     let dpPct = window.state.house.dpTarget > 0 ? (dpPaid / window.state.house.dpTarget) * 100 : 0;
     if(dpPct > 100) dpPct = 100;
-    document.getElementById('hp-dp-bar').style.width = dpPct + '%';
-    document.getElementById('hp-dp-pct').innerText = dpPct.toFixed(1) + '%';
+    const dpBarEl = document.getElementById('hp-dp-bar');
+    const dpPctEl = document.getElementById('hp-dp-pct');
+    if (dpBarEl) dpBarEl.style.width = dpPct + '%';
+    if (dpPctEl) dpPctEl.innerText = dpPct.toFixed(1) + '%';
 
     // Renovations
     const renoList = document.getElementById('reno-list');
