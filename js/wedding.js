@@ -33,7 +33,6 @@ window.initWeddingPlannerUI = function() {
 }
 
 window.updateWeddingDashboard = function() {
-    try {
     let totalEst = 0;
     let totalReal = 0;
     const labels = [];
@@ -416,5 +415,6 @@ window.renderWedSeserahan = function() {
     }
     if (window.lucide) window.lucide.createIcons();
 }
+
 
 

@@ -70,7 +70,6 @@ window.deleteReno = function(id) {
 }
 
 window.updateHouseView = function() {
-    try {
     // Guard: only update if on house page
     if (!document.getElementById('hp-kpr-paid')) return;
 
@@ -146,6 +145,7 @@ window.updateHouseView = function() {
 
     if (window.lucide) window.lucide.createIcons();
 }
+
 
 
 

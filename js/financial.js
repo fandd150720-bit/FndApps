@@ -103,7 +103,6 @@ window.deleteAsset = function(id) {
 }
 
 window.updateAssetsView = function() {
-    try {
     const list = document.getElementById('assets-list');
     list.innerHTML = '';
     let total = 0;
@@ -154,7 +153,6 @@ window.deleteInvest = function(id) {
 }
 
 window.updateInvestmentsView = function() {
-    try {
     const list = document.getElementById('invest-list');
     list.innerHTML = '';
     let total = 0;
@@ -207,7 +205,6 @@ window.deleteDebt = function(id) {
 }
 
 window.updateDebtsView = function() {
-    try {
     const list = document.getElementById('debt-list');
     list.innerHTML = '';
     let totalHutang = 0;
@@ -242,6 +239,7 @@ window.updateDebtsView = function() {
     document.getElementById('debt-piutang-total').innerText = window.formatIDR(totalPiutang);
     if (window.lucide) window.lucide.createIcons();
 }
+
 
 
 

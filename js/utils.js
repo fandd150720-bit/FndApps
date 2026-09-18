@@ -4,7 +4,8 @@ window.formatIDR = (number) => {
 };
 
 window.parseIDR = (str) => {
-    return Number(str.replace(/[^0-9,-]+/g, ""));
+    if (!str) return 0;
+    return Number(String(str).replace(/[^0-9,-]+/g, "").replace(',', '.'));
 };
 
 window.formatCurrencyInput = (input) => {
@@ -20,35 +21,62 @@ window.generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
 
-window.toggleMenu = function() {
-    const menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
-}
-
+// Navigation: uses data-target on <a> tags and section-view + active class
 window.switchView = function(viewId) {
-    ['dashboard', 'financial', 'house', 'wedding', 'goals'].forEach(id => {
-        document.getElementById(`view-${id}`).classList.add('hidden');
-        document.getElementById(`tab-${id}`).classList.remove('bg-blue-50', 'text-blue-700');
-        document.getElementById(`tab-${id}`).classList.add('text-slate-600', 'hover:bg-slate-50');
-        
-        document.getElementById(`mob-tab-${id}`).classList.remove('bg-blue-50', 'text-blue-700');
-        document.getElementById(`mob-tab-${id}`).classList.add('text-slate-600');
+    // Hide all sections
+    document.querySelectorAll('.section-view').forEach(sec => {
+        sec.classList.remove('active');
     });
 
-    document.getElementById(`view-${viewId}`).classList.remove('hidden');
-    
-    document.getElementById(`tab-${viewId}`).classList.add('bg-blue-50', 'text-blue-700');
-    document.getElementById(`tab-${viewId}`).classList.remove('text-slate-600', 'hover:bg-slate-50');
-    
-    document.getElementById(`mob-tab-${viewId}`).classList.add('bg-blue-50', 'text-blue-700');
-    document.getElementById(`mob-tab-${viewId}`).classList.remove('text-slate-600');
+    // Deactivate all nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
 
-    document.getElementById('mobile-menu').classList.add('hidden');
-    
-    // Trigger specific view updates
-    if (viewId === 'dashboard') updateDashboard();
-    if (viewId === 'financial') updateFinancialTable();
-    if (viewId === 'house') updateHouseView();
-    if (viewId === 'wedding') updateWeddingDashboard();
-    if (viewId === 'goals') updateGoalsView();
+    // Show target section
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add('active');
+
+    // Activate nav item with matching data-target
+    const navItem = document.querySelector(`.nav-item[data-target="${viewId}"]`);
+    if (navItem) navItem.classList.add('active');
+
+    // Close mobile sidebar if open
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar) sidebar.classList.add('-translate-x-full');
+    if (overlay) overlay.classList.add('hidden');
+
+    // Trigger specific view updates (wrapped in try-catch for safety)
+    try {
+        if (viewId === 'dashboard' && window.updateDashboard) window.updateDashboard();
+        if (viewId === 'financial' && window.updateFinancialTable) window.updateFinancialTable();
+        if (viewId === 'house' && window.updateHouseView) window.updateHouseView();
+        if (viewId === 'married' && window.updateWeddingDashboard) window.updateWeddingDashboard();
+        if (viewId === 'goals' && window.updateGoalsView) window.updateGoalsView();
+    } catch(e) { console.warn('View update error:', e.message); }
 }
+
+window.logout = function() {
+    if (window.auth) window.auth.signOut();
+}
+
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar) {
+        sidebar.classList.toggle('-translate-x-full');
+    }
+    if (overlay) {
+        overlay.classList.toggle('hidden');
+    }
+}
+
+// Setup nav click listeners once DOM is ready
+document.querySelectorAll('.nav-item[data-target]').forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = item.getAttribute('data-target');
+        if (target) window.switchView(target);
+    });
+});
