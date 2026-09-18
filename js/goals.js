@@ -23,6 +23,7 @@ window.deleteGoal = function(id) {
 }
 
 window.updateGoalsView = function() {
+    try {
     const container = document.getElementById('goals-container');
     const emptyState = document.getElementById('goals-empty');
     container.innerHTML = '';
@@ -69,4 +70,5 @@ window.updateGoalsView = function() {
     }
     if (window.lucide) window.lucide.createIcons();
 }
+
 

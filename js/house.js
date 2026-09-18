@@ -1,21 +1,26 @@
 ﻿// --- HOUSE PLANNER LOGIC ---
 window.calcGeneralLoan = function() {
-    const p = window.parseIDR(document.getElementById('loan-amount').value);
-    const r = parseFloat(document.getElementById('loan-rate').value) / 100 / 12;
-    const n = parseInt(document.getElementById('loan-tenor').value) * 12;
+    const price = window.parseIDR(document.getElementById('loan-price')?.value || '0');
+    const dp = window.parseIDR(document.getElementById('loan-dp')?.value || '0');
+    const p = price - dp; // principal after DP
+    const r = parseFloat(document.getElementById('loan-interest')?.value || 0) / 100 / 12;
+    const n = parseInt(document.getElementById('loan-tenure')?.value || 0);
+
+    const principalEl = document.getElementById('loan-result-principal');
+    const installmentEl = document.getElementById('loan-result-installment');
+    const totalEl = document.getElementById('loan-result-total-interest');
+
+    if (principalEl) principalEl.innerText = window.formatIDR(p > 0 ? p : 0);
 
     if(p > 0 && r > 0 && n > 0) {
         const emi = p * r * (Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
         const totalPay = emi * n;
-        const totalInt = totalPay - p;
 
-        document.getElementById('loan-emi').innerText = window.formatIDR(emi);
-        document.getElementById('loan-tot-int').innerText = window.formatIDR(totalInt);
-        document.getElementById('loan-tot-pay').innerText = window.formatIDR(totalPay);
+        if (installmentEl) installmentEl.innerText = window.formatIDR(emi);
+        if (totalEl) totalEl.innerText = window.formatIDR(totalPay);
     } else {
-        document.getElementById('loan-emi').innerText = 'Rp 0';
-        document.getElementById('loan-tot-int').innerText = 'Rp 0';
-        document.getElementById('loan-tot-pay').innerText = 'Rp 0';
+        if (installmentEl) installmentEl.innerText = 'Rp 0';
+        if (totalEl) totalEl.innerText = 'Rp 0';
     }
 }
 
@@ -65,9 +70,16 @@ window.deleteReno = function(id) {
 }
 
 window.updateHouseView = function() {
+    try {
+    // Guard: only update if on house page
+    if (!document.getElementById('hp-kpr-paid')) return;
+
     // Populate Inputs
-    document.getElementById('hp-kpr-target').value = new Intl.NumberFormat('id-ID').format(window.state.house.kprTarget || 0);
-    document.getElementById('hp-dp-target').value = new Intl.NumberFormat('id-ID').format(window.state.house.dpTarget || 0);
+    const kprTargetEl = document.getElementById('hp-kpr-target');
+    const dpTargetEl = document.getElementById('hp-dp-target');
+    if (kprTargetEl) kprTargetEl.value = new Intl.NumberFormat('id-ID').format(window.state.house.kprTarget || 0);
+    if (dpTargetEl) dpTargetEl.value = new Intl.NumberFormat('id-ID').format(window.state.house.dpTarget || 0);
+
 
     // Calculate actuals from transactions
     let kprPaid = 0;
@@ -134,5 +146,6 @@ window.updateHouseView = function() {
 
     if (window.lucide) window.lucide.createIcons();
 }
+
 
 

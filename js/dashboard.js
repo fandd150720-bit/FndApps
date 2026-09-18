@@ -1,7 +1,8 @@
-// Dashboard Logic
+﻿// Dashboard Logic
 let dashChartInstance = null;
 
 window.updateDashboard = function() {
+    try {
     if (!window.state || !window.state.transactions) return;
 
     let totalIncome = 0;
@@ -95,3 +96,4 @@ window.updateDashboard = function() {
     // Need to trigger lucide for the dynamically injected icons
     if (window.lucide) window.lucide.createIcons();
 }
+

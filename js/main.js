@@ -1,13 +1,13 @@
 // Global Update & Initialization
 window.updateAllViews = function() {
-    if (window.updateDashboard) window.updateDashboard();
-    if (window.updateFinancialTable) window.updateFinancialTable();
-    if (window.updateAssetsView) window.updateAssetsView();
-    if (window.updateInvestmentsView) window.updateInvestmentsView();
-    if (window.updateDebtsView) window.updateDebtsView();
-    if (window.updateHouseView) window.updateHouseView();
-    if (window.updateWeddingDashboard) window.updateWeddingDashboard();
-    if (window.updateGoalsView) window.updateGoalsView();
+    const fns = [
+        'updateDashboard', 'updateFinancialTable', 'updateAssetsView',
+        'updateInvestmentsView', 'updateDebtsView', 'updateHouseView',
+        'updateWeddingDashboard', 'updateGoalsView'
+    ];
+    fns.forEach(fn => {
+        try { if (window[fn]) window[fn](); } catch(e) { console.warn(fn + ' error:', e.message); }
+    });
     if (window.lucide) window.lucide.createIcons();
 }
 
@@ -17,8 +17,6 @@ if (transDateElem) transDateElem.valueAsDate = new Date();
 
 const goalDateElem = document.getElementById('goal-date');
 if (goalDateElem) goalDateElem.valueAsDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-
-if (window.calcGeneralLoan) window.calcGeneralLoan();
 
 // Auth - Firebase Compat is sync so auth is always ready here
 const loginBtn = document.getElementById('login-btn');
