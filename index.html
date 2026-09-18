@@ -445,52 +445,236 @@
 
             <!-- House Planner Section -->
             <section id="house" class="section-view">
-                <h2 class="text-2xl font-bold mb-6 text-slate-900">House Planner</h2>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card p-6">
-                        <h3 class="text-lg font-bold mb-4">Kalkulator KPR & Tabungan DP</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Harga Rumah (Rp)</label>
-                                <input type="text" id="hp-price" placeholder="500,000,000" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="formatCurrencyInput(this); calcHouse()">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-bold text-slate-900">House Planner</h2>
+                </div>
+
+                <!-- House Sub-Nav -->
+                <div class="flex border-b border-slate-200 mb-6 overflow-x-auto hide-scrollbar">
+                    <button onclick="switchHouseTab('kpr')" id="tab-house-kpr" class="house-tab active px-4 py-3 font-medium text-sm text-blue-600 border-b-2 border-blue-600 whitespace-nowrap transition-colors">KPR & DP Tracker</button>
+                    <button onclick="switchHouseTab('maintenance')" id="tab-house-maintenance" class="house-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Perawatan & Renovasi</button>
+                    <button onclick="switchHouseTab('utilities')" id="tab-house-utilities" class="house-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Utilitas</button>
+                    <button onclick="switchHouseTab('loan')" id="tab-house-loan" class="house-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Kalkulator Pinjaman</button>
+                </div>
+
+                <!-- Tab: KPR & DP Tracker -->
+                <div id="view-house-kpr" class="house-view block">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 space-y-6">
+                            <!-- Target Settings -->
+                            <div class="card p-6">
+                                <h3 class="text-lg font-bold mb-4">Pengaturan Target</h3>
+                                <form id="house-target-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Total Kewajiban KPR (Rp)</label>
+                                        <input type="text" id="house-target-kpr" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this); updateHouseTargets()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Total Target DP (Rp)</label>
+                                        <input type="text" id="house-target-dp" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this); updateHouseTargets()">
+                                    </div>
+                                </form>
                             </div>
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <div class="w-full sm:w-1/2">
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">DP (%)</label>
-                                    <input type="number" id="hp-dp-percent" value="20" min="0" max="100" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcHouse()">
+                            
+                            <!-- Input Payment -->
+                            <div class="card p-6 sticky top-6">
+                                <h3 class="text-lg font-bold mb-4">Catat Pembayaran</h3>
+                                <form id="house-payment-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tipe Pembayaran</label>
+                                        <select id="hp-type" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                            <option value="KPR">Angsuran KPR</option>
+                                            <option value="DP">Cicilan DP</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
+                                        <input type="text" id="hp-amount" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Catatan</label>
+                                        <input type="text" id="hp-note" placeholder="Cicilan bulan ini..." required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4"></i> Catat & Sync Cashflow
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="lg:col-span-2 space-y-6">
+                            <!-- Progress Overview -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="card p-6 bg-blue-50 border-blue-100 relative overflow-hidden">
+                                    <h4 class="font-bold text-blue-900 mb-1">Progress KPR</h4>
+                                    <div class="flex justify-between items-end mb-2">
+                                        <div>
+                                            <p class="text-xs text-blue-600 font-medium">Sudah Dibayar</p>
+                                            <p class="text-xl font-bold text-blue-700" id="hp-kpr-paid">Rp 0</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-xs text-blue-600 font-medium">Dari Total</p>
+                                            <p class="text-sm font-bold text-blue-900" id="hp-kpr-total">Rp 0</p>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-blue-200 rounded-full h-2 mb-1"><div id="hp-kpr-bar" class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div></div>
+                                    <p class="text-xs text-right text-blue-700 font-medium" id="hp-kpr-pct">0% Lunas</p>
                                 </div>
-                                <div class="w-full sm:w-1/2">
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Tenor (Tahun)</label>
-                                    <input type="number" id="hp-tenure" value="15" min="1" max="30" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcHouse()">
+                                <div class="card p-6 bg-amber-50 border-amber-100 relative overflow-hidden">
+                                    <h4 class="font-bold text-amber-900 mb-1">Progress DP</h4>
+                                    <div class="flex justify-between items-end mb-2">
+                                        <div>
+                                            <p class="text-xs text-amber-600 font-medium">Sudah Dibayar</p>
+                                            <p class="text-xl font-bold text-amber-700" id="hp-dp-paid">Rp 0</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-xs text-amber-600 font-medium">Dari Total</p>
+                                            <p class="text-sm font-bold text-amber-900" id="hp-dp-total">Rp 0</p>
+                                        </div>
+                                    </div>
+                                    <div class="w-full bg-amber-200 rounded-full h-2 mb-1"><div id="hp-dp-bar" class="bg-amber-500 h-2 rounded-full" style="width: 0%"></div></div>
+                                    <p class="text-xs text-right text-amber-700 font-medium" id="hp-dp-pct">0% Lunas</p>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Bunga per Tahun (%)</label>
-                                <input type="number" id="hp-interest" value="7.5" step="0.1" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcHouse()">
+                            
+                            <div class="card overflow-hidden">
+                                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                                    <h3 class="text-lg font-bold">Riwayat Pembayaran KPR & DP</h3>
+                                    <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded">Disinkronkan ke Financial</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-50 text-slate-500 text-sm">
+                                                <th class="px-6 py-3 font-medium">Tanggal</th>
+                                                <th class="px-6 py-3 font-medium">Tipe</th>
+                                                <th class="px-6 py-3 font-medium">Catatan</th>
+                                                <th class="px-6 py-3 font-medium text-right">Nominal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="hp-payment-table" class="text-sm divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                                <div class="p-4 border-t border-slate-100 text-center text-sm text-slate-500 hidden" id="hp-payment-empty">Belum ada catatan pembayaran.</div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Tab: Perawatan & Renovasi -->
+                <div id="view-house-maintenance" class="house-view hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <p class="text-slate-500 text-sm">Catat to-do list perawatan rumah atau rencana tambah bangunan beserta tabungannya.</p>
+                        <button onclick="document.getElementById('renovation-modal').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Rencana Baru
+                        </button>
+                    </div>
                     
-                    <div class="card p-6 bg-blue-50 border-blue-100 flex flex-col justify-center">
-                        <h3 class="text-lg font-bold mb-6 text-blue-900 text-center">Hasil Estimasi</h3>
-                        <div class="space-y-6">
-                            <div class="text-center">
-                                <p class="text-sm text-blue-600 font-medium mb-1">Target Tabungan DP</p>
-                                <h4 class="text-3xl font-bold text-blue-700" id="hp-dp-amount">Rp 0</h4>
+                    <div id="renovation-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Cards -->
+                    </div>
+                    <div id="renovation-empty" class="text-center py-12 hidden">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4 text-slate-400">
+                            <i data-lucide="hammer" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-700 mb-1">Belum ada rencana</h3>
+                        <p class="text-slate-500">Mulai catat rencana perbaikan atau renovasi rumah Anda.</p>
+                    </div>
+                </div>
+
+                <!-- Tab: Utilities -->
+                <div id="view-house-utilities" class="house-view hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1">
+                            <div class="card p-6 sticky top-6">
+                                <h3 class="text-lg font-bold mb-4">Catat Tagihan Utilitas</h3>
+                                <form id="utility-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Tagihan / Utilitas</label>
+                                        <input type="text" id="util-type" required placeholder="Listrik, Air, Internet, IPL..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
+                                        <input type="text" id="util-amount" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                        <i data-lucide="zap" class="w-4 h-4"></i> Bayar & Sync Cashflow
+                                    </button>
+                                </form>
                             </div>
-                            <div class="text-center">
-                                <p class="text-sm text-blue-600 font-medium mb-1">Estimasi Plafon Pinjaman</p>
-                                <h4 class="text-xl font-bold text-blue-900" id="hp-loan-amount">Rp 0</h4>
+                        </div>
+                        <div class="lg:col-span-2">
+                            <div class="card overflow-hidden">
+                                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                                    <h3 class="text-lg font-bold">Riwayat Pembayaran Utilitas</h3>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-50 text-slate-500 text-sm">
+                                                <th class="px-6 py-3 font-medium">Tanggal</th>
+                                                <th class="px-6 py-3 font-medium">Jenis Tagihan</th>
+                                                <th class="px-6 py-3 font-medium text-right">Nominal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="util-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                                <div class="p-4 border-t border-slate-100 text-center text-sm text-slate-500 hidden" id="util-empty-state">Belum ada pembayaran dicatat.</div>
                             </div>
-                            <div class="p-4 bg-white rounded-xl shadow-sm text-center border border-blue-100">
-                                <p class="text-sm text-slate-500 font-medium mb-1">Estimasi Angsuran per Bulan</p>
-                                <h4 class="text-2xl font-bold text-rose-600" id="hp-installment">Rp 0</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Kalkulator Pinjaman -->
+                <div id="view-house-loan" class="house-view hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="card p-6">
+                            <h3 class="text-lg font-bold mb-4">Kalkulator Cicilan Umum</h3>
+                            <p class="text-sm text-slate-500 mb-6">Gunakan untuk simulasi cicilan KPR, Kendaraan, atau pinjaman bank lainnya (Bunga Anuitas).</p>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Total Plafon Pinjaman / Harga (Rp)</label>
+                                    <input type="text" id="loan-price" placeholder="100,000,000" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="formatCurrencyInput(this); calcGeneralLoan()">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Down Payment (DP) (Rp)</label>
+                                    <input type="text" id="loan-dp" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="formatCurrencyInput(this); calcGeneralLoan()">
+                                </div>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <div class="w-full sm:w-1/2">
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Bunga per Tahun (%)</label>
+                                        <input type="number" id="loan-interest" value="6.0" step="0.1" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcGeneralLoan()">
+                                    </div>
+                                    <div class="w-full sm:w-1/2">
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tenor (Bulan)</label>
+                                        <input type="number" id="loan-tenure" value="12" min="1" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcGeneralLoan()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card p-6 bg-slate-50 border-slate-200 flex flex-col justify-center">
+                            <h3 class="text-lg font-bold mb-6 text-slate-800 text-center">Hasil Simulasi</h3>
+                            <div class="space-y-6">
+                                <div class="text-center">
+                                    <p class="text-sm text-slate-500 font-medium mb-1">Pokok Hutang (Setelah DP)</p>
+                                    <h4 class="text-xl font-bold text-slate-800" id="loan-result-principal">Rp 0</h4>
+                                </div>
+                                <div class="p-6 bg-white rounded-xl shadow-sm text-center border border-slate-200">
+                                    <p class="text-sm text-slate-500 font-medium mb-2">Estimasi Cicilan per Bulan</p>
+                                    <h4 class="text-3xl font-bold text-blue-600" id="loan-result-installment">Rp 0</h4>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-sm text-slate-500 font-medium mb-1">Total Bayar Keseluruhan (Pokok + Bunga)</p>
+                                    <h4 class="text-lg font-bold text-rose-500" id="loan-result-total-interest">Rp 0</h4>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+
 
             <!-- Married Budget Section -->
             <section id="married" class="section-view">
@@ -597,6 +781,36 @@
         </div>
     </div>
 
+    <!-- Modal Form Renovation -->
+    <div id="renovation-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-lg">Catat Rencana / Perawatan</h3>
+                <button onclick="document.getElementById('renovation-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="renovation-form" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Nama Rencana (Perbaikan / Bangun Baru)</label>
+                    <input type="text" id="reno-name" required placeholder="Cat Rumah, Kanopi..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Estimasi Biaya (Rp)</label>
+                    <input type="text" id="reno-target" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Tabungan Terkumpul / Sudah Dibayar (Rp)</label>
+                    <input type="text" id="reno-current" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                </div>
+                <div class="pt-4 flex gap-3">
+                    <button type="button" onclick="document.getElementById('renovation-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Firebase Scripts & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -670,6 +884,11 @@
             investments: [],
             debts: [],
             goals: [],
+            house: {
+                kprTarget: 0,
+                dpTarget: 0,
+                renovations: []
+            },
             marriedBudget: {
                 categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 },
                 target: 50000000
@@ -687,6 +906,7 @@
                     state.investments = d.investments || [];
                     state.debts = d.debts || [];
                     state.goals = d.goals || [];
+                    state.house = d.house || { kprTarget: 0, dpTarget: 0, renovations: [] };
                     state.marriedBudget = d.marriedBudget || { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 0 };
                 } else {
                     const saved = localStorage.getItem('fnd_apps_data');
@@ -695,6 +915,7 @@
                             let ls = JSON.parse(saved); 
                             state.transactions = ls.transactions || [];
                             state.goals = ls.goals || [];
+                            if(ls.house) state.house = ls.house;
                             if(ls.marriedBudget) state.marriedBudget = ls.marriedBudget;
                         } catch(e) {}
                         saveData();
@@ -1026,30 +1247,211 @@
         }
 
         // --- HOUSE PLANNER LOGIC ---
-        window.calcHouse = function() {
-            const price = parseIDR(document.getElementById('hp-price').value);
-            const dpPercent = parseFloat(document.getElementById('hp-dp-percent').value) || 0;
-            const tenure = parseInt(document.getElementById('hp-tenure').value) || 1;
-            const interestYearly = parseFloat(document.getElementById('hp-interest').value) || 0;
+        window.switchHouseTab = function(tabId) {
+            document.querySelectorAll('.house-tab').forEach(t => {
+                t.classList.remove('active', 'text-blue-600', 'border-b-2', 'border-blue-600');
+                t.classList.add('text-slate-500');
+            });
+            document.getElementById('tab-house-' + tabId).classList.remove('text-slate-500');
+            document.getElementById('tab-house-' + tabId).classList.add('active', 'text-blue-600', 'border-b-2', 'border-blue-600');
 
-            const dpAmount = price * (dpPercent / 100);
-            const loanAmount = price - dpAmount;
+            document.querySelectorAll('.house-view').forEach(v => {
+                v.classList.remove('block');
+                v.classList.add('hidden');
+            });
+            document.getElementById('view-house-' + tabId).classList.remove('hidden');
+            document.getElementById('view-house-' + tabId).classList.add('block');
+        }
+
+        window.updateHouseTargets = function() {
+            state.house.kprTarget = parseIDR(document.getElementById('house-target-kpr').value);
+            state.house.dpTarget = parseIDR(document.getElementById('house-target-dp').value);
+            saveData();
+            updateHouseView();
+        }
+
+        document.getElementById('house-payment-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const type = document.getElementById('hp-type').value;
+            const amount = parseIDR(document.getElementById('hp-amount').value);
+            const note = document.getElementById('hp-note').value;
             
-            const months = tenure * 12;
-            const interestMonthly = (interestYearly / 100) / 12;
-            let installment = 0;
+            state.transactions.push({ 
+                id: generateId(), 
+                date: new Date().toISOString(), 
+                type: 'expense', 
+                category: 'Rumah (' + type + ')', 
+                amount: amount,
+                houseRef: type,
+                note: note
+            });
+            state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            saveData();
+            e.target.reset();
+            updateAllViews();
+        });
 
-            if (loanAmount > 0) {
+        document.getElementById('utility-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const type = document.getElementById('util-type').value;
+            const amount = parseIDR(document.getElementById('util-amount').value);
+            
+            state.transactions.push({ 
+                id: generateId(), 
+                date: new Date().toISOString(), 
+                type: 'expense', 
+                category: 'Utilitas', 
+                amount: amount,
+                houseRef: 'Utility',
+                note: type
+            });
+            state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            saveData();
+            e.target.reset();
+            updateAllViews();
+        });
+
+        document.getElementById('renovation-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reno-name').value;
+            const target = parseIDR(document.getElementById('reno-target').value);
+            const current = parseIDR(document.getElementById('reno-current').value);
+
+            state.house.renovations.push({ id: generateId(), name, target, current });
+            saveData();
+            e.target.reset();
+            document.getElementById('renovation-modal').classList.add('hidden');
+            updateAllViews();
+        });
+
+        window.deleteRenovation = function(id) {
+            if(confirm('Hapus rencana ini?')) {
+                state.house.renovations = state.house.renovations.filter(r => r.id !== id);
+                saveData();
+                updateAllViews();
+            }
+        }
+
+        window.calcGeneralLoan = function() {
+            const price = parseIDR(document.getElementById('loan-price').value);
+            const dp = parseIDR(document.getElementById('loan-dp').value);
+            const interest = parseFloat(document.getElementById('loan-interest').value) || 0;
+            const tenure = parseInt(document.getElementById('loan-tenure').value) || 1;
+
+            const principal = price - dp;
+            let installment = 0;
+            let totalInterest = 0;
+
+            if (principal > 0) {
+                const interestMonthly = (interest / 100) / 12;
                 if (interestMonthly > 0) {
-                    installment = loanAmount * interestMonthly / (1 - Math.pow(1 + interestMonthly, -months));
+                    installment = principal * interestMonthly / (1 - Math.pow(1 + interestMonthly, -tenure));
+                    totalInterest = (installment * tenure) - principal;
                 } else {
-                    installment = loanAmount / months;
+                    installment = principal / tenure;
                 }
             }
 
-            document.getElementById('hp-dp-amount').innerText = formatIDR(dpAmount);
-            document.getElementById('hp-loan-amount').innerText = formatIDR(loanAmount);
-            document.getElementById('hp-installment').innerText = formatIDR(installment);
+            document.getElementById('loan-result-principal').innerText = formatIDR(principal);
+            document.getElementById('loan-result-installment').innerText = formatIDR(installment);
+            document.getElementById('loan-result-total-interest').innerText = formatIDR(principal + totalInterest);
+        }
+
+        function updateHouseView() {
+            if (document.activeElement.id !== 'house-target-kpr') {
+                document.getElementById('house-target-kpr').value = new Intl.NumberFormat('id-ID').format(state.house.kprTarget);
+            }
+            if (document.activeElement.id !== 'house-target-dp') {
+                document.getElementById('house-target-dp').value = new Intl.NumberFormat('id-ID').format(state.house.dpTarget);
+            }
+
+            let kprPaid = 0;
+            let dpPaid = 0;
+            const hpPayments = state.transactions.filter(t => t.houseRef === 'KPR' || t.houseRef === 'DP');
+            const utilities = state.transactions.filter(t => t.houseRef === 'Utility');
+
+            hpPayments.forEach(t => {
+                if(t.houseRef === 'KPR') kprPaid += parseInt(t.amount);
+                if(t.houseRef === 'DP') dpPaid += parseInt(t.amount);
+            });
+
+            document.getElementById('hp-kpr-paid').innerText = formatIDR(kprPaid);
+            document.getElementById('hp-kpr-total').innerText = formatIDR(state.house.kprTarget);
+            let kprPct = state.house.kprTarget > 0 ? (kprPaid / state.house.kprTarget) * 100 : 0;
+            if(kprPct > 100) kprPct = 100;
+            document.getElementById('hp-kpr-bar').style.width = kprPct + '%';
+            document.getElementById('hp-kpr-pct').innerText = kprPct.toFixed(1) + '% Lunas';
+
+            document.getElementById('hp-dp-paid').innerText = formatIDR(dpPaid);
+            document.getElementById('hp-dp-total').innerText = formatIDR(state.house.dpTarget);
+            let dpPct = state.house.dpTarget > 0 ? (dpPaid / state.house.dpTarget) * 100 : 0;
+            if(dpPct > 100) dpPct = 100;
+            document.getElementById('hp-dp-bar').style.width = dpPct + '%';
+            document.getElementById('hp-dp-pct').innerText = dpPct.toFixed(1) + '% Lunas';
+
+            const hpTbody = document.getElementById('hp-payment-table');
+            hpTbody.innerHTML = '';
+            if (hpPayments.length === 0) {
+                document.getElementById('hp-payment-empty').classList.remove('hidden');
+            } else {
+                document.getElementById('hp-payment-empty').classList.add('hidden');
+                hpPayments.forEach(t => {
+                    hpTbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-700">${new Date(t.date).toLocaleDateString('id-ID')}</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 text-xs font-medium rounded-md ${t.houseRef === 'KPR' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}">${t.houseRef}</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-500">${t.note || '-'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium text-right text-rose-600">- ${formatIDR(t.amount)}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const utilTbody = document.getElementById('util-table-body');
+            utilTbody.innerHTML = '';
+            if (utilities.length === 0) {
+                document.getElementById('util-empty-state').classList.remove('hidden');
+            } else {
+                document.getElementById('util-empty-state').classList.add('hidden');
+                utilities.forEach(t => {
+                    utilTbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-700">${new Date(t.date).toLocaleDateString('id-ID')}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-700 font-medium">${t.note || 'Utilitas'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium text-right text-rose-600">- ${formatIDR(t.amount)}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const renoContainer = document.getElementById('renovation-container');
+            renoContainer.innerHTML = '';
+            if (state.house.renovations.length === 0) {
+                document.getElementById('renovation-empty').classList.remove('hidden');
+            } else {
+                document.getElementById('renovation-empty').classList.add('hidden');
+                state.house.renovations.forEach(r => {
+                    let pct = r.target > 0 ? (r.current / r.target) * 100 : 0;
+                    if(pct > 100) pct = 100;
+                    
+                    renoContainer.innerHTML += `
+                        <div class="card p-6 flex flex-col h-full relative group">
+                            <button onclick="deleteRenovation('${r.id}')" class="absolute top-4 right-4 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg text-slate-900 mb-4 pr-6">${r.name}</h3>
+                                <div class="mb-2 flex justify-between items-end">
+                                    <span class="text-sm font-bold ${pct >= 100 ? 'text-emerald-600' : 'text-blue-600'}">${formatIDR(r.current)}</span>
+                                    <span class="text-xs text-slate-500">dari ${formatIDR(r.target)}</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5 mb-2 overflow-hidden">
+                                    <div class="${pct >= 100 ? 'bg-emerald-500' : 'bg-blue-500'} h-2.5 rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
+                                </div>
+                                <p class="text-xs text-right text-slate-500 font-medium">${pct.toFixed(1)}% ${pct >= 100 ? 'Tercapai' : 'Terkumpul'}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
         }
 
         // --- MARRIED BUDGET LOGIC ---
@@ -1192,6 +1594,7 @@
             updateAssetsView();
             updateInvestmentsView();
             updateDebtsView();
+            updateHouseView();
             renderMarriedBudgetProgress();
             updateGoalsView();
             lucide.createIcons();
@@ -1200,7 +1603,7 @@
         // Setup Init Defaults
         document.getElementById('trans-date').valueAsDate = new Date();
         document.getElementById('goal-date').valueAsDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-        calcHouse();
+        calcGeneralLoan();
 
         // Auth Listeners
         document.getElementById('login-btn').addEventListener('click', () => {
@@ -1219,7 +1622,7 @@
             } else {
                 currentUser = null;
                 document.getElementById('login-screen').classList.remove('hidden');
-                state = { transactions: [], assets: [], investments: [], debts: [], goals: [], marriedBudget: { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 50000000 } };
+                state = { transactions: [], assets: [], investments: [], debts: [], goals: [], house: { kprTarget: 0, dpTarget: 0, renovations: [] }, marriedBudget: { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 50000000 } };
                 updateAllViews();
             }
         });
