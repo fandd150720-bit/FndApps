@@ -3,7 +3,7 @@ window.updateAllViews = function() {
     const fns = [
         'updateDashboard', 'updateFinancialTable', 'updateAssetsView',
         'updateInvestmentsView', 'updateDebtsView', 'updateHouseView',
-        'updateWeddingDashboard', 'updateGoalsView'
+        'updateWeddingDashboard', 'initWeddingPlannerUI', 'updateGoalsView'
     ];
     fns.forEach(fn => {
         try { if (window[fn]) window[fn](); } catch(e) { console.warn(fn + ' error:', e.message); }
