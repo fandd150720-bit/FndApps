@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fnd Apps - Family & Life Planner</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .section-view { display: none; }
+        .section-view.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-item { transition: all 0.2s ease; cursor: pointer; }
+        .nav-item:hover { background-color: #f1f5f9; }
+        .nav-item.active { background-color: #eff6ff; color: #2563eb; font-weight: 500; border-right: 3px solid #2563eb; }
+        
+        /* Card styling */
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex-col h-full relative z-30 flex fixed md:relative -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between md:justify-start gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 text-white p-2 rounded-xl">
+                    <i data-lucide="layers" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 leading-tight">Fnd Apps</h1>
+                    <p class="text-xs text-slate-500 font-medium">Family & Life Planner</p>
+                </div>
+            </div>
+            <button id="close-sidebar" class="md:hidden text-slate-400 hover:text-slate-600">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        
+        <nav class="flex-1 py-4 overflow-y-auto">
+            <ul class="space-y-1">
+                <li>
+                    <a data-target="dashboard" class="nav-item active flex items-center gap-3 px-6 py-3 text-slate-600">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a data-target="financial" class="nav-item flex items-center gap-3 px-6 py-3 text-slate-600">
+                        <i data-lucide="wallet" class="w-5 h-5"></i> Financial
+                    </a>
+                </li>
+                <li>
+                    <a data-target="house" class="nav-item flex items-center gap-3 px-6 py-3 text-slate-600">
+                        <i data-lucide="home" class="w-5 h-5"></i> House Planner
+                    </a>
+                </li>
+                <li>
+                    <a data-target="married" class="nav-item flex items-center gap-3 px-6 py-3 text-slate-600">
+                        <i data-lucide="heart-handshake" class="w-5 h-5"></i> Married Budget
+                    </a>
+                </li>
+                <li>
+                    <a data-target="goals" class="nav-item flex items-center gap-3 px-6 py-3 text-slate-600">
+                        <i data-lucide="target" class="w-5 h-5"></i> Goals & Projections
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-100">
+            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer">
+                <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="Profile" class="w-10 h-10 rounded-full">
+                <div class="overflow-hidden">
+                    <p class="text-sm font-semibold text-slate-900 truncate">Family Admin</p>
+                    <p class="text-xs text-slate-500 truncate">Pro Plan Active</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 h-full overflow-y-auto relative w-full">
+        <!-- Mobile Header -->
+        <div class="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-600 text-white p-1.5 rounded-lg">
+                    <i data-lucide="layers" class="w-5 h-5"></i>
+                </div>
+                <h1 class="text-lg font-bold">Fnd Apps</h1>
+            </div>
+            <button id="mobile-menu-btn" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+
+        <div class="p-6 md:p-8 max-w-7xl mx-auto pb-24">
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section-view active">
+                <h2 class="text-2xl font-bold mb-6 text-slate-900">Dashboard</h2>
+                
+                <!-- Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="card p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-sm text-slate-500 font-medium mb-1">Total Net Worth</p>
+                                <h3 class="text-2xl font-bold text-slate-900" id="dash-net-worth">Rp 0</h3>
+                            </div>
+                            <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="badge-dollar-sign"></i></div>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-sm text-slate-500 font-medium mb-1">Pemasukan Bulan Ini</p>
+                                <h3 class="text-2xl font-bold text-blue-600" id="dash-income">Rp 0</h3>
+                            </div>
+                            <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="trending-up"></i></div>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-sm text-slate-500 font-medium mb-1">Pengeluaran Bulan Ini</p>
+                                <h3 class="text-2xl font-bold text-rose-600" id="dash-expense">Rp 0</h3>
+                            </div>
+                            <div class="p-2 bg-rose-50 text-rose-600 rounded-lg"><i data-lucide="trending-down"></i></div>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-sm text-slate-500 font-medium mb-1">Surplus Bersih</p>
+                                <h3 class="text-2xl font-bold text-slate-900" id="dash-surplus">Rp 0</h3>
+                            </div>
+                            <div class="p-2 bg-violet-50 text-violet-600 rounded-lg"><i data-lucide="piggy-bank"></i></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chart -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-bold mb-4 text-slate-900">Arus Kas 6 Bulan Terakhir</h3>
+                    <div class="relative h-72 w-full">
+                        <canvas id="cashflowChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Financial Section -->
+            <section id="financial" class="section-view">
+                <h2 class="text-2xl font-bold mb-6 text-slate-900">Financial Management</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Form -->
+                    <div class="lg:col-span-1">
+                        <div class="card p-6 sticky top-6">
+                            <h3 class="text-lg font-bold mb-4">Input Transaksi</h3>
+                            <form id="transaction-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
+                                    <input type="date" id="trans-date" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Tipe</label>
+                                    <select id="trans-type" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                                        <option value="income">Pemasukan</option>
+                                        <option value="expense">Pengeluaran</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
+                                    <input type="text" id="trans-category" placeholder="Gaji, Makanan, Listrik..." required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
+                                    <input type="text" id="trans-amount" placeholder="0" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="formatCurrencyInput(this)">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Catatan</label>
+                                    <input type="text" id="trans-note" placeholder="Opsional" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                                </div>
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition-colors duration-200 flex items-center justify-center gap-2">
+                                    <i data-lucide="plus" class="w-4 h-4"></i> Tambah Transaksi
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Table -->
+                    <div class="lg:col-span-2">
+                        <div class="card overflow-hidden">
+                            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                                <h3 class="text-lg font-bold">Riwayat Transaksi</h3>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-50 text-slate-500 text-sm">
+                                            <th class="px-6 py-3 font-medium">Tanggal</th>
+                                            <th class="px-6 py-3 font-medium">Kategori</th>
+                                            <th class="px-6 py-3 font-medium hidden sm:table-cell">Catatan</th>
+                                            <th class="px-6 py-3 font-medium text-right">Nominal</th>
+                                            <th class="px-6 py-3 font-medium text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transaction-table-body" class="text-sm divide-y divide-slate-100">
+                                        <!-- Rows generated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="p-4 border-t border-slate-100 text-center text-sm text-slate-500" id="trans-empty-state">
+                                Belum ada transaksi.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- House Planner Section -->
+            <section id="house" class="section-view">
+                <h2 class="text-2xl font-bold mb-6 text-slate-900">House Planner</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="card p-6">
+                        <h3 class="text-lg font-bold mb-4">Kalkulator KPR & Tabungan DP</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Harga Rumah (Rp)</label>
+                                <input type="text" id="hp-price" placeholder="500,000,000" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="formatCurrencyInput(this); calcHouse()">
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <div class="w-full sm:w-1/2">
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">DP (%)</label>
+                                    <input type="number" id="hp-dp-percent" value="20" min="0" max="100" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcHouse()">
+                                </div>
+                                <div class="w-full sm:w-1/2">
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Tenor (Tahun)</label>
+                                    <input type="number" id="hp-tenure" value="15" min="1" max="30" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcHouse()">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Bunga per Tahun (%)</label>
+                                <input type="number" id="hp-interest" value="7.5" step="0.1" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcHouse()">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-6 bg-blue-50 border-blue-100 flex flex-col justify-center">
+                        <h3 class="text-lg font-bold mb-6 text-blue-900 text-center">Hasil Estimasi</h3>
+                        <div class="space-y-6">
+                            <div class="text-center">
+                                <p class="text-sm text-blue-600 font-medium mb-1">Target Tabungan DP</p>
+                                <h4 class="text-3xl font-bold text-blue-700" id="hp-dp-amount">Rp 0</h4>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-sm text-blue-600 font-medium mb-1">Estimasi Plafon Pinjaman</p>
+                                <h4 class="text-xl font-bold text-blue-900" id="hp-loan-amount">Rp 0</h4>
+                            </div>
+                            <div class="p-4 bg-white rounded-xl shadow-sm text-center border border-blue-100">
+                                <p class="text-sm text-slate-500 font-medium mb-1">Estimasi Angsuran per Bulan</p>
+                                <h4 class="text-2xl font-bold text-rose-600" id="hp-installment">Rp 0</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Married Budget Section -->
+            <section id="married" class="section-view">
+                <h2 class="text-2xl font-bold mb-6 text-slate-900">Married Budget Tracker</h2>
+                
+                <div class="card p-6 mb-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-2 gap-2">
+                        <div>
+                            <h3 class="text-lg font-bold">Progress Anggaran</h3>
+                            <p class="text-sm text-slate-500">Total terpakai vs Target anggaran</p>
+                        </div>
+                        <div class="sm:text-right">
+                            <span class="text-2xl font-bold text-slate-900" id="mb-total-used">Rp 0</span>
+                            <span class="text-sm text-slate-500"> / <span id="mb-total-budget">Rp 0</span></span>
+                        </div>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-4 mb-1 overflow-hidden mt-2 sm:mt-0">
+                        <div id="mb-progress-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <p class="text-xs text-right text-slate-500 mt-1" id="mb-percentage">0%</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card p-6">
+                        <h3 class="text-lg font-bold mb-4">Pengeluaran Aktual</h3>
+                        <div class="space-y-4" id="mb-inputs">
+                            <!-- JS will generate inputs here -->
+                        </div>
+                    </div>
+                    
+                    <div class="card p-6">
+                        <h3 class="text-lg font-bold mb-4">Pengaturan Target</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Total Target Anggaran (Rp)</label>
+                                <input type="text" id="mb-target-input" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="formatCurrencyInput(this); updateMarriedBudget()">
+                            </div>
+                            <hr class="border-slate-100 my-4">
+                            <div class="p-4 bg-slate-50 rounded-xl">
+                                <p class="text-sm text-slate-600 mb-2">Sisa Anggaran:</p>
+                                <p class="text-2xl font-bold text-emerald-600" id="mb-remaining">Rp 0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Goals Section -->
+            <section id="goals" class="section-view">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-bold text-slate-900">Goals & Projections</h2>
+                    <button onclick="document.getElementById('goal-modal').classList.remove('hidden')" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition-colors duration-200 flex items-center justify-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah Goal
+                    </button>
+                </div>
+                
+                <div id="goals-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Goals will be generated by JS -->
+                </div>
+                
+                <div id="goals-empty" class="text-center py-12 hidden">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4 text-slate-400">
+                        <i data-lucide="target" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-700 mb-1">Belum ada target</h3>
+                    <p class="text-slate-500">Mulai rencanakan masa depanmu dengan menambahkan goal baru.</p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Modal Form Goal -->
+    <div id="goal-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-lg">Tambah Target Baru</h3>
+                <button onclick="document.getElementById('goal-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="goal-form" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Nama Goal</label>
+                    <input type="text" id="goal-name" required placeholder="Contoh: Beli Mobil" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Target Dana (Rp)</label>
+                    <input type="text" id="goal-target" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Saldo Terkumpul Saat Ini (Rp)</label>
+                    <input type="text" id="goal-current" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Target Tanggal</label>
+                    <input type="date" id="goal-date" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                </div>
+                <div class="pt-4 flex gap-3">
+                    <button type="button" onclick="document.getElementById('goal-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Simpan Goal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Mobile Menu Logic
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar');
+
+        function toggleSidebar() {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+        closeSidebarBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Constants & Utilities
+        const STORAGE_KEY = 'fnd_apps_data';
+        
+        function formatIDR(amount) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+        }
+
+        function parseIDR(str) {
+            if (!str) return 0;
+            return parseInt(str.toString().replace(/[^0-9-]/g, '')) || 0;
+        }
+
+        function formatCurrencyInput(input) {
+            let val = parseIDR(input.value);
+            if(val === 0 && input.value.replace(/[^0-9]/g, '') === '') {
+                input.value = '';
+                return;
+            }
+            input.value = new Intl.NumberFormat('id-ID').format(val);
+        }
+
+        function generateId() {
+            return Math.random().toString(36).substr(2, 9);
+        }
+
+        // State Management
+        let state = {
+            transactions: [],
+            goals: [],
+            marriedBudget: {
+                categories: {
+                    venue: 0,
+                    catering: 0,
+                    dokumentasi: 0,
+                    attire: 0,
+                    lainnya: 0
+                },
+                target: 50000000
+            }
+        };
+
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try { state = JSON.parse(saved); } catch(e) {}
+            }
+            // Defaults check
+            if(!state.marriedBudget) state.marriedBudget = { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 0 };
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            updateAllViews();
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Update active state in nav
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'font-medium', 'border-r-2', 'border-blue-600'));
+                e.currentTarget.classList.add('active', 'bg-blue-50', 'text-blue-600', 'font-medium', 'border-r-2', 'border-blue-600');
+                
+                // Show section
+                const targetId = e.currentTarget.getAttribute('data-target');
+                document.querySelectorAll('.section-view').forEach(s => s.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
+                
+                // Close sidebar on mobile after clicking
+                if(window.innerWidth < 768 && !sidebar.classList.contains('-translate-x-full')) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // --- DASHBOARD LOGIC ---
+        let cashflowChart = null;
+
+        function updateDashboard() {
+            let totalIncome = 0;
+            let totalExpense = 0;
+            let currentMonthIncome = 0;
+            let currentMonthExpense = 0;
+            
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            // Prepare chart data (last 6 months)
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+            const last6Months = [];
+            const chartData = { income: [0,0,0,0,0,0], expense: [0,0,0,0,0,0] };
+
+            for(let i = 5; i >= 0; i--) {
+                let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                last6Months.push(monthNames[d.getMonth()]);
+            }
+
+            state.transactions.forEach(t => {
+                const amount = parseInt(t.amount);
+                if (t.type === 'income') totalIncome += amount;
+                else totalExpense += amount;
+
+                const tDate = new Date(t.date);
+                if (tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear) {
+                    if (t.type === 'income') currentMonthIncome += amount;
+                    else currentMonthExpense += amount;
+                }
+
+                // Chart calculation
+                for(let i = 0; i < 6; i++) {
+                    let mDate = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+                    if(tDate.getMonth() === mDate.getMonth() && tDate.getFullYear() === mDate.getFullYear()) {
+                        if(t.type === 'income') chartData.income[i] += amount;
+                        else chartData.expense[i] += amount;
+                    }
+                }
+            });
+
+            const netWorth = totalIncome - totalExpense;
+            
+            document.getElementById('dash-net-worth').innerText = formatIDR(netWorth);
+            document.getElementById('dash-income').innerText = formatIDR(currentMonthIncome);
+            document.getElementById('dash-expense').innerText = formatIDR(currentMonthExpense);
+            document.getElementById('dash-surplus').innerText = formatIDR(currentMonthIncome - currentMonthExpense);
+
+            // Update Chart
+            const ctx = document.getElementById('cashflowChart').getContext('2d');
+            if (cashflowChart) cashflowChart.destroy();
+            
+            cashflowChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: last6Months,
+                    datasets: [
+                        {
+                            label: 'Pemasukan',
+                            data: chartData.income,
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Pengeluaran',
+                            data: chartData.expense,
+                            backgroundColor: '#e11d48',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        // --- FINANCIAL LOGIC ---
+        document.getElementById('transaction-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const date = document.getElementById('trans-date').value;
+            const type = document.getElementById('trans-type').value;
+            const category = document.getElementById('trans-category').value;
+            const amount = parseIDR(document.getElementById('trans-amount').value);
+            const note = document.getElementById('trans-note').value;
+
+            state.transactions.push({ id: generateId(), date, type, category, amount, note });
+            
+            // Sort by date desc
+            state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            saveData();
+            e.target.reset();
+            
+            // Set default date to today
+            document.getElementById('trans-date').valueAsDate = new Date();
+        });
+
+        function deleteTransaction(id) {
+            if(confirm('Hapus transaksi ini?')) {
+                state.transactions = state.transactions.filter(t => t.id !== id);
+                saveData();
+            }
+        }
+
+        function updateFinancialTable() {
+            const tbody = document.getElementById('transaction-table-body');
+            const emptyState = document.getElementById('trans-empty-state');
+            tbody.innerHTML = '';
+            
+            if (state.transactions.length === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+                state.transactions.forEach(t => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-50 transition-colors';
+                    const isIncome = t.type === 'income';
+                    const amountColor = isIncome ? 'text-emerald-600' : 'text-rose-600';
+                    const amountPrefix = isIncome ? '+' : '-';
+                    const badgeColor = isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-700">${new Date(t.date).toLocaleDateString('id-ID')}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-medium rounded-md ${badgeColor}">${t.category}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-500 hidden sm:table-cell">${t.note || '-'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap font-medium text-right ${amountColor}">
+                            ${amountPrefix} ${formatIDR(t.amount)}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <button onclick="deleteTransaction('${t.id}')" class="text-slate-400 hover:text-rose-500 transition-colors">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                lucide.createIcons();
+            }
+        }
+
+        // --- HOUSE PLANNER LOGIC ---
+        function calcHouse() {
+            const price = parseIDR(document.getElementById('hp-price').value);
+            const dpPercent = parseFloat(document.getElementById('hp-dp-percent').value) || 0;
+            const tenure = parseInt(document.getElementById('hp-tenure').value) || 1;
+            const interestYearly = parseFloat(document.getElementById('hp-interest').value) || 0;
+
+            const dpAmount = price * (dpPercent / 100);
+            const loanAmount = price - dpAmount;
+            
+            // Formula KPR (Bunga Efektif/Anuitas sederhana)
+            const months = tenure * 12;
+            const interestMonthly = (interestYearly / 100) / 12;
+            let installment = 0;
+
+            if (loanAmount > 0) {
+                if (interestMonthly > 0) {
+                    installment = loanAmount * interestMonthly / (1 - Math.pow(1 + interestMonthly, -months));
+                } else {
+                    installment = loanAmount / months;
+                }
+            }
+
+            document.getElementById('hp-dp-amount').innerText = formatIDR(dpAmount);
+            document.getElementById('hp-loan-amount').innerText = formatIDR(loanAmount);
+            document.getElementById('hp-installment').innerText = formatIDR(installment);
+        }
+
+        // --- MARRIED BUDGET LOGIC ---
+        const mbCategories = [
+            { id: 'venue', label: 'Venue & Dekorasi', icon: 'map-pin' },
+            { id: 'catering', label: 'Catering', icon: 'utensils' },
+            { id: 'dokumentasi', label: 'Dokumentasi', icon: 'camera' },
+            { id: 'attire', label: 'Attire & Makeup', icon: 'shirt' },
+            { id: 'lainnya', label: 'Lain-lain', icon: 'more-horizontal' }
+        ];
+
+        function initMarriedBudgetUI() {
+            const container = document.getElementById('mb-inputs');
+            container.innerHTML = '';
+            
+            document.getElementById('mb-target-input').value = new Intl.NumberFormat('id-ID').format(state.marriedBudget.target);
+
+            mbCategories.forEach(cat => {
+                const val = state.marriedBudget.categories[cat.id] || 0;
+                container.innerHTML += `
+                    <div>
+                        <label class="flex items-center gap-2 text-sm font-medium text-slate-700 mb-1">
+                            <i data-lucide="${cat.icon}" class="w-4 h-4 text-slate-400"></i> ${cat.label}
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2.5 text-slate-400 font-medium">Rp</span>
+                            <input type="text" id="mb-cat-${cat.id}" value="${new Intl.NumberFormat('id-ID').format(val)}" 
+                                class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" 
+                                oninput="formatCurrencyInput(this); updateMarriedBudget()">
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+            renderMarriedBudgetProgress();
+        }
+
+        function updateMarriedBudget() {
+            state.marriedBudget.target = parseIDR(document.getElementById('mb-target-input').value);
+            mbCategories.forEach(cat => {
+                state.marriedBudget.categories[cat.id] = parseIDR(document.getElementById(`mb-cat-${cat.id}`).value);
+            });
+            saveData();
+        }
+
+        function renderMarriedBudgetProgress() {
+            const target = state.marriedBudget.target;
+            let used = 0;
+            Object.values(state.marriedBudget.categories).forEach(v => used += v);
+            
+            const remaining = target - used;
+            let percentage = target > 0 ? (used / target) * 100 : 0;
+            if(percentage > 100) percentage = 100;
+
+            document.getElementById('mb-total-used').innerText = formatIDR(used);
+            document.getElementById('mb-total-budget').innerText = formatIDR(target);
+            document.getElementById('mb-remaining').innerText = formatIDR(remaining);
+            document.getElementById('mb-remaining').className = `text-2xl font-bold ${remaining >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+            
+            const bar = document.getElementById('mb-progress-bar');
+            bar.style.width = `${percentage}%`;
+            if(percentage > 90) bar.className = "bg-rose-500 h-4 rounded-full transition-all duration-500";
+            else if(percentage > 75) bar.className = "bg-amber-500 h-4 rounded-full transition-all duration-500";
+            else bar.className = "bg-blue-600 h-4 rounded-full transition-all duration-500";
+
+            document.getElementById('mb-percentage').innerText = percentage.toFixed(1) + '%';
+        }
+
+        // --- GOALS LOGIC ---
+        document.getElementById('goal-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('goal-name').value;
+            const target = parseIDR(document.getElementById('goal-target').value);
+            const current = parseIDR(document.getElementById('goal-current').value);
+            const date = document.getElementById('goal-date').value;
+
+            state.goals.push({ id: generateId(), name, target, current, date });
+            saveData();
+            
+            e.target.reset();
+            document.getElementById('goal-modal').classList.add('hidden');
+        });
+
+        function deleteGoal(id) {
+            if(confirm('Hapus target ini?')) {
+                state.goals = state.goals.filter(g => g.id !== id);
+                saveData();
+            }
+        }
+
+        function updateGoalsView() {
+            const container = document.getElementById('goals-container');
+            const emptyState = document.getElementById('goals-empty');
+            
+            container.innerHTML = '';
+            
+            if (state.goals.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                state.goals.forEach(g => {
+                    let pct = g.target > 0 ? (g.current / g.target) * 100 : 0;
+                    if (pct > 100) pct = 100;
+
+                    const targetDate = new Date(g.date);
+                    const now = new Date();
+                    
+                    // Reset time to ignore hours/mins
+                    now.setHours(0,0,0,0);
+                    targetDate.setHours(0,0,0,0);
+                    
+                    const diffTime = targetDate - now;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    const isPassed = diffDays < 0;
+
+                    let timeText = '';
+                    if (diffDays === 0) timeText = 'Hari ini';
+                    else if (isPassed) timeText = 'Terlewat';
+                    else timeText = `${diffDays} hari lagi`;
+
+                    container.innerHTML += `
+                        <div class="card p-6 flex flex-col h-full relative group">
+                            <button onclick="deleteGoal('${g.id}')" class="absolute top-4 right-4 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg text-slate-900 mb-1 pr-6">${g.name}</h3>
+                                <p class="text-xs text-slate-500 mb-4 flex items-center gap-1">
+                                    <i data-lucide="calendar" class="w-3 h-3"></i> 
+                                    ${targetDate.toLocaleDateString('id-ID')} 
+                                    <span class="ml-1 ${isPassed ? 'text-rose-500' : 'text-emerald-500'} font-medium">
+                                        (${timeText})
+                                    </span>
+                                </p>
+                                
+                                <div class="mb-2 flex justify-between items-end">
+                                    <span class="text-sm font-bold text-blue-600">${formatIDR(g.current)}</span>
+                                    <span class="text-xs text-slate-500">dari ${formatIDR(g.target)}</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5 mb-2 overflow-hidden">
+                                    <div class="bg-blue-500 h-2.5 rounded-full transition-all duration-1000 ease-out" style="width: ${pct}%"></div>
+                                </div>
+                                <p class="text-xs text-right text-slate-500 font-medium">${pct.toFixed(1)}% Tercapai</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                lucide.createIcons();
+            }
+        }
+
+        // Global Update
+        function updateAllViews() {
+            updateDashboard();
+            updateFinancialTable();
+            renderMarriedBudgetProgress();
+            updateGoalsView();
+        }
+
+        // Init
+        window.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            
+            // Set defaults
+            document.getElementById('trans-date').valueAsDate = new Date();
+            document.getElementById('goal-date').valueAsDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+            
+            initMarriedBudgetUI();
+            calcHouse();
+            updateAllViews();
+        });
+
+    </script>
+</body>
+</html>
