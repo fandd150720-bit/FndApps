@@ -41,6 +41,11 @@
         .nav-item:hover { background-color: #f1f5f9; }
         .nav-item.active { background-color: #eff6ff; color: #2563eb; font-weight: 500; border-right: 3px solid #2563eb; }
         
+        .fin-view { display: none; }
+        .fin-view.block { display: block; animation: fadeIn 0.3s ease-in-out; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
         /* Card styling */
         .card {
             background-color: white;
@@ -189,8 +194,8 @@
                     <div class="card p-6">
                         <div class="flex justify-between items-start mb-4">
                             <div>
-                                <p class="text-sm text-slate-500 font-medium mb-1">Surplus Bersih</p>
-                                <h3 class="text-2xl font-bold text-slate-900" id="dash-surplus">Rp 0</h3>
+                                <p class="text-sm text-slate-500 font-medium mb-1">Total Aset & Investasi</p>
+                                <h3 class="text-2xl font-bold text-slate-900" id="dash-assets-inv">Rp 0</h3>
                             </div>
                             <div class="p-2 bg-violet-50 text-violet-600 rounded-lg"><i data-lucide="piggy-bank"></i></div>
                         </div>
@@ -208,72 +213,234 @@
 
             <!-- Financial Section -->
             <section id="financial" class="section-view">
-                <h2 class="text-2xl font-bold mb-6 text-slate-900">Financial Management</h2>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <h2 class="text-2xl font-bold text-slate-900">Wealth Management</h2>
+                </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Form -->
-                    <div class="lg:col-span-1">
-                        <div class="card p-6 sticky top-6">
-                            <h3 class="text-lg font-bold mb-4">Input Transaksi</h3>
-                            <form id="transaction-form" class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
-                                    <input type="date" id="trans-date" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Tipe</label>
-                                    <select id="trans-type" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                                        <option value="income">Pemasukan</option>
-                                        <option value="expense">Pengeluaran</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
-                                    <input type="text" id="trans-category" placeholder="Gaji, Makanan, Listrik..." required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
-                                    <input type="text" id="trans-amount" placeholder="0" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="formatCurrencyInput(this)">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Catatan</label>
-                                    <input type="text" id="trans-note" placeholder="Opsional" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
-                                </div>
-                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition-colors duration-200 flex items-center justify-center gap-2">
-                                    <i data-lucide="plus" class="w-4 h-4"></i> Tambah Transaksi
-                                </button>
-                            </form>
+                <!-- Financial Sub-Nav -->
+                <div class="flex border-b border-slate-200 mb-6 overflow-x-auto hide-scrollbar">
+                    <button onclick="switchFinancialTab('cashflow')" id="tab-cashflow" class="fin-tab active px-4 py-3 font-medium text-sm text-blue-600 border-b-2 border-blue-600 whitespace-nowrap transition-colors">Arus Kas</button>
+                    <button onclick="switchFinancialTab('assets')" id="tab-assets" class="fin-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Aset Kekayaan</button>
+                    <button onclick="switchFinancialTab('investments')" id="tab-investments" class="fin-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Portofolio Investasi</button>
+                    <button onclick="switchFinancialTab('debts')" id="tab-debts" class="fin-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Hutang & Piutang</button>
+                </div>
+
+                <!-- Tab: Cashflow -->
+                <div id="view-cashflow" class="fin-view block">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Form -->
+                        <div class="lg:col-span-1">
+                            <div class="card p-6 sticky top-6">
+                                <h3 class="text-lg font-bold mb-4">Input Transaksi</h3>
+                                <form id="transaction-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
+                                        <input type="date" id="trans-date" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tipe</label>
+                                        <select id="trans-type" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                            <option value="income">Pemasukan</option>
+                                            <option value="expense">Pengeluaran</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
+                                        <input type="text" id="trans-category" placeholder="Gaji, Makanan, Listrik..." required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
+                                        <input type="text" id="trans-amount" placeholder="0" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                        <i data-lucide="plus" class="w-4 h-4"></i> Tambah Transaksi
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Table -->
-                    <div class="lg:col-span-2">
-                        <div class="card overflow-hidden">
-                            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                                <h3 class="text-lg font-bold">Riwayat Transaksi</h3>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr class="bg-slate-50 text-slate-500 text-sm">
-                                            <th class="px-6 py-3 font-medium">Tanggal</th>
-                                            <th class="px-6 py-3 font-medium">Kategori</th>
-                                            <th class="px-6 py-3 font-medium hidden sm:table-cell">Catatan</th>
-                                            <th class="px-6 py-3 font-medium text-right">Nominal</th>
-                                            <th class="px-6 py-3 font-medium text-center">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="transaction-table-body" class="text-sm divide-y divide-slate-100">
-                                        <!-- Rows generated by JS -->
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="p-4 border-t border-slate-100 text-center text-sm text-slate-500" id="trans-empty-state">
-                                Belum ada transaksi.
+                        
+                        <!-- Table -->
+                        <div class="lg:col-span-2">
+                            <div class="card overflow-hidden">
+                                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                                    <h3 class="text-lg font-bold">Riwayat Transaksi</h3>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-50 text-slate-500 text-sm">
+                                                <th class="px-6 py-3 font-medium">Tanggal</th>
+                                                <th class="px-6 py-3 font-medium">Kategori</th>
+                                                <th class="px-6 py-3 font-medium text-right">Nominal</th>
+                                                <th class="px-6 py-3 font-medium text-center">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="transaction-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                                <div class="p-4 border-t border-slate-100 text-center text-sm text-slate-500 hidden" id="trans-empty-state">Belum ada transaksi.</div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Tab: Assets -->
+                <div id="view-assets" class="fin-view hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1">
+                            <div class="card p-6 sticky top-6">
+                                <h3 class="text-lg font-bold mb-4">Tambah Aset</h3>
+                                <form id="asset-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Aset</label>
+                                        <input type="text" id="asset-name" placeholder="Misal: Rumah, Mobil, Emas" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nilai Saat Ini (Rp)</label>
+                                        <input type="text" id="asset-value" placeholder="0" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                        <i data-lucide="plus" class="w-4 h-4"></i> Simpan Aset
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="card p-6 bg-emerald-50 border-emerald-100">
+                                <p class="text-sm text-emerald-600 font-medium mb-1">Total Nilai Aset Tetap</p>
+                                <h3 class="text-3xl font-bold text-emerald-700" id="total-assets-val">Rp 0</h3>
+                            </div>
+                            <div class="card overflow-hidden">
+                                <div class="p-6 border-b border-slate-100"><h3 class="font-bold">Daftar Aset</h3></div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-50 text-slate-500 text-sm">
+                                                <th class="px-6 py-3 font-medium">Nama Aset</th>
+                                                <th class="px-6 py-3 font-medium text-right">Nilai Estimasi</th>
+                                                <th class="px-6 py-3 font-medium text-center">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="asset-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                                <div class="p-4 text-center text-sm text-slate-500 hidden" id="asset-empty-state">Belum ada aset tercatat.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Investments -->
+                <div id="view-investments" class="fin-view hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1">
+                            <div class="card p-6 sticky top-6">
+                                <h3 class="text-lg font-bold mb-4">Tambah Investasi</h3>
+                                <form id="inv-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama / Instrumen</label>
+                                        <input type="text" id="inv-name" placeholder="Saham BBCA, Reksadana..." required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Platform / Broker</label>
+                                        <input type="text" id="inv-platform" placeholder="Bibit, IPOT, dll" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Total Saldo (Rp)</label>
+                                        <input type="text" id="inv-value" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                        <i data-lucide="plus" class="w-4 h-4"></i> Simpan Portofolio
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="card p-6 bg-blue-50 border-blue-100">
+                                <p class="text-sm text-blue-600 font-medium mb-1">Total Nilai Investasi</p>
+                                <h3 class="text-3xl font-bold text-blue-700" id="total-inv-val">Rp 0</h3>
+                            </div>
+                            <div class="card overflow-hidden">
+                                <div class="p-6 border-b border-slate-100"><h3 class="font-bold">Daftar Portofolio</h3></div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-50 text-slate-500 text-sm">
+                                                <th class="px-6 py-3 font-medium">Instrumen</th>
+                                                <th class="px-6 py-3 font-medium">Platform</th>
+                                                <th class="px-6 py-3 font-medium text-right">Saldo</th>
+                                                <th class="px-6 py-3 font-medium text-center">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="inv-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                                <div class="p-4 text-center text-sm text-slate-500 hidden" id="inv-empty-state">Belum ada portofolio investasi.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Debts -->
+                <div id="view-debts" class="fin-view hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1">
+                            <div class="card p-6 sticky top-6">
+                                <h3 class="text-lg font-bold mb-4">Catat Hutang/Piutang</h3>
+                                <form id="debt-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tipe</label>
+                                        <select id="debt-type" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                            <option value="hutang">Hutang (Kewajiban bayar)</option>
+                                            <option value="piutang">Piutang (Uang di orang lain)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Pihak/Instansi</label>
+                                        <input type="text" id="debt-name" required placeholder="Budi, Kartu Kredit, dll" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
+                                        <input type="text" id="debt-value" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                    </div>
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                        <i data-lucide="plus" class="w-4 h-4"></i> Simpan Catatan
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="card p-6 bg-emerald-50 border-emerald-100">
+                                    <p class="text-sm text-emerald-600 font-medium mb-1">Total Piutang</p>
+                                    <h3 class="text-2xl font-bold text-emerald-700" id="total-piutang-val">Rp 0</h3>
+                                </div>
+                                <div class="card p-6 bg-rose-50 border-rose-100">
+                                    <p class="text-sm text-rose-600 font-medium mb-1">Total Hutang</p>
+                                    <h3 class="text-2xl font-bold text-rose-700" id="total-hutang-val">Rp 0</h3>
+                                </div>
+                            </div>
+                            <div class="card overflow-hidden">
+                                <div class="p-6 border-b border-slate-100"><h3 class="font-bold">Daftar Hutang & Piutang</h3></div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-50 text-slate-500 text-sm">
+                                                <th class="px-6 py-3 font-medium">Tipe</th>
+                                                <th class="px-6 py-3 font-medium">Pihak</th>
+                                                <th class="px-6 py-3 font-medium text-right">Nominal</th>
+                                                <th class="px-6 py-3 font-medium text-center">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="debt-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
+                                <div class="p-4 text-center text-sm text-slate-500 hidden" id="debt-empty-state">Belum ada catatan.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </section>
 
             <!-- House Planner Section -->
@@ -470,7 +637,7 @@
                 overlay.classList.add('hidden');
             }
         }
-        window.toggleSidebar = toggleSidebar; // export for onclick
+        window.toggleSidebar = toggleSidebar;
 
         // Utilities
         function formatIDR(amount) {
@@ -499,6 +666,9 @@
         // State Management
         let state = {
             transactions: [],
+            assets: [],
+            investments: [],
+            debts: [],
             goals: [],
             marriedBudget: {
                 categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 },
@@ -511,17 +681,23 @@
             try {
                 const docSnap = await getDoc(doc(db, "users", currentUser.uid));
                 if (docSnap.exists()) {
-                    state = docSnap.data();
-                    // Defaults check
-                    if(!state.transactions) state.transactions = [];
-                    if(!state.goals) state.goals = [];
-                    if(!state.marriedBudget) state.marriedBudget = { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 0 };
+                    let d = docSnap.data();
+                    state.transactions = d.transactions || [];
+                    state.assets = d.assets || [];
+                    state.investments = d.investments || [];
+                    state.debts = d.debts || [];
+                    state.goals = d.goals || [];
+                    state.marriedBudget = d.marriedBudget || { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 0 };
                 } else {
-                    // Try to migrate from localStorage if this is their first cloud save
                     const saved = localStorage.getItem('fnd_apps_data');
                     if (saved) {
-                        try { state = JSON.parse(saved); } catch(e) {}
-                        saveData(); // Save to cloud
+                        try { 
+                            let ls = JSON.parse(saved); 
+                            state.transactions = ls.transactions || [];
+                            state.goals = ls.goals || [];
+                            if(ls.marriedBudget) state.marriedBudget = ls.marriedBudget;
+                        } catch(e) {}
+                        saveData();
                     }
                 }
                 
@@ -542,7 +718,7 @@
             }
         }
 
-        // Navigation
+        // Navigation Menu
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active', 'bg-blue-50', 'text-blue-600', 'font-medium', 'border-r-2', 'border-blue-600'));
@@ -557,6 +733,24 @@
                 }
             });
         });
+
+        // Financial Sub-Nav Logic
+        window.switchFinancialTab = function(tabId) {
+            document.querySelectorAll('.fin-tab').forEach(el => {
+                el.classList.remove('active', 'text-blue-600', 'border-b-2', 'border-blue-600');
+                el.classList.add('text-slate-500');
+            });
+            const activeTab = document.getElementById('tab-' + tabId);
+            activeTab.classList.remove('text-slate-500');
+            activeTab.classList.add('active', 'text-blue-600', 'border-b-2', 'border-blue-600');
+
+            document.querySelectorAll('.fin-view').forEach(el => {
+                el.classList.remove('block');
+                el.classList.add('hidden');
+            });
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+            document.getElementById('view-' + tabId).classList.add('block');
+        }
 
         // --- DASHBOARD LOGIC ---
         let cashflowChart = null;
@@ -600,11 +794,28 @@
                 }
             });
 
-            const netWorth = totalIncome - totalExpense;
+            const totalCash = totalIncome - totalExpense;
+            
+            let totalAssets = 0;
+            state.assets.forEach(a => totalAssets += parseInt(a.value));
+            
+            let totalInvestments = 0;
+            state.investments.forEach(i => totalInvestments += parseInt(i.value));
+
+            let totalPiutang = 0;
+            let totalHutang = 0;
+            state.debts.forEach(d => {
+                if(d.type === 'piutang') totalPiutang += parseInt(d.amount);
+                else totalHutang += parseInt(d.amount);
+            });
+
+            // Standar Akuntansi: Uang Tunai + Aset + Investasi + Piutang - Hutang
+            const netWorth = totalCash + totalAssets + totalInvestments + totalPiutang - totalHutang;
             
             document.getElementById('dash-net-worth').innerText = formatIDR(netWorth);
             document.getElementById('dash-income').innerText = formatIDR(currentMonthIncome);
             document.getElementById('dash-expense').innerText = formatIDR(currentMonthExpense);
+            document.getElementById('dash-assets-inv').innerText = formatIDR(totalAssets + totalInvestments);
             document.getElementById('dash-surplus').innerText = formatIDR(currentMonthIncome - currentMonthExpense);
 
             const ctx = document.getElementById('cashflowChart').getContext('2d');
@@ -623,71 +834,199 @@
             });
         }
 
-        // --- FINANCIAL LOGIC ---
+        // --- FINANCIAL LOGIC: TRANSACTIONS ---
         document.getElementById('transaction-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const date = document.getElementById('trans-date').value;
             const type = document.getElementById('trans-type').value;
             const category = document.getElementById('trans-category').value;
             const amount = parseIDR(document.getElementById('trans-amount').value);
-            const note = document.getElementById('trans-note').value;
 
-            state.transactions.push({ id: generateId(), date, type, category, amount, note });
+            state.transactions.push({ id: generateId(), date, type, category, amount });
             state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
             saveData();
             e.target.reset();
             document.getElementById('trans-date').valueAsDate = new Date();
         });
 
-        function deleteTransaction(id) {
+        window.deleteTransaction = function(id) {
             if(confirm('Hapus transaksi ini?')) {
                 state.transactions = state.transactions.filter(t => t.id !== id);
                 saveData();
             }
         }
-        window.deleteTransaction = deleteTransaction;
 
         function updateFinancialTable() {
             const tbody = document.getElementById('transaction-table-body');
             const emptyState = document.getElementById('trans-empty-state');
             tbody.innerHTML = '';
             
-            if (state.transactions.length === 0) {
-                emptyState.style.display = 'block';
-            } else {
+            if (state.transactions.length === 0) emptyState.style.display = 'block';
+            else {
                 emptyState.style.display = 'none';
                 state.transactions.forEach(t => {
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-slate-50 transition-colors';
                     const isIncome = t.type === 'income';
                     const amountColor = isIncome ? 'text-emerald-600' : 'text-rose-600';
-                    const amountPrefix = isIncome ? '+' : '-';
                     const badgeColor = isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
 
-                    tr.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-slate-700">${new Date(t.date).toLocaleDateString('id-ID')}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs font-medium rounded-md ${badgeColor}">${t.category}</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-slate-500 hidden sm:table-cell">${t.note || '-'}</td>
-                        <td class="px-6 py-4 whitespace-nowrap font-medium text-right ${amountColor}">
-                            ${amountPrefix} ${formatIDR(t.amount)}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <button onclick="deleteTransaction('${t.id}')" class="text-slate-400 hover:text-rose-500 transition-colors">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
-                        </td>
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-700">${new Date(t.date).toLocaleDateString('id-ID')}</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 text-xs font-medium rounded-md ${badgeColor}">${t.category}</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap font-medium text-right ${amountColor}">${isIncome ? '+' : '-'} ${formatIDR(t.amount)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <button onclick="deleteTransaction('${t.id}')" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </td>
+                        </tr>
                     `;
-                    tbody.appendChild(tr);
                 });
-                lucide.createIcons();
             }
         }
 
+        // --- FINANCIAL LOGIC: ASSETS ---
+        document.getElementById('asset-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('asset-name').value;
+            const value = parseIDR(document.getElementById('asset-value').value);
+
+            state.assets.push({ id: generateId(), name, value });
+            saveData();
+            e.target.reset();
+        });
+
+        window.deleteAsset = function(id) {
+            if(confirm('Hapus aset ini?')) {
+                state.assets = state.assets.filter(a => a.id !== id);
+                saveData();
+            }
+        }
+
+        function updateAssetsView() {
+            const tbody = document.getElementById('asset-table-body');
+            const emptyState = document.getElementById('asset-empty-state');
+            tbody.innerHTML = '';
+            
+            let total = 0;
+            if (state.assets.length === 0) emptyState.style.display = 'block';
+            else {
+                emptyState.style.display = 'none';
+                state.assets.forEach(a => {
+                    total += parseInt(a.value);
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-700 font-medium">${a.name}</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-bold text-right text-emerald-600">${formatIDR(a.value)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <button onclick="deleteAsset('${a.id}')" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            document.getElementById('total-assets-val').innerText = formatIDR(total);
+        }
+
+        // --- FINANCIAL LOGIC: INVESTMENTS ---
+        document.getElementById('inv-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('inv-name').value;
+            const platform = document.getElementById('inv-platform').value;
+            const value = parseIDR(document.getElementById('inv-value').value);
+
+            state.investments.push({ id: generateId(), name, platform, value });
+            saveData();
+            e.target.reset();
+        });
+
+        window.deleteInv = function(id) {
+            if(confirm('Hapus portofolio ini?')) {
+                state.investments = state.investments.filter(i => i.id !== id);
+                saveData();
+            }
+        }
+
+        function updateInvestmentsView() {
+            const tbody = document.getElementById('inv-table-body');
+            const emptyState = document.getElementById('inv-empty-state');
+            tbody.innerHTML = '';
+            
+            let total = 0;
+            if (state.investments.length === 0) emptyState.style.display = 'block';
+            else {
+                emptyState.style.display = 'none';
+                state.investments.forEach(i => {
+                    total += parseInt(i.value);
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-700 font-medium">${i.name}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-500">${i.platform || '-'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-bold text-right text-blue-600">${formatIDR(i.value)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <button onclick="deleteInv('${i.id}')" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            document.getElementById('total-inv-val').innerText = formatIDR(total);
+        }
+
+        // --- FINANCIAL LOGIC: DEBTS ---
+        document.getElementById('debt-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const type = document.getElementById('debt-type').value;
+            const name = document.getElementById('debt-name').value;
+            const amount = parseIDR(document.getElementById('debt-value').value);
+
+            state.debts.push({ id: generateId(), type, name, amount });
+            saveData();
+            e.target.reset();
+        });
+
+        window.deleteDebt = function(id) {
+            if(confirm('Hapus catatan ini?')) {
+                state.debts = state.debts.filter(d => d.id !== id);
+                saveData();
+            }
+        }
+
+        function updateDebtsView() {
+            const tbody = document.getElementById('debt-table-body');
+            const emptyState = document.getElementById('debt-empty-state');
+            tbody.innerHTML = '';
+            
+            let totalPiutang = 0;
+            let totalHutang = 0;
+
+            if (state.debts.length === 0) emptyState.style.display = 'block';
+            else {
+                emptyState.style.display = 'none';
+                state.debts.forEach(d => {
+                    const isPiutang = d.type === 'piutang';
+                    if (isPiutang) totalPiutang += parseInt(d.amount);
+                    else totalHutang += parseInt(d.amount);
+
+                    const badgeColor = isPiutang ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+                    const amountColor = isPiutang ? 'text-emerald-600' : 'text-rose-600';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 text-xs font-medium rounded-md ${badgeColor}">${isPiutang ? 'Piutang' : 'Hutang'}</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-700 font-medium">${d.name}</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-bold text-right ${amountColor}">${formatIDR(d.amount)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <button onclick="deleteDebt('${d.id}')" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            document.getElementById('total-piutang-val').innerText = formatIDR(totalPiutang);
+            document.getElementById('total-hutang-val').innerText = formatIDR(totalHutang);
+        }
+
         // --- HOUSE PLANNER LOGIC ---
-        function calcHouse() {
+        window.calcHouse = function() {
             const price = parseIDR(document.getElementById('hp-price').value);
             const dpPercent = parseFloat(document.getElementById('hp-dp-percent').value) || 0;
             const tenure = parseInt(document.getElementById('hp-tenure').value) || 1;
@@ -712,7 +1051,6 @@
             document.getElementById('hp-loan-amount').innerText = formatIDR(loanAmount);
             document.getElementById('hp-installment').innerText = formatIDR(installment);
         }
-        window.calcHouse = calcHouse;
 
         // --- MARRIED BUDGET LOGIC ---
         const mbCategories = [
@@ -726,7 +1064,6 @@
         function initMarriedBudgetUI() {
             const container = document.getElementById('mb-inputs');
             container.innerHTML = '';
-            
             document.getElementById('mb-target-input').value = new Intl.NumberFormat('id-ID').format(state.marriedBudget.target);
 
             mbCategories.forEach(cat => {
@@ -739,24 +1076,22 @@
                         <div class="relative">
                             <span class="absolute left-3 top-2.5 text-slate-400 font-medium">Rp</span>
                             <input type="text" id="mb-cat-${cat.id}" value="${new Intl.NumberFormat('id-ID').format(val)}" 
-                                class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" 
+                                class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" 
                                 oninput="formatCurrencyInput(this); updateMarriedBudget()">
                         </div>
                     </div>
                 `;
             });
-            lucide.createIcons();
             renderMarriedBudgetProgress();
         }
 
-        function updateMarriedBudget() {
+        window.updateMarriedBudget = function() {
             state.marriedBudget.target = parseIDR(document.getElementById('mb-target-input').value);
             mbCategories.forEach(cat => {
                 state.marriedBudget.categories[cat.id] = parseIDR(document.getElementById(`mb-cat-${cat.id}`).value);
             });
             saveData();
         }
-        window.updateMarriedBudget = updateMarriedBudget;
 
         function renderMarriedBudgetProgress() {
             const target = state.marriedBudget.target;
@@ -796,23 +1131,20 @@
             document.getElementById('goal-modal').classList.add('hidden');
         });
 
-        function deleteGoal(id) {
+        window.deleteGoal = function(id) {
             if(confirm('Hapus target ini?')) {
                 state.goals = state.goals.filter(g => g.id !== id);
                 saveData();
             }
         }
-        window.deleteGoal = deleteGoal;
 
         function updateGoalsView() {
             const container = document.getElementById('goals-container');
             const emptyState = document.getElementById('goals-empty');
-            
             container.innerHTML = '';
             
-            if (state.goals.length === 0) {
-                emptyState.classList.remove('hidden');
-            } else {
+            if (state.goals.length === 0) emptyState.classList.remove('hidden');
+            else {
                 emptyState.classList.add('hidden');
                 state.goals.forEach(g => {
                     let pct = g.target > 0 ? (g.current / g.target) * 100 : 0;
@@ -827,26 +1159,17 @@
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                     const isPassed = diffDays < 0;
 
-                    let timeText = '';
-                    if (diffDays === 0) timeText = 'Hari ini';
-                    else if (isPassed) timeText = 'Terlewat';
-                    else timeText = `${diffDays} hari lagi`;
+                    let timeText = diffDays === 0 ? 'Hari ini' : isPassed ? 'Terlewat' : `${diffDays} hari lagi`;
 
                     container.innerHTML += `
                         <div class="card p-6 flex flex-col h-full relative group">
-                            <button onclick="deleteGoal('${g.id}')" class="absolute top-4 right-4 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
+                            <button onclick="deleteGoal('${g.id}')" class="absolute top-4 right-4 text-slate-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                             <div class="flex-1">
                                 <h3 class="font-bold text-lg text-slate-900 mb-1 pr-6">${g.name}</h3>
                                 <p class="text-xs text-slate-500 mb-4 flex items-center gap-1">
-                                    <i data-lucide="calendar" class="w-3 h-3"></i> 
-                                    ${targetDate.toLocaleDateString('id-ID')} 
-                                    <span class="ml-1 ${isPassed ? 'text-rose-500' : 'text-emerald-500'} font-medium">
-                                        (${timeText})
-                                    </span>
+                                    <i data-lucide="calendar" class="w-3 h-3"></i> ${targetDate.toLocaleDateString('id-ID')} 
+                                    <span class="ml-1 ${isPassed ? 'text-rose-500' : 'text-emerald-500'} font-medium">(${timeText})</span>
                                 </p>
-                                
                                 <div class="mb-2 flex justify-between items-end">
                                     <span class="text-sm font-bold text-blue-600">${formatIDR(g.current)}</span>
                                     <span class="text-xs text-slate-500">dari ${formatIDR(g.target)}</span>
@@ -859,7 +1182,6 @@
                         </div>
                     `;
                 });
-                lucide.createIcons();
             }
         }
 
@@ -867,8 +1189,12 @@
         function updateAllViews() {
             updateDashboard();
             updateFinancialTable();
+            updateAssetsView();
+            updateInvestmentsView();
+            updateDebtsView();
             renderMarriedBudgetProgress();
             updateGoalsView();
+            lucide.createIcons();
         }
 
         // Setup Init Defaults
@@ -878,14 +1204,10 @@
 
         // Auth Listeners
         document.getElementById('login-btn').addEventListener('click', () => {
-            signInWithPopup(auth, provider).catch(error => {
-                alert("Login gagal: " + error.message);
-            });
+            signInWithPopup(auth, provider).catch(error => alert("Login gagal: " + error.message));
         });
 
-        window.logout = function() {
-            signOut(auth);
-        };
+        window.logout = function() { signOut(auth); };
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -897,12 +1219,7 @@
             } else {
                 currentUser = null;
                 document.getElementById('login-screen').classList.remove('hidden');
-                // Reset state when logged out
-                state = {
-                    transactions: [],
-                    goals: [],
-                    marriedBudget: { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 50000000 }
-                };
+                state = { transactions: [], assets: [], investments: [], debts: [], goals: [], marriedBudget: { categories: { venue: 0, catering: 0, dokumentasi: 0, attire: 0, lainnya: 0 }, target: 50000000 } };
                 updateAllViews();
             }
         });
