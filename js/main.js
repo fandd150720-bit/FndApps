@@ -94,14 +94,14 @@ window.showNotification = function(message) {
     
     const toast = document.createElement('div');
     toast.className = 'bg-white dark:bg-[#111C44] border-l-4 border-[#05CD99] shadow-lg rounded-lg p-4 mb-2 flex items-center justify-between text-[#2B3674] dark:text-white transition-all duration-300 transform translate-x-full';
-    toast.innerHTML = 
+    toast.innerHTML = `
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-[#05CD99]/10 flex items-center justify-center text-[#05CD99]">
                 <i data-lucide="check-circle" class="w-5 h-5"></i>
             </div>
-            <p class="font-medium text-sm"> + message + </p>
+            <p class="font-medium text-sm">${message}</p>
         </div>
-    ;
+    `;
     
     container.appendChild(toast);
     if(window.lucide) window.lucide.createIcons();
@@ -135,7 +135,7 @@ window.showSystemUpdate = function() {
     
     const toast = document.createElement('div');
     toast.className = 'bg-white dark:bg-[#111C44] border-l-4 border-[#4318FF] shadow-lg rounded-lg p-4 mb-2 flex items-center justify-between text-[#2B3674] dark:text-white transition-all duration-300 transform translate-x-full';
-    toast.innerHTML = 
+    toast.innerHTML = `
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-[#4318FF]/10 flex items-center justify-center text-[#4318FF]">
                 <i data-lucide="info" class="w-5 h-5"></i>
@@ -146,7 +146,7 @@ window.showSystemUpdate = function() {
             </div>
         </div>
         <button onclick="this.parentElement.remove()" class="text-[#A3AED0] hover:text-[#EE5D50]"><i data-lucide="x" class="w-4 h-4"></i></button>
-    ;
+    `;
     
     container.appendChild(toast);
     if(window.lucide) window.lucide.createIcons();
