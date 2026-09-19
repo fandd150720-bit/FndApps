@@ -9,8 +9,7 @@ window.switchHouseTab = function(tabId) {
         
         const tab = document.getElementById(`tab-house-${id}`);
         if (tab) {
-            tab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
-            tab.classList.add('text-slate-500');
+            tab.classList.remove('active');
         }
     });
 
@@ -22,8 +21,7 @@ window.switchHouseTab = function(tabId) {
     
     const targetTab = document.getElementById(`tab-house-${tabId}`);
     if (targetTab) {
-        targetTab.classList.remove('text-slate-500');
-        targetTab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+        targetTab.classList.add('active');
     }
 };
 

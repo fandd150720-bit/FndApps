@@ -64,8 +64,7 @@ window.switchWedTab = function(tabId) {
         
         const el = document.getElementById(`tab-wed-${id}`);
         if (el) {
-            el.classList.remove('bg-blue-50', 'text-blue-700', 'border-b-2', 'border-blue-600');
-            el.classList.add('text-slate-500');
+            el.classList.remove('active');
         }
     });
     
@@ -77,8 +76,7 @@ window.switchWedTab = function(tabId) {
     
     const btn = document.getElementById(`tab-wed-${tabId}`);
     if (btn) {
-        btn.classList.remove('text-slate-500');
-        btn.classList.add('bg-blue-50', 'text-blue-700', 'border-b-2', 'border-blue-600');
+        btn.classList.add('active');
     }
     
     if (tabId === 'dashboard') window.updateWeddingDashboard();

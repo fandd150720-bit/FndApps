@@ -8,8 +8,7 @@ window.switchFinTab = function(tabId) {
         const btn  = document.getElementById(`tab-${id}`);
         if (view) { view.classList.add('hidden'); view.classList.remove('block'); }
         if (btn)  {
-            btn.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
-            btn.classList.add('text-slate-500');
+            btn.classList.remove('active');
         }
     });
 
@@ -17,8 +16,7 @@ window.switchFinTab = function(tabId) {
     const activeBtn  = document.getElementById(`tab-${tabId}`);
     if (activeView) { activeView.classList.remove('hidden'); activeView.classList.add('block'); }
     if (activeBtn)  {
-        activeBtn.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
-        activeBtn.classList.remove('text-slate-500');
+        activeBtn.classList.add('active');
     }
 
     if (tabId === 'cashflow')    { if (window.updateFinancialTable) window.updateFinancialTable(); }

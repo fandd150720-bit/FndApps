@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fnd Apps - Family & Life Planner</title>
-    <!-- Fonts -->
+    <!-- Fonts: DM Sans (Horizon UI) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -15,11 +15,26 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['DM Sans', 'Inter', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#3b82f6',
-                        secondary: '#64748b',
+                        brand:   { DEFAULT: '#4318FF', hover: '#3311DB' },
+                        navy:    '#2B3674',
+                        label:   '#A3AED0',
+                        bgapp:   '#F4F7FE',
+                        borderl: '#E0E5F2',
+                        hcyan:   '#6AD2FF',
+                        hemerald:'#05CD99',
+                        hamber:  '#FFB547',
+                        hrose:   '#EE5D50',
+                    },
+                    borderRadius: {
+                        '20': '20px',
+                        '24': '24px',
+                    },
+                    boxShadow: {
+                        'horizon': '0 18px 40px rgba(112,144,176,0.12)',
+                        'topbar': '0 4px 20px rgba(112,144,176,0.15)',
                     }
                 }
             }
@@ -34,73 +49,169 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        /* ============================================
+           HORIZON UI — GLOBAL DESIGN SYSTEM
+           ============================================ */
+        body { font-family: 'DM Sans', 'Inter', sans-serif; background: #F4F7FE; color: #2B3674; }
+
+        /* Section visibility & animation */
         .section-view { display: none; }
-        .section-view.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .nav-item { transition: all 0.2s ease; cursor: pointer; }
-        .nav-item:hover { background-color: #f1f5f9; }
-        .nav-item.active { background-color: #eff6ff; color: #2563eb; font-weight: 500; border-right: 3px solid #2563eb; }
-        
+        .section-view.active { display: block; animation: fadeIn 0.35s ease-in-out; }
         .fin-view { display: none; }
         .fin-view.block { display: block; animation: fadeIn 0.3s ease-in-out; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .house-view { display: none !important; }
+        .house-view.block { display: block !important; animation: fadeIn 0.3s ease-in-out; }
+        .wedding-view { display: none !important; }
+        .wedding-view.block { display: block !important; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
 
-        /* Card styling */
+        /* ---- Sidebar Nav Items (Horizon style) ---- */
+        .nav-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0;
+            color: #A3AED0;
+            font-weight: 500;
+            position: relative;
+        }
+        .nav-item:hover { color: #2B3674; background-color: #F4F7FE; }
+        .nav-item.active {
+            color: #2B3674;
+            font-weight: 700;
+            background-color: transparent;
+        }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 2rem;
+            background: #4318FF;
+            border-radius: 4px 0 0 4px;
+        }
+        .nav-item.active i, .nav-item.active svg { color: #4318FF; }
+        .nav-item i, .nav-item svg { color: #A3AED0; transition: color 0.2s; }
+        .nav-item:hover i, .nav-item:hover svg { color: #4318FF; }
+
+        /* ---- Horizon Card ---- */
         .card {
-            background-color: white;
-            border-radius: 1rem;
-            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            border: 1px solid #f1f5f9;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 18px 40px rgba(112,144,176,0.10);
+            border: none;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .card:hover { box-shadow: 0 18px 40px rgba(112,144,176,0.18); }
+
+        /* ---- Pill Tab Nav ---- */
+        .pill-tabs { background: #F4F7FE; border-radius: 999px; padding: 4px; display: inline-flex; gap: 4px; }
+        .pill-tab { padding: 6px 18px; font-size: 0.82rem; font-weight: 600; border-radius: 999px;
+            color: #A3AED0; cursor: pointer; transition: all 0.2s; border: none; background: transparent; }
+        .pill-tab:hover { color: #2B3674; }
+        .pill-tab.active { background: #4318FF; color: #fff; box-shadow: 0 4px 16px rgba(67,24,255,0.20); }
+
+        /* ---- Horizon Form Inputs ---- */
+        .h-input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1.5px solid #E0E5F2;
+            border-radius: 12px;
+            background: #fff;
+            color: #2B3674;
+            font-size: 0.875rem;
+            font-family: 'DM Sans', 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .h-input:focus { border-color: #4318FF; box-shadow: 0 0 0 3px rgba(67,24,255,0.10); }
+
+        /* ---- Horizon Buttons ---- */
+        .btn-primary {
+            background: #4318FF; color: #fff; font-weight: 700; font-family: 'DM Sans', sans-serif;
+            padding: 10px 24px; border-radius: 12px; border: none; cursor: pointer;
+            box-shadow: 0 4px 16px rgba(67,24,255,0.25); transition: background 0.2s, transform 0.15s;
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary:hover { background: #3311DB; transform: translateY(-1px); }
+        .btn-secondary {
+            background: #F4F7FE; color: #2B3674; font-weight: 600;
+            padding: 10px 24px; border-radius: 12px; border: 1.5px solid #E0E5F2; cursor: pointer;
             transition: all 0.2s;
         }
-        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        .btn-secondary:hover { border-color: #4318FF; color: #4318FF; }
+
+        /* ---- Table Headers ---- */
+        .th-horizon { font-size: 0.7rem; font-weight: 700; color: #A3AED0; text-transform: uppercase;
+            letter-spacing: 0.06em; padding: 12px 16px; background: transparent; }
+
+        /* ---- Badge Pills ---- */
+        .badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 999px;
+            font-size: 0.7rem; font-weight: 700; }
+        .badge-green { background: rgba(5,205,153,0.12); color: #05CD99; }
+        .badge-red   { background: rgba(238,93,80,0.12); color: #EE5D50; }
+        .badge-amber { background: rgba(255,181,71,0.14); color: #d97706; }
+        .badge-blue  { background: rgba(67,24,255,0.10); color: #4318FF; }
+        .badge-gray  { background: #F4F7FE; color: #A3AED0; }
+
+        /* ---- Icon Circle ---- */
+        .icon-circle { width: 48px; height: 48px; border-radius: 50%; background: #F4F7FE;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        /* ---- Scrollbars ---- */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        ::-webkit-scrollbar-thumb { background: #E0E5F2; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #A3AED0; }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 h-screen flex flex-col overflow-hidden">
+<body class="bg-[#F4F7FE] text-[#2B3674] h-screen flex flex-col overflow-hidden">
 
-    <!-- Topbar -->
-    <nav class="bg-white border-b border-slate-200 z-50 h-16 flex-shrink-0 flex items-center justify-between px-4 md:px-6">
-        <div class="flex items-center gap-6">
-            <div class="flex items-center gap-2">
-                <div class="bg-blue-600 text-white p-1.5 rounded-lg">
-                    <i data-lucide="layers" class="w-5 h-5"></i>
+    <!-- Topbar (Horizon UI) -->
+    <header class="bg-[#F4F7FE] z-50 h-20 flex-shrink-0 flex items-center justify-between px-6 md:px-8">
+        <!-- Left: Breadcrumb + Page Title (dynamic) -->
+        <div id="topbar-left" class="flex flex-col justify-center">
+            <p class="text-xs text-[#A3AED0] font-medium">Pages / <span id="topbar-breadcrumb">Main Dashboard</span></p>
+            <h2 id="topbar-title" class="text-2xl font-bold text-[#2B3674] leading-tight">Main Dashboard</h2>
+        </div>
+        <!-- Right: Capsule control bar -->
+        <div class="flex items-center gap-3">
+            <!-- Mobile sidebar toggle -->
+            <button onclick="toggleSidebar()" class="md:hidden p-2 text-[#A3AED0] hover:text-[#2B3674] rounded-xl hover:bg-white transition-colors">
+                <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+            <!-- Control Capsule -->
+            <div class="hidden md:flex items-center gap-2 bg-white rounded-full shadow-topbar px-3 py-2">
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#A3AED0]"></i>
+                    <input type="text" placeholder="Search..." class="bg-[#F4F7FE] text-sm rounded-full pl-9 pr-4 py-1.5 border-none outline-none w-52 text-[#2B3674] placeholder-[#A3AED0]">
                 </div>
-                <h1 class="text-xl font-bold text-slate-900 hidden md:block">Fnd Apps</h1>
-            </div>
-            <button onclick="toggleSidebar()" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                <i data-lucide="menu"></i>
-            </button>
-            <div class="hidden md:flex relative">
-                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" placeholder="Search..." class="bg-slate-100 text-sm rounded-md pl-9 pr-4 py-2 border-none focus:ring-2 focus:ring-blue-500 outline-none w-64">
+                <div class="w-px h-5 bg-[#E0E5F2] mx-1"></div>
+                <button class="relative p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
+                    <i data-lucide="bell" class="w-4.5 h-4.5"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-[#EE5D50] rounded-full border border-white"></span>
+                </button>
+                <button class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
+                    <i data-lucide="info" class="w-4.5 h-4.5"></i>
+                </button>
+                <button class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors" title="Toggle Theme">
+                    <i data-lucide="sun" class="w-4.5 h-4.5"></i>
+                </button>
+                <div class="w-px h-5 bg-[#E0E5F2] mx-1"></div>
+                <img id="user-profile-img-top" src="https://ui-avatars.com/api/?name=FD&background=4318FF&color=fff&bold=true" alt="Profile" class="w-8 h-8 rounded-full flex-shrink-0 cursor-pointer ring-2 ring-[#4318FF]/20">
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            <a href="#" class="hidden md:flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-blue-600">
-                <i data-lucide="file-text" class="w-4 h-4"></i> Documentation
-            </a>
-            <div class="h-6 w-px bg-slate-200 mx-2 hidden md:block"></div>
-            <button class="relative p-2 text-slate-400 hover:text-slate-600">
-                <i data-lucide="bell" class="w-5 h-5"></i>
-                <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
-            </button>
-            <button class="relative p-2 text-slate-400 hover:text-slate-600">
-                <i data-lucide="mail" class="w-5 h-5"></i>
-            </button>
-            <img id="user-profile-img-top" src="https://ui-avatars.com/api/?name=User&background=eff6ff&color=2563eb" alt="Profile" class="w-8 h-8 rounded-full border border-slate-200 ml-2">
-        </div>
-    </nav>
+    </header>
 
     <div class="flex flex-1 overflow-hidden">
 
@@ -119,62 +230,99 @@
         </div>
     </div>
 
-    <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex-col h-full relative z-30 flex fixed md:relative -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
-        <nav class="flex-1 py-6 overflow-y-auto">
-            <div class="px-6 mb-2">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Core</p>
+    <!-- Sidebar (Horizon UI) -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-[#E0E5F2] flex-col h-full relative z-30 flex fixed md:relative -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <!-- Logo Area -->
+        <div class="px-6 pt-7 pb-5 border-b border-[#E0E5F2] flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#4318FF] to-[#868CFF] flex items-center justify-center shadow-md">
+                    <i data-lucide="layers" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-extrabold text-[#2B3674] tracking-wide leading-none">FND APPS</p>
+                    <p class="text-[10px] text-[#A3AED0] font-medium mt-0.5">Family & Life Planner</p>
+                </div>
             </div>
-            <ul class="space-y-1 mb-6">
+            <button onclick="toggleSidebar()" class="md:hidden text-[#A3AED0] hover:text-[#2B3674] p-1">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 py-5 overflow-y-auto">
+            <!-- CORE -->
+            <div class="px-6 mb-2">
+                <p class="text-[10px] font-bold text-[#A3AED0] uppercase tracking-widest">Core</p>
+            </div>
+            <ul class="space-y-0.5 mb-5">
                 <li>
-                    <a data-target="dashboard" class="nav-item active flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
-                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                    <a data-target="dashboard" class="nav-item active">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
+                        <span>Dashboard</span>
                     </a>
                 </li>
             </ul>
 
+            <!-- FINANCIAL APPS -->
             <div class="px-6 mb-2">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Financial Apps</p>
+                <p class="text-[10px] font-bold text-[#A3AED0] uppercase tracking-widest">Financial Apps</p>
             </div>
-            <ul class="space-y-1 mb-6">
+            <ul class="space-y-0.5 mb-5">
                 <li>
-                    <a data-target="financial" class="nav-item flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
-                        <i data-lucide="wallet" class="w-5 h-5"></i> Wealth Management
+                    <a data-target="financial" class="nav-item">
+                        <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
+                        <span>Wealth Management</span>
                     </a>
                 </li>
             </ul>
 
+            <!-- PLANNING -->
             <div class="px-6 mb-2">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Planning</p>
+                <p class="text-[10px] font-bold text-[#A3AED0] uppercase tracking-widest">Planning</p>
             </div>
-            <ul class="space-y-1">
+            <ul class="space-y-0.5">
                 <li>
-                    <a data-target="house" class="nav-item flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
-                        <i data-lucide="home" class="w-5 h-5"></i> House Planner
+                    <a data-target="house" class="nav-item">
+                        <i data-lucide="home" class="w-5 h-5 flex-shrink-0"></i>
+                        <span>House Planner</span>
                     </a>
                 </li>
                 <li>
-                    <a data-target="married" class="nav-item flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
-                        <i data-lucide="heart-handshake" class="w-5 h-5"></i> Wedding Planner
+                    <a data-target="married" class="nav-item">
+                        <i data-lucide="heart-handshake" class="w-5 h-5 flex-shrink-0"></i>
+                        <span>Wedding Planner</span>
                     </a>
                 </li>
                 <li>
-                    <a data-target="goals" class="nav-item flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
-                        <i data-lucide="target" class="w-5 h-5"></i> Goals & Projections
+                    <a data-target="goals" class="nav-item">
+                        <i data-lucide="target" class="w-5 h-5 flex-shrink-0"></i>
+                        <span>Goals & Projections</span>
                     </a>
                 </li>
             </ul>
         </nav>
-        
-        <!-- User Info at bottom -->
-        <div class="p-4 border-t border-slate-100 bg-slate-50">
+
+        <!-- Help Banner Card -->
+        <div class="mx-4 mb-4 rounded-2xl bg-gradient-to-b from-[#868CFF] to-[#4318FF] p-4 text-white">
+            <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center mb-3">
+                <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+            </div>
+            <p class="text-xs font-bold text-white/90 mb-0.5">Update Tersedia</p>
+            <p class="text-[10px] text-white/70 mb-3">Fitur baru siap digunakan</p>
+            <button class="w-full bg-white text-[#4318FF] text-xs font-bold py-1.5 rounded-full hover:bg-white/90 transition-colors">
+                Lihat Fitur
+            </button>
+        </div>
+
+        <!-- User Info -->
+        <div class="px-4 pb-5 pt-3 border-t border-[#E0E5F2]">
             <div class="flex items-center gap-3">
-                <img id="user-profile-img" src="" alt="Profile" class="w-10 h-10 rounded-full border border-slate-200 hidden">
-                <div class="overflow-hidden flex-1">
-                    <p class="text-xs text-slate-500">Logged in as:</p>
-                    <p id="user-profile-name" class="text-sm font-semibold text-slate-800 truncate">F&D</p>
-                    <button onclick="logout()" class="text-xs text-blue-600 hover:text-blue-700 font-medium mt-1">Sign Out</button>
+                <img id="user-profile-img" src="" alt="Profile" class="w-9 h-9 rounded-full border-2 border-[#4318FF]/20 hidden">
+                <div class="flex-1 min-w-0">
+                    <p class="text-[10px] text-[#A3AED0] font-medium">Logged in as</p>
+                    <p id="user-profile-name" class="text-sm font-bold text-[#2B3674] truncate">F&D</p>
                 </div>
+                <button onclick="logout()" class="text-[10px] text-[#4318FF] hover:text-[#3311DB] font-bold bg-[#F4F7FE] px-2 py-1 rounded-lg transition-colors flex-shrink-0">Sign Out</button>
             </div>
         </div>
     </aside>
@@ -183,126 +331,113 @@
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden"></div>
 
     <!-- Main Content -->
-    <main class="flex-1 h-full overflow-y-auto relative w-full bg-slate-100">
+    <main class="flex-1 h-full overflow-y-auto relative w-full bg-[#F4F7FE]">
 
 
         <div class="p-6 md:p-8 max-w-7xl mx-auto pb-24">
             
             <!-- Dashboard Section -->
             <section id="dashboard" class="section-view active">
-                <div class="flex justify-between items-end mb-6">
-                    <div>
-                        <h2 class="text-2xl font-bold text-slate-900">Dashboard</h2>
-                        <p class="text-sm text-slate-500 mt-1">Ringkasan finansial dan perencanaan Anda.</p>
+                
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
+                    <!-- Card 1: Net Worth -->
+                    <div class="card p-5 flex items-center gap-4">
+                        <div class="icon-circle" style="background:rgba(67,24,255,0.08);">
+                            <i data-lucide="wallet" class="w-6 h-6" style="color:#4318FF;"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Total Net Worth</p>
+                            <h3 class="text-xl font-extrabold text-[#2B3674] truncate" id="dash-net-worth">Rp 0</h3>
+                        </div>
+                    </div>
+                    <!-- Card 2: Income -->
+                    <div class="card p-5 flex items-center gap-4">
+                        <div class="icon-circle" style="background:rgba(5,205,153,0.10);">
+                            <i data-lucide="trending-up" class="w-6 h-6" style="color:#05CD99;"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Pemasukan Bulan Ini</p>
+                            <h3 class="text-xl font-extrabold text-[#2B3674] truncate" id="dash-income">Rp 0</h3>
+                        </div>
+                    </div>
+                    <!-- Card 3: Expense -->
+                    <div class="card p-5 flex items-center gap-4">
+                        <div class="icon-circle" style="background:rgba(238,93,80,0.08);">
+                            <i data-lucide="trending-down" class="w-6 h-6" style="color:#EE5D50;"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Pengeluaran Bulan Ini</p>
+                            <h3 class="text-xl font-extrabold text-[#2B3674] truncate" id="dash-expense">Rp 0</h3>
+                        </div>
+                    </div>
+                    <!-- Card 4: Assets -->
+                    <div class="card p-5 flex items-center gap-4">
+                        <div class="icon-circle" style="background:rgba(106,210,255,0.12);">
+                            <i data-lucide="target" class="w-6 h-6" style="color:#6AD2FF;"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Total Aset & Goals</p>
+                            <h3 class="text-xl font-extrabold text-[#2B3674] truncate" id="dash-assets-inv">Rp 0</h3>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Metrics -->
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-                    <!-- Card 1 -->
-                    <div class="bg-blue-600 rounded-lg shadow-sm text-white overflow-hidden flex flex-col relative border-0">
-                        <div class="p-6 flex-1 relative z-10">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-blue-100 text-sm font-medium mb-1">Total Net Worth</p>
-                                    <h3 class="text-2xl font-bold" id="dash-net-worth">Rp 0</h3>
-                                </div>
-                                <i data-lucide="wallet" class="w-8 h-8 text-white opacity-20 absolute top-6 right-6"></i>
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <!-- Chart 1: Cashflow -->
+                    <div class="card p-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h3 class="text-base font-bold text-[#2B3674]">Arus Kas 6 Bulan</h3>
+                                <p class="text-xs text-[#A3AED0] font-medium">Pemasukan vs Pengeluaran</p>
                             </div>
+                            <button class="text-[#A3AED0] hover:text-[#4318FF] transition-colors">
+                                <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                            </button>
                         </div>
-                        <a href="#" onclick="switchFinTab('assets')" class="bg-black bg-opacity-10 py-2 px-6 text-sm flex items-center justify-between hover:bg-opacity-20 transition-all z-10">
-                            <span>View Report</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </a>
-                    </div>
-                    <!-- Card 2 -->
-                    <div class="bg-amber-500 rounded-lg shadow-sm text-white overflow-hidden flex flex-col relative border-0">
-                        <div class="p-6 flex-1 relative z-10">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-amber-100 text-sm font-medium mb-1">Pemasukan Bulan Ini</p>
-                                    <h3 class="text-2xl font-bold" id="dash-income">Rp 0</h3>
-                                </div>
-                                <i data-lucide="dollar-sign" class="w-8 h-8 text-white opacity-20 absolute top-6 right-6"></i>
-                            </div>
-                        </div>
-                        <a href="#" onclick="switchFinTab('cashflow')" class="bg-black bg-opacity-10 py-2 px-6 text-sm flex items-center justify-between hover:bg-opacity-20 transition-all z-10">
-                            <span>View Details</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </a>
-                    </div>
-                    <!-- Card 3 -->
-                    <div class="bg-emerald-600 rounded-lg shadow-sm text-white overflow-hidden flex flex-col relative border-0">
-                        <div class="p-6 flex-1 relative z-10">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-emerald-100 text-sm font-medium mb-1">Pengeluaran Bulan Ini</p>
-                                    <h3 class="text-2xl font-bold" id="dash-expense">Rp 0</h3>
-                                </div>
-                                <i data-lucide="bar-chart-2" class="w-8 h-8 text-white opacity-20 absolute top-6 right-6"></i>
-                            </div>
-                        </div>
-                        <a href="#" onclick="switchFinTab('cashflow')" class="bg-black bg-opacity-10 py-2 px-6 text-sm flex items-center justify-between hover:bg-opacity-20 transition-all z-10">
-                            <span>View Breakdown</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </a>
-                    </div>
-                    <!-- Card 4 -->
-                    <div class="bg-rose-600 rounded-lg shadow-sm text-white overflow-hidden flex flex-col relative border-0">
-                        <div class="p-6 flex-1 relative z-10">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-rose-100 text-sm font-medium mb-1">Total Aset & Goals</p>
-                                    <h3 class="text-2xl font-bold" id="dash-assets-inv">Rp 0</h3>
-                                </div>
-                                <i data-lucide="target" class="w-8 h-8 text-white opacity-20 absolute top-6 right-6"></i>
-                            </div>
-                        </div>
-                        <a href="#" onclick="switchFinTab('assets')" class="bg-black bg-opacity-10 py-2 px-6 text-sm flex items-center justify-between hover:bg-opacity-20 transition-all z-10">
-                            <span>View Goals</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Chart -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card rounded-lg border-0 shadow-sm overflow-hidden bg-white">
-                        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                            <h3 class="font-bold text-blue-600 m-0">Area Chart Cash Flow</h3>
-                            <button class="text-slate-400 hover:text-slate-600"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
-                        </div>
-                        <div class="p-6">
-                            <div class="relative h-72 w-full">
-                                <canvas id="cashflowChart"></canvas>
-                            </div>
+                        <div class="relative h-64 w-full">
+                            <canvas id="cashflowChart"></canvas>
                         </div>
                     </div>
                     
-                    <div class="card rounded-lg border-0 shadow-sm overflow-hidden bg-white">
-                        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                            <h3 class="font-bold text-blue-600 m-0">Bar Chart Revenue</h3>
-                            <button class="text-slate-400 hover:text-slate-600"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
+                    <!-- Chart 2: Placeholder -->
+                    <div class="card p-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h3 class="text-base font-bold text-[#2B3674]">Distribusi Kekayaan</h3>
+                                <p class="text-xs text-[#A3AED0] font-medium">Aset, Investasi & Net Worth</p>
+                            </div>
+                            <button class="text-[#A3AED0] hover:text-[#4318FF] transition-colors">
+                                <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                            </button>
                         </div>
-                        <div class="p-6 flex items-center justify-center h-full min-h-[300px]">
-                            <p class="text-slate-400 text-sm">Revenue chart data goes here</p>
+                        <div class="flex flex-col items-center justify-center h-64 gap-3">
+                            <div class="icon-circle w-16 h-16">
+                                <i data-lucide="pie-chart" class="w-7 h-7" style="color:#4318FF;"></i>
+                            </div>
+                            <p class="text-sm text-[#A3AED0] font-medium">Tambah data aset untuk melihat grafik distribusi</p>
                         </div>
                     </div>
                 </div>
             </section>
 
+
             <!-- Financial Section -->
             <section id="financial" class="section-view">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                    <h2 class="text-2xl font-bold text-slate-900">Wealth Management</h2>
+                <div class="mb-6">
+                    <h2 class="text-2xl font-extrabold text-[#2B3674]">Wealth Management</h2>
+                    <p class="text-xs text-[#A3AED0] font-medium mt-0.5">Kelola arus kas, aset, investasi, dan hutang Anda</p>
                 </div>
                 
-                <!-- Financial Sub-Nav -->
-                <div class="flex border-b border-slate-200 mb-6 overflow-x-auto hide-scrollbar">
-                    <button onclick="switchFinTab('cashflow')" id="tab-cashflow" class="fin-tab active px-4 py-3 font-medium text-sm text-blue-600 border-b-2 border-blue-600 whitespace-nowrap transition-colors">Arus Kas</button>
-                    <button onclick="switchFinTab('assets')" id="tab-assets" class="fin-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Aset Kekayaan</button>
-                    <button onclick="switchFinTab('investments')" id="tab-investments" class="fin-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Portofolio Investasi</button>
-                    <button onclick="switchFinTab('debts')" id="tab-debts" class="fin-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Hutang & Piutang</button>
+                <!-- Financial Sub-Nav (Horizon Pill Tabs) -->
+                <div class="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-1">
+                    <div class="pill-tabs flex-shrink-0">
+                        <button onclick="switchFinTab('cashflow')" id="tab-cashflow" class="pill-tab active">Arus Kas</button>
+                        <button onclick="switchFinTab('assets')" id="tab-assets" class="pill-tab">Aset Kekayaan</button>
+                        <button onclick="switchFinTab('investments')" id="tab-investments" class="pill-tab">Portofolio Investasi</button>
+                        <button onclick="switchFinTab('debts')" id="tab-debts" class="pill-tab">Hutang & Piutang</button>
+                    </div>
                 </div>
 
                 <!-- Tab: Cashflow -->
@@ -311,28 +446,28 @@
                         <!-- Form -->
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-lg font-bold mb-4">Input Transaksi</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Input Transaksi</h3>
                                 <form id="transaction-form" class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tanggal</label>
-                                        <input type="date" id="trans-date" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Tanggal</label>
+                                        <input type="date" id="trans-date" required class="h-input">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tipe</label>
-                                        <select id="trans-type" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Tipe</label>
+                                        <select id="trans-type" required class="h-input">
                                             <option value="income">Pemasukan</option>
                                             <option value="expense">Pengeluaran</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
-                                        <input type="text" id="trans-category" placeholder="Gaji, Makanan, Listrik..." required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Kategori</label>
+                                        <input type="text" id="trans-category" placeholder="Gaji, Makanan, Listrik..." required class="h-input">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
-                                        <input type="text" id="trans-amount" placeholder="0" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nominal (Rp)</label>
+                                        <input type="text" id="trans-amount" placeholder="0" required class="h-input" oninput="formatCurrencyInput(this)">
                                     </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                    <button type="submit" class="btn-primary w-full justify-center">
                                         <i data-lucide="plus" class="w-4 h-4"></i> Tambah Transaksi
                                     </button>
                                 </form>
@@ -342,69 +477,73 @@
                         <!-- Table -->
                         <div class="lg:col-span-2">
                             <div class="card overflow-hidden">
-                                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                                    <h3 class="text-lg font-bold">Riwayat Transaksi</h3>
+                                <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center">
+                                    <h3 class="text-base font-bold text-[#2B3674]">Riwayat Transaksi</h3>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="bg-slate-50 text-slate-500 text-sm">
-                                                <th class="px-6 py-3 font-medium">Tanggal</th>
-                                                <th class="px-6 py-3 font-medium">Kategori</th>
-                                                <th class="px-6 py-3 font-medium text-right">Nominal</th>
-                                                <th class="px-6 py-3 font-medium text-center">Aksi</th>
+                                            <tr class="border-b border-[#E0E5F2]">
+                                                <th class="th-horizon">Tanggal</th>
+                                                <th class="th-horizon">Kategori</th>
+                                                <th class="th-horizon text-right">Nominal</th>
+                                                <th class="th-horizon text-center">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="transaction-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                        <tbody id="transaction-table-body" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                                     </table>
                                 </div>
-                                <div class="p-4 border-t border-slate-100 text-center text-sm text-slate-500 hidden" id="trans-empty-state">Belum ada transaksi.</div>
+                                <div class="p-4 border-t border-[#E0E5F2] text-center text-sm text-[#A3AED0] hidden" id="trans-empty-state">Belum ada transaksi.</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tab: Assets -->
                 <div id="view-assets" class="fin-view hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-lg font-bold mb-4">Tambah Aset</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Tambah Aset</h3>
                                 <form id="asset-form" class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Aset</label>
-                                        <input type="text" id="asset-name" placeholder="Misal: Rumah, Mobil, Emas" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama Aset</label>
+                                        <input type="text" id="asset-name" placeholder="Misal: Rumah, Mobil, Emas" required class="h-input">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nilai Saat Ini (Rp)</label>
-                                        <input type="text" id="asset-value" placeholder="0" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nilai Saat Ini (Rp)</label>
+                                        <input type="text" id="asset-value" placeholder="0" required class="h-input" oninput="formatCurrencyInput(this)">
                                     </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                    <button type="submit" class="btn-primary w-full justify-center">
                                         <i data-lucide="plus" class="w-4 h-4"></i> Simpan Aset
                                     </button>
                                 </form>
                             </div>
                         </div>
                         <div class="lg:col-span-2 space-y-6">
-                            <div class="card p-6 bg-emerald-50 border-emerald-100">
-                                <p class="text-sm text-emerald-600 font-medium mb-1">Total Nilai Aset Tetap</p>
-                                <h3 class="text-3xl font-bold text-emerald-700" id="total-assets-val">Rp 0</h3>
+                            <div class="card p-5 flex items-center gap-4">
+                                <div class="icon-circle" style="background:rgba(5,205,153,0.10);">
+                                    <i data-lucide="building" class="w-6 h-6" style="color:#05CD99;"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Total Nilai Aset Tetap</p>
+                                    <h3 class="text-2xl font-extrabold text-[#2B3674]" id="total-assets-val">Rp 0</h3>
+                                </div>
                             </div>
                             <div class="card overflow-hidden">
-                                <div class="p-6 border-b border-slate-100"><h3 class="font-bold">Daftar Aset</h3></div>
+                                <div class="p-5 border-b border-[#E0E5F2]"><h3 class="text-base font-bold text-[#2B3674]">Daftar Aset</h3></div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="bg-slate-50 text-slate-500 text-sm">
-                                                <th class="px-6 py-3 font-medium">Nama Aset</th>
-                                                <th class="px-6 py-3 font-medium text-right">Nilai Estimasi</th>
-                                                <th class="px-6 py-3 font-medium text-center">Aksi</th>
+                                            <tr class="border-b border-[#E0E5F2]">
+                                                <th class="th-horizon">Nama Aset</th>
+                                                <th class="th-horizon text-right">Nilai Estimasi</th>
+                                                <th class="th-horizon text-center">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="asset-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                        <tbody id="asset-table-body" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                                     </table>
                                 </div>
-                                <div class="p-4 text-center text-sm text-slate-500 hidden" id="asset-empty-state">Belum ada aset tercatat.</div>
+                                <div class="p-4 text-center text-sm text-[#A3AED0] hidden" id="asset-empty-state">Belum ada aset tercatat.</div>
                             </div>
                         </div>
                     </div>
@@ -415,47 +554,52 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-lg font-bold mb-4">Tambah Investasi</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Tambah Investasi</h3>
                                 <form id="invest-form" class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama / Instrumen</label>
-                                        <input type="text" id="inv-name" placeholder="Saham BBCA, Reksadana..." required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama / Instrumen</label>
+                                        <input type="text" id="inv-name" placeholder="Saham BBCA, Reksadana..." required class="h-input">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Platform / Broker</label>
-                                        <input type="text" id="inv-platform" placeholder="Bibit, IPOT, dll" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Platform / Broker</label>
+                                        <input type="text" id="inv-platform" placeholder="Bibit, IPOT, dll" class="h-input">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Total Saldo (Rp)</label>
-                                        <input type="text" id="inv-value" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Total Saldo (Rp)</label>
+                                        <input type="text" id="inv-value" required placeholder="0" class="h-input" oninput="formatCurrencyInput(this)">
                                     </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                    <button type="submit" class="btn-primary w-full justify-center">
                                         <i data-lucide="plus" class="w-4 h-4"></i> Simpan Portofolio
                                     </button>
                                 </form>
                             </div>
                         </div>
                         <div class="lg:col-span-2 space-y-6">
-                            <div class="card p-6 bg-blue-50 border-blue-100">
-                                <p class="text-sm text-blue-600 font-medium mb-1">Total Nilai Investasi</p>
-                                <h3 class="text-3xl font-bold text-blue-700" id="total-inv-val">Rp 0</h3>
+                            <div class="card p-5 flex items-center gap-4">
+                                <div class="icon-circle" style="background:rgba(67,24,255,0.08);">
+                                    <i data-lucide="trending-up" class="w-6 h-6" style="color:#4318FF;"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Total Nilai Investasi</p>
+                                    <h3 class="text-2xl font-extrabold text-[#2B3674]" id="total-inv-val">Rp 0</h3>
+                                </div>
                             </div>
                             <div class="card overflow-hidden">
-                                <div class="p-6 border-b border-slate-100"><h3 class="font-bold">Daftar Portofolio</h3></div>
+                                <div class="p-5 border-b border-[#E0E5F2]"><h3 class="text-base font-bold text-[#2B3674]">Daftar Portofolio</h3></div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="bg-slate-50 text-slate-500 text-sm">
-                                                <th class="px-6 py-3 font-medium">Instrumen</th>
-                                                <th class="px-6 py-3 font-medium">Platform</th>
-                                                <th class="px-6 py-3 font-medium text-right">Saldo</th>
-                                                <th class="px-6 py-3 font-medium text-center">Aksi</th>
+                                            <tr class="border-b border-[#E0E5F2]">
+                                                <th class="th-horizon">Instrumen</th>
+                                                <th class="th-horizon">Platform</th>
+                                                <th class="th-horizon text-right">Saldo</th>
+                                                <th class="th-horizon text-center">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="inv-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                        <tbody id="inv-table-body" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                                     </table>
                                 </div>
-                                <div class="p-4 text-center text-sm text-slate-500 hidden" id="inv-empty-state">Belum ada portofolio investasi.</div>
+                                <div class="p-4 text-center text-sm text-[#A3AED0] hidden" id="inv-empty-state">Belum ada portofolio investasi.</div>
                             </div>
                         </div>
                     </div>
@@ -466,24 +610,24 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-lg font-bold mb-4">Catat Hutang/Piutang</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Catat Hutang/Piutang</h3>
                                 <form id="debt-form" class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tipe</label>
-                                        <select id="debt-type" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Tipe</label>
+                                        <select id="debt-type" class="h-input">
                                             <option value="hutang">Hutang (Kewajiban bayar)</option>
                                             <option value="piutang">Piutang (Uang di orang lain)</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Pihak/Instansi</label>
-                                        <input type="text" id="debt-name" required placeholder="Budi, Kartu Kredit, dll" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama Pihak/Instansi</label>
+                                        <input type="text" id="debt-name" required placeholder="Budi, Kartu Kredit, dll" class="h-input">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
-                                        <input type="text" id="debt-value" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nominal (Rp)</label>
+                                        <input type="text" id="debt-value" required placeholder="0" class="h-input" oninput="formatCurrencyInput(this)">
                                     </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                    <button type="submit" class="btn-primary w-full justify-center">
                                         <i data-lucide="plus" class="w-4 h-4"></i> Simpan Catatan
                                     </button>
                                 </form>
@@ -491,31 +635,41 @@
                         </div>
                         <div class="lg:col-span-2 space-y-6">
                             <div class="grid grid-cols-2 gap-4">
-                                <div class="card p-6 bg-emerald-50 border-emerald-100">
-                                    <p class="text-sm text-emerald-600 font-medium mb-1">Total Piutang</p>
-                                    <h3 class="text-2xl font-bold text-emerald-700" id="total-piutang-val">Rp 0</h3>
+                                <div class="card p-5 flex items-center gap-4">
+                                    <div class="icon-circle" style="background:rgba(5,205,153,0.10);">
+                                        <i data-lucide="arrow-down-circle" class="w-5 h-5" style="color:#05CD99;"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-[#A3AED0]">Total Piutang</p>
+                                        <h3 class="text-xl font-extrabold text-[#2B3674]" id="total-piutang-val">Rp 0</h3>
+                                    </div>
                                 </div>
-                                <div class="card p-6 bg-rose-50 border-rose-100">
-                                    <p class="text-sm text-rose-600 font-medium mb-1">Total Hutang</p>
-                                    <h3 class="text-2xl font-bold text-rose-700" id="total-hutang-val">Rp 0</h3>
+                                <div class="card p-5 flex items-center gap-4">
+                                    <div class="icon-circle" style="background:rgba(238,93,80,0.08);">
+                                        <i data-lucide="arrow-up-circle" class="w-5 h-5" style="color:#EE5D50;"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-[#A3AED0]">Total Hutang</p>
+                                        <h3 class="text-xl font-extrabold text-[#2B3674]" id="total-hutang-val">Rp 0</h3>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card overflow-hidden">
-                                <div class="p-6 border-b border-slate-100"><h3 class="font-bold">Daftar Hutang & Piutang</h3></div>
+                                <div class="p-5 border-b border-[#E0E5F2]"><h3 class="text-base font-bold text-[#2B3674]">Daftar Hutang & Piutang</h3></div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="bg-slate-50 text-slate-500 text-sm">
-                                                <th class="px-6 py-3 font-medium">Tipe</th>
-                                                <th class="px-6 py-3 font-medium">Pihak</th>
-                                                <th class="px-6 py-3 font-medium text-right">Nominal</th>
-                                                <th class="px-6 py-3 font-medium text-center">Aksi</th>
+                                            <tr class="border-b border-[#E0E5F2]">
+                                                <th class="th-horizon">Tipe</th>
+                                                <th class="th-horizon">Pihak</th>
+                                                <th class="th-horizon text-right">Nominal</th>
+                                                <th class="th-horizon text-center">Aksi</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="debt-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                        <tbody id="debt-table-body" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                                     </table>
                                 </div>
-                                <div class="p-4 text-center text-sm text-slate-500 hidden" id="debt-empty-state">Belum ada catatan.</div>
+                                <div class="p-4 text-center text-sm text-[#A3AED0] hidden" id="debt-empty-state">Belum ada catatan.</div>
                             </div>
                         </div>
                     </div>
@@ -525,16 +679,19 @@
 
             <!-- House Planner Section -->
             <section id="house" class="section-view">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                    <h2 class="text-2xl font-bold text-slate-900">House Planner</h2>
+                <div class="mb-6">
+                    <h2 class="text-2xl font-extrabold text-[#2B3674]">House Planner</h2>
+                    <p class="text-xs text-[#A3AED0] font-medium mt-0.5">KPR, DP, perawatan, utilitas, dan kalkulator pinjaman</p>
                 </div>
 
                 <!-- House Sub-Nav -->
-                <div class="flex border-b border-slate-200 mb-6 overflow-x-auto hide-scrollbar">
-                    <button onclick="switchHouseTab('kpr')" id="tab-house-kpr" class="house-tab active px-4 py-3 font-medium text-sm text-blue-600 border-b-2 border-blue-600 whitespace-nowrap transition-colors">KPR & DP Tracker</button>
-                    <button onclick="switchHouseTab('maintenance')" id="tab-house-maintenance" class="house-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Perawatan & Renovasi</button>
-                    <button onclick="switchHouseTab('utilities')" id="tab-house-utilities" class="house-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Utilitas</button>
-                    <button onclick="switchHouseTab('loan')" id="tab-house-loan" class="house-tab px-4 py-3 font-medium text-sm text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">Kalkulator Pinjaman</button>
+                <div class="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-1">
+                    <div class="pill-tabs flex-shrink-0">
+                        <button onclick="switchHouseTab('kpr')" id="tab-house-kpr" class="pill-tab active">KPR & DP Tracker</button>
+                        <button onclick="switchHouseTab('maintenance')" id="tab-house-maintenance" class="pill-tab">Perawatan & Renovasi</button>
+                        <button onclick="switchHouseTab('utilities')" id="tab-house-utilities" class="pill-tab">Utilitas</button>
+                        <button onclick="switchHouseTab('loan')" id="tab-house-loan" class="pill-tab">Kalkulator Pinjaman</button>
+                    </div>
                 </div>
 
                 <!-- Tab: KPR & DP Tracker -->
@@ -543,39 +700,39 @@
                         <div class="lg:col-span-1 space-y-6">
                             <!-- Target Settings -->
                             <div class="card p-6">
-                                <h3 class="text-lg font-bold mb-4">Pengaturan Target</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Pengaturan Target</h3>
                                 <form id="house-target-form" class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Total Kewajiban KPR (Rp)</label>
-                                        <input type="text" id="house-target-kpr" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this); updateHouseTargets()">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Total Kewajiban KPR (Rp)</label>
+                                        <input type="text" id="house-target-kpr" placeholder="0" class="h-input" oninput="formatCurrencyInput(this); updateHouseTargets()">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Total Target DP (Rp)</label>
-                                        <input type="text" id="house-target-dp" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this); updateHouseTargets()">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Total Target DP (Rp)</label>
+                                        <input type="text" id="house-target-dp" placeholder="0" class="h-input" oninput="formatCurrencyInput(this); updateHouseTargets()">
                                     </div>
                                 </form>
                             </div>
                             
                             <!-- Input Payment -->
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-lg font-bold mb-4">Catat Pembayaran</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Catat Pembayaran</h3>
                                 <form id="house-payment-form" class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tipe Pembayaran</label>
-                                        <select id="hp-type" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Tipe Pembayaran</label>
+                                        <select id="hp-type" required class="h-input">
                                             <option value="KPR">Angsuran KPR</option>
                                             <option value="DP">Cicilan DP</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
-                                        <input type="text" id="hp-amount" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nominal (Rp)</label>
+                                        <input type="text" id="hp-amount" required placeholder="0" class="h-input" oninput="formatCurrencyInput(this)">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Catatan</label>
-                                        <input type="text" id="hp-note" placeholder="Cicilan bulan ini..." required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Catatan</label>
+                                        <input type="text" id="hp-note" placeholder="Cicilan bulan ini..." required class="h-input">
                                     </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                    <button type="submit" class="btn-primary w-full justify-center">
                                         <i data-lucide="check-circle" class="w-4 h-4"></i> Catat & Sync Cashflow
                                     </button>
                                 </form>
@@ -618,24 +775,24 @@
                             </div>
                             
                             <div class="card overflow-hidden">
-                                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                                    <h3 class="text-lg font-bold">Riwayat Pembayaran KPR & DP</h3>
-                                    <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded">Disinkronkan ke Financial</span>
+                                <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center">
+                                    <h3 class="text-base font-bold text-[#2B3674]">Riwayat Pembayaran KPR & DP</h3>
+                                    <span class="badge badge-blue">Disinkronkan ke Financial</span>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="bg-slate-50 text-slate-500 text-sm">
-                                                <th class="px-6 py-3 font-medium">Tanggal</th>
-                                                <th class="px-6 py-3 font-medium">Tipe</th>
-                                                <th class="px-6 py-3 font-medium">Catatan</th>
-                                                <th class="px-6 py-3 font-medium text-right">Nominal</th>
+                                            <tr class="border-b border-[#E0E5F2]">
+                                                <th class="th-horizon">Tanggal</th>
+                                                <th class="th-horizon">Tipe</th>
+                                                <th class="th-horizon">Catatan</th>
+                                                <th class="th-horizon text-right">Nominal</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="hp-payment-table" class="text-sm divide-y divide-slate-100"></tbody>
+                                        <tbody id="hp-payment-table" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                                     </table>
                                 </div>
-                                <div class="p-4 border-t border-slate-100 text-center text-sm text-slate-500 hidden" id="hp-payment-empty">Belum ada catatan pembayaran.</div>
+                                <div class="p-4 border-t border-[#E0E5F2] text-center text-sm text-[#A3AED0] hidden" id="hp-payment-empty">Belum ada catatan pembayaran.</div>
                             </div>
                         </div>
                     </div>
@@ -644,8 +801,8 @@
                 <!-- Tab: Perawatan & Renovasi -->
                 <div id="view-house-maintenance" class="house-view hidden">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                        <p class="text-slate-500 text-sm">Catat to-do list perawatan rumah atau rencana tambah bangunan beserta tabungannya.</p>
-                        <button onclick="document.getElementById('reno-modal').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                        <p class="text-[#A3AED0] text-sm">Catat to-do list perawatan rumah atau rencana tambah bangunan beserta tabungannya.</p>
+                        <button onclick="document.getElementById('reno-modal').classList.remove('hidden')" class="btn-primary flex-shrink-0">
                             <i data-lucide="plus" class="w-4 h-4"></i> Rencana Baru
                         </button>
                     </div>
@@ -667,17 +824,17 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-lg font-bold mb-4">Catat Tagihan Utilitas</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Catat Tagihan Utilitas</h3>
                                 <form id="utility-form" class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Tagihan / Utilitas</label>
-                                        <input type="text" id="util-type" required placeholder="Listrik, Air, Internet, IPL..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Jenis Tagihan / Utilitas</label>
+                                        <input type="text" id="util-type" required placeholder="Listrik, Air, Internet, IPL..." class="h-input">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Nominal (Rp)</label>
-                                        <input type="text" id="util-amount" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nominal (Rp)</label>
+                                        <input type="text" id="util-amount" required placeholder="0" class="h-input" oninput="formatCurrencyInput(this)">
                                     </div>
-                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                                    <button type="submit" class="btn-primary w-full justify-center">
                                         <i data-lucide="zap" class="w-4 h-4"></i> Bayar & Sync Cashflow
                                     </button>
                                 </form>
@@ -685,22 +842,22 @@
                         </div>
                         <div class="lg:col-span-2">
                             <div class="card overflow-hidden">
-                                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                                    <h3 class="text-lg font-bold">Riwayat Pembayaran Utilitas</h3>
+                                <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center">
+                                    <h3 class="text-base font-bold text-[#2B3674]">Riwayat Pembayaran Utilitas</h3>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="bg-slate-50 text-slate-500 text-sm">
-                                                <th class="px-6 py-3 font-medium">Tanggal</th>
-                                                <th class="px-6 py-3 font-medium">Jenis Tagihan</th>
-                                                <th class="px-6 py-3 font-medium text-right">Nominal</th>
+                                            <tr class="border-b border-[#E0E5F2]">
+                                                <th class="th-horizon">Tanggal</th>
+                                                <th class="th-horizon">Jenis Tagihan</th>
+                                                <th class="th-horizon text-right">Nominal</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="util-table-body" class="text-sm divide-y divide-slate-100"></tbody>
+                                        <tbody id="util-table-body" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                                     </table>
                                 </div>
-                                <div class="p-4 border-t border-slate-100 text-center text-sm text-slate-500 hidden" id="util-empty-state">Belum ada pembayaran dicatat.</div>
+                                <div class="p-4 border-t border-[#E0E5F2] text-center text-sm text-[#A3AED0] hidden" id="util-empty-state">Belum ada pembayaran dicatat.</div>
                             </div>
                         </div>
                     </div>
@@ -710,44 +867,44 @@
                 <div id="view-house-loan" class="house-view hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="card p-6">
-                            <h3 class="text-lg font-bold mb-4">Kalkulator Cicilan Umum</h3>
-                            <p class="text-sm text-slate-500 mb-6">Gunakan untuk simulasi cicilan KPR, Kendaraan, atau pinjaman bank lainnya (Bunga Anuitas).</p>
+                            <h3 class="text-base font-bold text-[#2B3674] mb-1">Kalkulator Cicilan Umum</h3>
+                            <p class="text-sm text-[#A3AED0] mb-6">Gunakan untuk simulasi cicilan KPR, Kendaraan, atau pinjaman bank lainnya (Bunga Anuitas).</p>
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Total Plafon Pinjaman / Harga (Rp)</label>
-                                    <input type="text" id="loan-price" placeholder="100,000,000" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="formatCurrencyInput(this); calcGeneralLoan()">
+                                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Total Plafon Pinjaman / Harga (Rp)</label>
+                                    <input type="text" id="loan-price" placeholder="100,000,000" class="h-input" oninput="formatCurrencyInput(this); calcGeneralLoan()">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Down Payment (DP) (Rp)</label>
-                                    <input type="text" id="loan-dp" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="formatCurrencyInput(this); calcGeneralLoan()">
+                                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Down Payment (DP) (Rp)</label>
+                                    <input type="text" id="loan-dp" placeholder="0" class="h-input" oninput="formatCurrencyInput(this); calcGeneralLoan()">
                                 </div>
                                 <div class="flex flex-col sm:flex-row gap-4">
                                     <div class="w-full sm:w-1/2">
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Bunga per Tahun (%)</label>
-                                        <input type="number" id="loan-interest" value="6.0" step="0.1" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcGeneralLoan()">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Bunga per Tahun (%)</label>
+                                        <input type="number" id="loan-interest" value="6.0" step="0.1" class="h-input" oninput="calcGeneralLoan()">
                                     </div>
                                     <div class="w-full sm:w-1/2">
-                                        <label class="block text-sm font-medium text-slate-700 mb-1">Tenor (Bulan)</label>
-                                        <input type="number" id="loan-tenure" value="12" min="1" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" oninput="calcGeneralLoan()">
+                                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Tenor (Bulan)</label>
+                                        <input type="number" id="loan-tenure" value="12" min="1" class="h-input" oninput="calcGeneralLoan()">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="card p-6 bg-slate-50 border-slate-200 flex flex-col justify-center">
-                            <h3 class="text-lg font-bold mb-6 text-slate-800 text-center">Hasil Simulasi</h3>
-                            <div class="space-y-6">
+                        <div class="card p-6 flex flex-col justify-center">
+                            <h3 class="text-base font-bold text-[#2B3674] mb-6 text-center">Hasil Simulasi</h3>
+                            <div class="space-y-5">
                                 <div class="text-center">
-                                    <p class="text-sm text-slate-500 font-medium mb-1">Pokok Hutang (Setelah DP)</p>
-                                    <h4 class="text-xl font-bold text-slate-800" id="loan-result-principal">Rp 0</h4>
+                                    <p class="text-xs font-semibold text-[#A3AED0] mb-1 uppercase tracking-wide">Pokok Hutang (Setelah DP)</p>
+                                    <h4 class="text-xl font-extrabold text-[#2B3674]" id="loan-result-principal">Rp 0</h4>
                                 </div>
-                                <div class="p-6 bg-white rounded-xl shadow-sm text-center border border-slate-200">
-                                    <p class="text-sm text-slate-500 font-medium mb-2">Estimasi Cicilan per Bulan</p>
-                                    <h4 class="text-3xl font-bold text-blue-600" id="loan-result-installment">Rp 0</h4>
+                                <div class="p-5 bg-[#F4F7FE] rounded-20 text-center">
+                                    <p class="text-xs font-semibold text-[#A3AED0] mb-2 uppercase tracking-wide">Estimasi Cicilan per Bulan</p>
+                                    <h4 class="text-3xl font-extrabold text-[#4318FF]" id="loan-result-installment">Rp 0</h4>
                                 </div>
                                 <div class="text-center">
-                                    <p class="text-sm text-slate-500 font-medium mb-1">Total Bayar Keseluruhan (Pokok + Bunga)</p>
-                                    <h4 class="text-lg font-bold text-rose-500" id="loan-result-total-interest">Rp 0</h4>
+                                    <p class="text-xs font-semibold text-[#A3AED0] mb-1 uppercase tracking-wide">Total Bayar Keseluruhan (Pokok + Bunga)</p>
+                                    <h4 class="text-lg font-bold text-[#EE5D50]" id="loan-result-total-interest">Rp 0</h4>
                                 </div>
                             </div>
                         </div>
@@ -758,16 +915,20 @@
 
             <!-- Wedding Planner Section -->
             <section id="married" class="section-view">
-                <div class="flex flex-col mb-6">
-                    <h2 class="text-2xl font-bold text-slate-900 mb-4">Wedding Planner</h2>
-                    <div class="flex overflow-x-auto hide-scrollbar gap-2 pb-2 border-b border-slate-200" id="wedding-tabs">
-                        <button onclick="switchWeddingTab('dashboard')" id="tab-wed-dashboard" class="wedding-tab px-4 py-2 font-medium rounded-t-lg bg-blue-50 text-blue-700 border-b-2 border-blue-600 whitespace-nowrap">Dashboard & Summary</button>
-                        <button onclick="switchWeddingTab('checklist')" id="tab-wed-checklist" class="wedding-tab px-4 py-2 font-medium text-slate-500 hover:text-slate-700 whitespace-nowrap">Checklist Persiapan</button>
-                        <button onclick="switchWeddingTab('anggaran')" id="tab-wed-anggaran" class="wedding-tab px-4 py-2 font-medium text-slate-500 hover:text-slate-700 whitespace-nowrap">Anggaran & Pengeluaran</button>
-                        <button onclick="switchWeddingTab('tamu')" id="tab-wed-tamu" class="wedding-tab px-4 py-2 font-medium text-slate-500 hover:text-slate-700 whitespace-nowrap">Daftar Tamu</button>
-                        <button onclick="switchWeddingTab('vendor')" id="tab-wed-vendor" class="wedding-tab px-4 py-2 font-medium text-slate-500 hover:text-slate-700 whitespace-nowrap">Direktori Vendor</button>
-                        <button onclick="switchWeddingTab('seserahan')" id="tab-wed-seserahan" class="wedding-tab px-4 py-2 font-medium text-slate-500 hover:text-slate-700 whitespace-nowrap">Detail Seserahan</button>
-                        <button onclick="switchWeddingTab('kandidat')" id="tab-wed-kandidat" class="wedding-tab px-4 py-2 font-medium text-slate-500 hover:text-slate-700 whitespace-nowrap">List Kandidat Vendor</button>
+                <div class="mb-5">
+                    <h2 class="text-2xl font-extrabold text-[#2B3674]">Wedding Planner</h2>
+                    <p class="text-xs text-[#A3AED0] font-medium mt-0.5">Rencanakan pernikahan Febi Wahyudi & Debi Apriani</p>
+                </div>
+                <!-- Wedding Sub-Nav -->
+                <div class="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-1">
+                    <div class="pill-tabs flex-shrink-0" id="wedding-tabs">
+                        <button onclick="switchWeddingTab('dashboard')" id="tab-wed-dashboard" class="pill-tab active">Dashboard & Summary</button>
+                        <button onclick="switchWeddingTab('checklist')" id="tab-wed-checklist" class="pill-tab">Checklist Persiapan</button>
+                        <button onclick="switchWeddingTab('anggaran')" id="tab-wed-anggaran" class="pill-tab">Anggaran & Pengeluaran</button>
+                        <button onclick="switchWeddingTab('tamu')" id="tab-wed-tamu" class="pill-tab">Daftar Tamu</button>
+                        <button onclick="switchWeddingTab('vendor')" id="tab-wed-vendor" class="pill-tab">Direktori Vendor</button>
+                        <button onclick="switchWeddingTab('seserahan')" id="tab-wed-seserahan" class="pill-tab">Detail Seserahan</button>
+                        <button onclick="switchWeddingTab('kandidat')" id="tab-wed-kandidat" class="pill-tab">List Kandidat Vendor</button>
                     </div>
                 </div>
 
@@ -972,13 +1133,13 @@
                 <!-- Wed Tab: Anggaran -->
                 <div id="view-wed-anggaran" class="wedding-view hidden">
                     <div class="card p-6">
-                        <h3 class="text-lg font-bold mb-4">Update Anggaran & Pengeluaran</h3>
-                        <p class="text-sm text-slate-500 mb-6">Masukkan estimasi dan realisasi biaya untuk setiap kategori. Realisasi pengeluaran akan otomatis disinkronkan ke Cashflow utama.</p>
+                        <h3 class="text-base font-bold text-[#2B3674] mb-1">Update Anggaran & Pengeluaran</h3>
+                        <p class="text-sm text-[#A3AED0] mb-6">Masukkan estimasi dan realisasi biaya untuk setiap kategori. Realisasi pengeluaran akan otomatis disinkronkan ke Cashflow utama.</p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="wed-anggaran-inputs">
                             <!-- Populated by JS -->
                         </div>
-                        <button onclick="saveWeddingAnggaran()" class="mt-8 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-transform hover:-translate-y-1">Simpan Perubahan Anggaran</button>
+                        <button onclick="saveWeddingAnggaran()" class="btn-primary mt-8 w-full justify-center">Simpan Perubahan Anggaran</button>
                     </div>
                 </div>
 
@@ -1048,13 +1209,13 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-50 text-slate-500 text-sm">
-                                        <th class="px-4 py-3 font-medium">Item</th>
-                                        <th class="px-4 py-3 font-medium">Status</th>
-                                        <th class="px-4 py-3 font-medium text-right">Aksi</th>
+                                    <tr class="border-b border-[#E0E5F2]">
+                                        <th class="th-horizon">Item</th>
+                                        <th class="th-horizon">Status</th>
+                                        <th class="th-horizon text-right">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="wed-ses-table" class="text-sm divide-y divide-slate-100"></tbody>
+                                <tbody id="wed-ses-table" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                             </table>
                         </div>
                     </div>
@@ -1064,8 +1225,11 @@
             <!-- Goals Section -->
             <section id="goals" class="section-view">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                    <h2 class="text-2xl font-bold text-slate-900">Goals & Projections</h2>
-                    <button onclick="document.getElementById('goal-modal').classList.remove('hidden')" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition-colors duration-200 flex items-center justify-center gap-2">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-[#2B3674]">Goals & Projections</h2>
+                        <p class="text-xs text-[#A3AED0] font-medium mt-0.5">Pantau dan capai target keuangan Anda</p>
+                    </div>
+                    <button onclick="document.getElementById('goal-modal').classList.remove('hidden')" class="btn-primary flex-shrink-0">
                         <i data-lucide="plus" class="w-4 h-4"></i> Tambah Goal
                     </button>
                 </div>
@@ -1075,8 +1239,8 @@
                 </div>
                 
                 <div id="goals-empty" class="text-center py-12 hidden">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4 text-slate-400">
-                        <i data-lucide="target" class="w-8 h-8"></i>
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#F4F7FE] mb-4">
+                        <i data-lucide="target" class="w-8 h-8" style="color:#4318FF;"></i>
                     </div>
                     <h3 class="text-lg font-bold text-slate-700 mb-1">Belum ada target</h3>
                     <p class="text-slate-500">Mulai rencanakan masa depanmu dengan menambahkan goal baru.</p>
@@ -1087,18 +1251,18 @@
     </main>
 
     <!-- Wedding Checklist Modal -->
-    <div id="wed-chk-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="wed-chk-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 sticky top-0">
-                <h3 id="wed-chk-modal-title" class="font-bold text-lg text-slate-900">Tambah Tugas Persiapan</h3>
+            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white sticky top-0">
+                <h3 id="wed-chk-modal-title" class="text-base font-bold text-[#2B3674]">Tambah Tugas Persiapan</h3>
                 <button type="button" onclick="document.getElementById('wed-chk-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
             </div>
             <form id="wed-chk-form" class="p-6 space-y-4">
                 <input type="hidden" id="wed-chk-edit-id">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Timeline</label>
-                        <select id="wed-chk-timeline" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Timeline</label>
+                        <select id="wed-chk-timeline" class="h-input">
                             <option value="12+ Bulan Sebelum">12+ Bulan Sebelum</option>
                             <option value="9-12 Bulan Sebelum">9-12 Bulan Sebelum</option>
                             <option value="6-9 Bulan Sebelum">6-9 Bulan Sebelum</option>
@@ -1110,8 +1274,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Kategori Tugas</label>
-                        <input type="text" id="wed-chk-kategori" list="wed-chk-kategori-list" placeholder="Venue, Catering, Dokumentasi..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Kategori Tugas</label>
+                        <input type="text" id="wed-chk-kategori" list="wed-chk-kategori-list" placeholder="Venue, Catering, Dokumentasi..." class="h-input">
                         <datalist id="wed-chk-kategori-list">
                             <option value="Konsep & Budget">
                             <option value="Venue">
@@ -1138,172 +1302,172 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Nama Tugas / Item Persiapan</label>
-                    <input type="text" id="wed-chk-name" required placeholder="Deskripsi tugas..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama Tugas / Item Persiapan</label>
+                    <input type="text" id="wed-chk-name" required placeholder="Deskripsi tugas..." class="h-input">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">PIC / Penanggung Jawab</label>
-                        <input type="text" id="wed-chk-pic" placeholder="Pengantin, Keluarga, WO..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">PIC / Penanggung Jawab</label>
+                        <input type="text" id="wed-chk-pic" placeholder="Pengantin, Keluarga, WO..." class="h-input">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Target Selesai</label>
-                        <input type="date" id="wed-chk-target" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                        <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Target Selesai</label>
+                        <input type="date" id="wed-chk-target" class="h-input">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
-                    <select id="wed-chk-status" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Status</label>
+                    <select id="wed-chk-status" class="h-input">
                         <option value="Not Started">Belum Dimulai (Not Started)</option>
                         <option value="In Progress">Dalam Proses (In Progress)</option>
                         <option value="Done">Selesai (Done)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Catatan / Detail</label>
-                    <textarea id="wed-chk-notes" rows="2" placeholder="Catatan tambahan..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm resize-none"></textarea>
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Catatan / Detail</label>
+                    <textarea id="wed-chk-notes" rows="2" placeholder="Catatan tambahan..." class="h-input resize-none"></textarea>
                 </div>
                 <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="document.getElementById('wed-chk-modal').classList.add('hidden')" class="flex-1 px-4 py-2 border border-slate-300 text-slate-700 rounded-xl font-medium transition-colors hover:bg-slate-50">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Simpan</button>
+                    <button type="button" onclick="document.getElementById('wed-chk-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-[#F4F7FE] text-[#A3AED0] rounded-xl font-bold transition-colors hover:text-[#2B3674]">Batal</button>
+                    <button type="submit" class="btn-primary flex-1 justify-center">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Wedding Guest Modal -->
-    <div id="wed-tamu-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="wed-tamu-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-lg text-slate-900">Tambah Tamu</h3>
+            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
+                <h3 class="text-base font-bold text-[#2B3674]">Tambah Tamu</h3>
                 <button type="button" onclick="document.getElementById('wed-tamu-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
             </div>
             <form id="wed-tamu-form" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Nama Tamu</label>
-                    <input type="text" id="wed-tamu-name" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama Tamu</label>
+                    <input type="text" id="wed-tamu-name" required class="h-input">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Status RSVP</label>
-                    <select id="wed-tamu-status" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Status RSVP</label>
+                    <select id="wed-tamu-status" required class="h-input">
                         <option value="Belum Konfirmasi">Belum Konfirmasi</option>
                         <option value="Hadir">Konfirmasi Hadir</option>
                         <option value="Tidak Hadir">Tidak Hadir</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition-colors">Simpan Tamu</button>
+                <button type="submit" class="btn-primary w-full justify-center">Simpan Tamu</button>
             </form>
         </div>
     </div>
 
     <!-- Wedding Vendor Modal -->
-    <div id="wed-vendor-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="wed-vendor-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-lg text-slate-900">Tambah Vendor</h3>
+            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
+                <h3 class="text-base font-bold text-[#2B3674]">Tambah Vendor</h3>
                 <button type="button" onclick="document.getElementById('wed-vendor-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
             </div>
             <form id="wed-vendor-form" class="p-6 space-y-4">
                 <input type="hidden" id="wed-vendor-type">
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
-                    <input type="text" id="wed-vendor-cat" required placeholder="Catering / Dekorasi / dsb" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Kategori</label>
+                    <input type="text" id="wed-vendor-cat" required placeholder="Catering / Dekorasi / dsb" class="h-input">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Nama Vendor</label>
-                    <input type="text" id="wed-vendor-name" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama Vendor</label>
+                    <input type="text" id="wed-vendor-name" required class="h-input">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Kontak / IG / Info</label>
-                    <input type="text" id="wed-vendor-contact" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Kontak / IG / Info</label>
+                    <input type="text" id="wed-vendor-contact" class="h-input">
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition-colors">Simpan Vendor</button>
+                <button type="submit" class="btn-primary w-full justify-center">Simpan Vendor</button>
             </form>
         </div>
     </div>
 
     <!-- Wedding Seserahan Modal -->
-    <div id="wed-ses-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="wed-ses-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-lg text-slate-900">Tambah Seserahan</h3>
+            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
+                <h3 class="text-base font-bold text-[#2B3674]">Tambah Seserahan</h3>
                 <button type="button" onclick="document.getElementById('wed-ses-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
             </div>
             <form id="wed-ses-form" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Item / Barang</label>
-                    <input type="text" id="wed-ses-item" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Item / Barang</label>
+                    <input type="text" id="wed-ses-item" required class="h-input">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
-                    <select id="wed-ses-status" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Status</label>
+                    <select id="wed-ses-status" class="h-input">
                         <option value="Belum Dibeli">Belum Dibeli</option>
                         <option value="Sudah Dibeli">Sudah Dibeli</option>
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition-colors">Simpan Item</button>
+                <button type="submit" class="btn-primary w-full justify-center">Simpan Item</button>
             </form>
         </div>
     </div>
 
-    <div id="goal-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="goal-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-lg">Tambah Target Baru</h3>
-                <button onclick="document.getElementById('goal-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
+            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
+                <h3 class="text-base font-bold text-[#2B3674]">Tambah Target Baru</h3>
+                <button type="button" onclick="document.getElementById('goal-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <form id="goal-form" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Nama Goal</label>
-                    <input type="text" id="goal-name" required placeholder="Contoh: Beli Mobil" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama Goal</label>
+                    <input type="text" id="goal-name" required placeholder="Contoh: Beli Mobil" class="h-input">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Target Dana (Rp)</label>
-                    <input type="text" id="goal-target" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Target Dana (Rp)</label>
+                    <input type="text" id="goal-target" required placeholder="0" class="h-input" oninput="formatCurrencyInput(this)">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Saldo Terkumpul Saat Ini (Rp)</label>
-                    <input type="text" id="goal-current" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Saldo Terkumpul Saat Ini (Rp)</label>
+                    <input type="text" id="goal-current" placeholder="0" class="h-input" oninput="formatCurrencyInput(this)">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Target Tanggal</label>
-                    <input type="date" id="goal-date" required class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Target Tanggal</label>
+                    <input type="date" id="goal-date" required class="h-input">
                 </div>
                 <div class="pt-4 flex gap-3">
-                    <button type="button" onclick="document.getElementById('goal-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Simpan Goal</button>
+                    <button type="button" onclick="document.getElementById('goal-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-[#F4F7FE] text-[#A3AED0] rounded-xl font-bold transition-colors hover:text-[#2B3674]">Batal</button>
+                    <button type="submit" class="btn-primary flex-1 justify-center">Simpan Goal</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Modal Form Renovation -->
-    <div id="reno-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="reno-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 class="font-bold text-lg">Catat Rencana / Perawatan</h3>
-                <button onclick="document.getElementById('reno-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
+            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
+                <h3 class="text-base font-bold text-[#2B3674]">Catat Rencana / Perawatan</h3>
+                <button type="button" onclick="document.getElementById('reno-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <form id="reno-form" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Nama Rencana (Perbaikan / Bangun Baru)</label>
-                    <input type="text" id="reno-name" required placeholder="Cat Rumah, Kanopi..." class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama Rencana (Perbaikan / Bangun Baru)</label>
+                    <input type="text" id="reno-name" required placeholder="Cat Rumah, Kanopi..." class="h-input">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Estimasi Biaya (Rp)</label>
-                    <input type="text" id="reno-target" required placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Estimasi Biaya (Rp)</label>
+                    <input type="text" id="reno-target" required placeholder="0" class="h-input" oninput="formatCurrencyInput(this)">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Tabungan Terkumpul / Sudah Dibayar (Rp)</label>
-                    <input type="text" id="reno-current" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
+                    <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Tabungan Terkumpul / Sudah Dibayar (Rp)</label>
+                    <input type="text" id="reno-current" placeholder="0" class="h-input" oninput="formatCurrencyInput(this)">
                 </div>
                 <div class="pt-4 flex gap-3">
-                    <button type="button" onclick="document.getElementById('reno-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors">Batal</button>
-                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Simpan</button>
+                    <button type="button" onclick="document.getElementById('reno-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-[#F4F7FE] text-[#A3AED0] rounded-xl font-bold transition-colors hover:text-[#2B3674]">Batal</button>
+                    <button type="submit" class="btn-primary flex-1 justify-center">Simpan</button>
                 </div>
             </form>
         </div>
