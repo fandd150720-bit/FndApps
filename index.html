@@ -67,7 +67,42 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 h-screen flex overflow-hidden">
+<body class="bg-slate-100 text-slate-800 h-screen flex flex-col overflow-hidden">
+
+    <!-- Topbar -->
+    <nav class="bg-white border-b border-slate-200 z-50 h-16 flex-shrink-0 flex items-center justify-between px-4 md:px-6">
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-600 text-white p-1.5 rounded-lg">
+                    <i data-lucide="layers" class="w-5 h-5"></i>
+                </div>
+                <h1 class="text-xl font-bold text-slate-900 hidden md:block">Fnd Apps</h1>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                <i data-lucide="menu"></i>
+            </button>
+            <div class="hidden md:flex relative">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" placeholder="Search..." class="bg-slate-100 text-sm rounded-md pl-9 pr-4 py-2 border-none focus:ring-2 focus:ring-blue-500 outline-none w-64">
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="#" class="hidden md:flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-blue-600">
+                <i data-lucide="file-text" class="w-4 h-4"></i> Documentation
+            </a>
+            <div class="h-6 w-px bg-slate-200 mx-2 hidden md:block"></div>
+            <button class="relative p-2 text-slate-400 hover:text-slate-600">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+                <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
+            </button>
+            <button class="relative p-2 text-slate-400 hover:text-slate-600">
+                <i data-lucide="mail" class="w-5 h-5"></i>
+            </button>
+            <img id="user-profile-img-top" src="https://ui-avatars.com/api/?name=User&background=eff6ff&color=2563eb" alt="Profile" class="w-8 h-8 rounded-full border border-slate-200 ml-2">
+        </div>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden">
 
     <!-- Login Screen -->
     <div id="login-screen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center p-4">
@@ -86,57 +121,59 @@
 
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex-col h-full relative z-30 flex fixed md:relative -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
-        <div class="p-6 border-b border-slate-100 flex items-center justify-between md:justify-start gap-3">
-            <div class="flex items-center gap-3">
-                <div class="bg-blue-600 text-white p-2 rounded-xl">
-                    <i data-lucide="layers" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold text-slate-900 leading-tight">Fnd Apps</h1>
-                    <p class="text-xs text-slate-500 font-medium">Family & Life Planner</p>
-                </div>
+        <nav class="flex-1 py-6 overflow-y-auto">
+            <div class="px-6 mb-2">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Core</p>
             </div>
-            <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-slate-600">
-                <i data-lucide="x"></i>
-            </button>
-        </div>
-        
-        <nav class="flex-1 py-4 overflow-y-auto">
-            <ul class="space-y-1">
+            <ul class="space-y-1 mb-6">
                 <li>
-                    <a data-target="dashboard" class="nav-item active flex items-center gap-3 px-6 py-3 text-slate-600">
+                    <a data-target="dashboard" class="nav-item active flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
                         <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
                     </a>
                 </li>
+            </ul>
+
+            <div class="px-6 mb-2">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Financial Apps</p>
+            </div>
+            <ul class="space-y-1 mb-6">
                 <li>
-                    <a data-target="financial" class="nav-item flex items-center gap-3 px-6 py-3 text-slate-600">
-                        <i data-lucide="wallet" class="w-5 h-5"></i> Financial
+                    <a data-target="financial" class="nav-item flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
+                        <i data-lucide="wallet" class="w-5 h-5"></i> Wealth Management
                     </a>
                 </li>
+            </ul>
+
+            <div class="px-6 mb-2">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Planning</p>
+            </div>
+            <ul class="space-y-1">
                 <li>
-                    <a data-target="house" class="nav-item flex items-center gap-3 px-6 py-3 text-slate-600">
+                    <a data-target="house" class="nav-item flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
                         <i data-lucide="home" class="w-5 h-5"></i> House Planner
                     </a>
                 </li>
                 <li>
-                    <a data-target="married" class="nav-item flex items-center gap-3 px-6 py-3 text-slate-600">
+                    <a data-target="married" class="nav-item flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
                         <i data-lucide="heart-handshake" class="w-5 h-5"></i> Wedding Planner
                     </a>
                 </li>
                 <li>
-                    <a data-target="goals" class="nav-item flex items-center gap-3 px-6 py-3 text-slate-600">
+                    <a data-target="goals" class="nav-item flex items-center gap-3 px-6 py-2.5 text-slate-600 font-medium">
                         <i data-lucide="target" class="w-5 h-5"></i> Goals & Projections
                     </a>
                 </li>
             </ul>
         </nav>
         
-        <div class="p-4 border-t border-slate-100">
-            <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition-colors">
-                <img id="user-profile-img" src="" alt="Profile" class="w-10 h-10 rounded-full">
+        <!-- User Info at bottom -->
+        <div class="p-4 border-t border-slate-100 bg-slate-50">
+            <div class="flex items-center gap-3">
+                <img id="user-profile-img" src="" alt="Profile" class="w-10 h-10 rounded-full border border-slate-200 hidden">
                 <div class="overflow-hidden flex-1">
-                    <p id="user-profile-name" class="text-sm font-semibold text-slate-900 truncate">Loading...</p>
-                    <button onclick="logout()" class="text-xs text-rose-500 hover:text-rose-600 font-medium truncate text-left">Sign Out</button>
+                    <p class="text-xs text-slate-500">Logged in as:</p>
+                    <p id="user-profile-name" class="text-sm font-semibold text-slate-800 truncate">F&D</p>
+                    <button onclick="logout()" class="text-xs text-blue-600 hover:text-blue-700 font-medium mt-1">Sign Out</button>
                 </div>
             </div>
         </div>
@@ -146,71 +183,110 @@
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden"></div>
 
     <!-- Main Content -->
-    <main class="flex-1 h-full overflow-y-auto relative w-full">
-        <!-- Mobile Header -->
-        <div class="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-            <div class="flex items-center gap-2">
-                <div class="bg-blue-600 text-white p-1.5 rounded-lg">
-                    <i data-lucide="layers" class="w-5 h-5"></i>
-                </div>
-                <h1 class="text-lg font-bold">Fnd Apps</h1>
-            </div>
-            <button onclick="toggleSidebar()" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                <i data-lucide="menu"></i>
-            </button>
-        </div>
+    <main class="flex-1 h-full overflow-y-auto relative w-full bg-slate-100">
+
 
         <div class="p-6 md:p-8 max-w-7xl mx-auto pb-24">
             
             <!-- Dashboard Section -->
             <section id="dashboard" class="section-view active">
-                <h2 class="text-2xl font-bold mb-6 text-slate-900">Dashboard</h2>
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Dashboard</h2>
+                        <p class="text-sm text-slate-500 mt-1">Ringkasan finansial dan perencanaan Anda.</p>
+                    </div>
+                </div>
                 
                 <!-- Metrics -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="card p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-sm text-slate-500 font-medium mb-1">Total Net Worth</p>
-                                <h3 class="text-2xl font-bold text-slate-900" id="dash-net-worth">Rp 0</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                    <!-- Card 1 -->
+                    <div class="bg-blue-600 rounded-lg shadow-sm text-white overflow-hidden flex flex-col relative border-0">
+                        <div class="p-6 flex-1 relative z-10">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-blue-100 text-sm font-medium mb-1">Total Net Worth</p>
+                                    <h3 class="text-2xl font-bold" id="dash-net-worth">Rp 0</h3>
+                                </div>
+                                <i data-lucide="wallet" class="w-8 h-8 text-white opacity-20 absolute top-6 right-6"></i>
                             </div>
-                            <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="badge-dollar-sign"></i></div>
                         </div>
+                        <a href="#" onclick="switchFinTab('assets')" class="bg-black bg-opacity-10 py-2 px-6 text-sm flex items-center justify-between hover:bg-opacity-20 transition-all z-10">
+                            <span>View Report</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </a>
                     </div>
-                    <div class="card p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-sm text-slate-500 font-medium mb-1">Pemasukan Bulan Ini</p>
-                                <h3 class="text-2xl font-bold text-blue-600" id="dash-income">Rp 0</h3>
+                    <!-- Card 2 -->
+                    <div class="bg-amber-500 rounded-lg shadow-sm text-white overflow-hidden flex flex-col relative border-0">
+                        <div class="p-6 flex-1 relative z-10">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-amber-100 text-sm font-medium mb-1">Pemasukan Bulan Ini</p>
+                                    <h3 class="text-2xl font-bold" id="dash-income">Rp 0</h3>
+                                </div>
+                                <i data-lucide="dollar-sign" class="w-8 h-8 text-white opacity-20 absolute top-6 right-6"></i>
                             </div>
-                            <div class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="trending-up"></i></div>
                         </div>
+                        <a href="#" onclick="switchFinTab('cashflow')" class="bg-black bg-opacity-10 py-2 px-6 text-sm flex items-center justify-between hover:bg-opacity-20 transition-all z-10">
+                            <span>View Details</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </a>
                     </div>
-                    <div class="card p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-sm text-slate-500 font-medium mb-1">Pengeluaran Bulan Ini</p>
-                                <h3 class="text-2xl font-bold text-rose-600" id="dash-expense">Rp 0</h3>
+                    <!-- Card 3 -->
+                    <div class="bg-emerald-600 rounded-lg shadow-sm text-white overflow-hidden flex flex-col relative border-0">
+                        <div class="p-6 flex-1 relative z-10">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-emerald-100 text-sm font-medium mb-1">Pengeluaran Bulan Ini</p>
+                                    <h3 class="text-2xl font-bold" id="dash-expense">Rp 0</h3>
+                                </div>
+                                <i data-lucide="bar-chart-2" class="w-8 h-8 text-white opacity-20 absolute top-6 right-6"></i>
                             </div>
-                            <div class="p-2 bg-rose-50 text-rose-600 rounded-lg"><i data-lucide="trending-down"></i></div>
                         </div>
+                        <a href="#" onclick="switchFinTab('cashflow')" class="bg-black bg-opacity-10 py-2 px-6 text-sm flex items-center justify-between hover:bg-opacity-20 transition-all z-10">
+                            <span>View Breakdown</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </a>
                     </div>
-                    <div class="card p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-sm text-slate-500 font-medium mb-1">Total Aset & Investasi</p>
-                                <h3 class="text-2xl font-bold text-slate-900" id="dash-assets-inv">Rp 0</h3>
+                    <!-- Card 4 -->
+                    <div class="bg-rose-600 rounded-lg shadow-sm text-white overflow-hidden flex flex-col relative border-0">
+                        <div class="p-6 flex-1 relative z-10">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-rose-100 text-sm font-medium mb-1">Total Aset & Goals</p>
+                                    <h3 class="text-2xl font-bold" id="dash-assets-inv">Rp 0</h3>
+                                </div>
+                                <i data-lucide="target" class="w-8 h-8 text-white opacity-20 absolute top-6 right-6"></i>
                             </div>
-                            <div class="p-2 bg-violet-50 text-violet-600 rounded-lg"><i data-lucide="piggy-bank"></i></div>
                         </div>
+                        <a href="#" onclick="switchFinTab('assets')" class="bg-black bg-opacity-10 py-2 px-6 text-sm flex items-center justify-between hover:bg-opacity-20 transition-all z-10">
+                            <span>View Goals</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </a>
                     </div>
                 </div>
                 
                 <!-- Chart -->
-                <div class="card p-6">
-                    <h3 class="text-lg font-bold mb-4 text-slate-900">Arus Kas 6 Bulan Terakhir</h3>
-                    <div class="relative h-72 w-full">
-                        <canvas id="cashflowChart"></canvas>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="card rounded-lg border-0 shadow-sm overflow-hidden bg-white">
+                        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <h3 class="font-bold text-blue-600 m-0">Area Chart Cash Flow</h3>
+                            <button class="text-slate-400 hover:text-slate-600"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
+                        </div>
+                        <div class="p-6">
+                            <div class="relative h-72 w-full">
+                                <canvas id="cashflowChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card rounded-lg border-0 shadow-sm overflow-hidden bg-white">
+                        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <h3 class="font-bold text-blue-600 m-0">Bar Chart Revenue</h3>
+                            <button class="text-slate-400 hover:text-slate-600"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
+                        </div>
+                        <div class="p-6 flex items-center justify-center h-full min-h-[300px]">
+                            <p class="text-slate-400 text-sm">Revenue chart data goes here</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1233,7 +1309,11 @@
         </div>
     </div>
 
-    <!-- Application Scripts -->
+        </div>
+    </main>
+</div>
+
+<!-- Application Scripts -->
     <script src="js/firebase-config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/state.js"></script>
