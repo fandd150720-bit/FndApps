@@ -126,7 +126,7 @@ window.updateDashboard = function() {
         options: {
             responsive: true, maintainAspectRatio: false,
             plugins: { legend: { position: 'bottom' } },
-            scales: { y: { beginAtZero: true, ticks: { callback: function(val) { return 'Rp ' + (val/1000000) + 'Jt'; } } } }
+            scales: { y: { beginAtZero: true, ticks: { callback: function(val) { return val === 0 ? 'Rp 0' : (val >= 1000000 ? 'Rp ' + Number((val/1000000).toFixed(1)).toLocaleString('id-ID') + ' Jt' : 'Rp ' + val.toLocaleString('id-ID')); } } } }
         }
     });
 
