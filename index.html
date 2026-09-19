@@ -569,7 +569,7 @@
                 <div id="view-house-maintenance" class="house-view hidden">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <p class="text-slate-500 text-sm">Catat to-do list perawatan rumah atau rencana tambah bangunan beserta tabungannya.</p>
-                        <button onclick="document.getElementById('renovation-modal').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
+                        <button onclick="document.getElementById('reno-modal').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2">
                             <i data-lucide="plus" class="w-4 h-4"></i> Rencana Baru
                         </button>
                     </div>
@@ -1208,7 +1208,7 @@
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-lg">Catat Rencana / Perawatan</h3>
-                <button onclick="document.getElementById('renovation-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
+                <button onclick="document.getElementById('reno-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -1226,7 +1226,7 @@
                     <input type="text" id="reno-current" placeholder="0" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" oninput="formatCurrencyInput(this)">
                 </div>
                 <div class="pt-4 flex gap-3">
-                    <button type="button" onclick="document.getElementById('renovation-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors">Batal</button>
+                    <button type="button" onclick="document.getElementById('reno-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors">Batal</button>
                     <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">Simpan</button>
                 </div>
             </form>
