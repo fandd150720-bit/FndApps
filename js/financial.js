@@ -1,19 +1,30 @@
-﻿// Financial Sub-Nav Logic
+// Financial Sub-Nav Logic
 window.switchFinTab = function(tabId) {
-    ['transaksi', 'aset', 'investasi', 'hutang'].forEach(id => {
-        document.getElementById(`fin-${id}`).classList.add('hidden');
-        document.getElementById(`tab-fin-${id}`).classList.remove('bg-blue-600', 'text-white', 'shadow-md');
-        document.getElementById(`tab-fin-${id}`).classList.add('text-slate-600', 'hover:bg-slate-200');
+    // Map tab IDs to view/button IDs used in HTML
+    const tabs = ['cashflow', 'assets', 'investments', 'debts'];
+
+    tabs.forEach(id => {
+        const view = document.getElementById(`view-${id}`);
+        const btn  = document.getElementById(`tab-${id}`);
+        if (view) { view.classList.add('hidden'); view.classList.remove('block'); }
+        if (btn)  {
+            btn.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+            btn.classList.add('text-slate-500');
+        }
     });
 
-    document.getElementById(`fin-${tabId}`).classList.remove('hidden');
-    document.getElementById(`tab-fin-${tabId}`).classList.add('bg-blue-600', 'text-white', 'shadow-md');
-    document.getElementById(`tab-fin-${tabId}`).classList.remove('text-slate-600', 'hover:bg-slate-200');
+    const activeView = document.getElementById(`view-${tabId}`);
+    const activeBtn  = document.getElementById(`tab-${tabId}`);
+    if (activeView) { activeView.classList.remove('hidden'); activeView.classList.add('block'); }
+    if (activeBtn)  {
+        activeBtn.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+        activeBtn.classList.remove('text-slate-500');
+    }
 
-    if(tabId === 'transaksi') updateFinancialTable();
-    if(tabId === 'aset') updateAssetsView();
-    if(tabId === 'investasi') updateInvestmentsView();
-    if(tabId === 'hutang') updateDebtsView();
+    if (tabId === 'cashflow')    { if (window.updateFinancialTable) window.updateFinancialTable(); }
+    if (tabId === 'assets')      { if (window.updateAssetsView) window.updateAssetsView(); }
+    if (tabId === 'investments') { if (window.updateInvestmentsView) window.updateInvestmentsView(); }
+    if (tabId === 'debts')       { if (window.updateDebtsView) window.updateDebtsView(); }
 }
 
 // --- FINANCIAL LOGIC: TRANSACTIONS ---
@@ -48,30 +59,30 @@ window.deleteTransaction = function(id) {
 }
 
 window.updateFinancialTable = function() {
-    if (!document.getElementById('financial-tbody')) return;
-    const tbody = document.getElementById('financial-tbody');
+    const tbody = document.getElementById('transaction-table-body');
+    if (!tbody) return;
     tbody.innerHTML = '';
+
+    const emptyState = document.getElementById('trans-empty-state');
     
     if (window.state.transactions.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">Belum ada data transaksi.</td></tr>';
+        if (emptyState) emptyState.classList.remove('hidden');
         return;
     }
+    if (emptyState) emptyState.classList.add('hidden');
 
     window.state.transactions.forEach(t => {
         const isIncome = t.type === 'income';
         tbody.innerHTML += `
             <tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0 transition-colors">
-                <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-600">${new Date(t.date).toLocaleDateString('id-ID')}</td>
-                <td class="px-4 py-3 whitespace-nowrap">
-                    <span class="px-2.5 py-1 text-xs font-bold rounded-full ${isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
-                        ${isIncome ? 'Pemasukan' : 'Pengeluaran'}
-                    </span>
-                </td>
-                <td class="px-4 py-3 text-sm font-medium text-slate-800">${t.category}</td>
-                <td class="px-4 py-3 whitespace-nowrap text-right font-bold ${isIncome ? 'text-emerald-600' : 'text-rose-600'}">
+                <td class="px-6 py-3 whitespace-nowrap text-sm text-slate-600">${new Date(t.date).toLocaleDateString('id-ID')}</td>
+                <td class="px-6 py-3 text-sm font-medium text-slate-800">${t.category}</td>
+                <td class="px-6 py-3 whitespace-nowrap text-right font-bold ${isIncome ? 'text-emerald-600' : 'text-rose-600'}">
+                    <span class="px-2 py-0.5 text-xs font-bold rounded-full ${isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'} mr-2">${isIncome ? 'Pemasukan' : 'Pengeluaran'}</span>
                     ${isIncome ? '+' : '-'}${window.formatIDR(t.amount)}
                 </td>
-                <td class="px-4 py-3 whitespace-nowrap text-right">
+                <td class="px-6 py-3 whitespace-nowrap text-center">
                     <button onclick="deleteTransaction('${t.id}')" class="text-slate-400 hover:text-rose-500 transition-colors p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </td>
             </tr>
@@ -103,45 +114,48 @@ window.deleteAsset = function(id) {
 }
 
 window.updateAssetsView = function() {
-    const list = document.getElementById('assets-list');
-    list.innerHTML = '';
+    const tbody = document.getElementById('asset-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
     let total = 0;
 
+    const emptyState = document.getElementById('asset-empty-state');
+
     if (window.state.assets.length === 0) {
-        list.innerHTML = '<p class="text-slate-500 text-sm">Belum ada data aset.</p>';
+        tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-8 text-center text-slate-500">Belum ada aset tercatat.</td></tr>';
+        if (emptyState) emptyState.classList.remove('hidden');
     } else {
+        if (emptyState) emptyState.classList.add('hidden');
         window.state.assets.forEach(a => {
             total += a.value;
-            list.innerHTML += `
-                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
-                    <div>
-                        <p class="font-bold text-slate-800">${a.name}</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="font-bold text-blue-600">${window.formatIDR(a.value)}</span>
-                        <button onclick="deleteAsset('${a.id}')" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </div>
-                </div>
+            tbody.innerHTML += `
+                <tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0 transition-colors">
+                    <td class="px-6 py-3 font-medium text-slate-800">${a.name}</td>
+                    <td class="px-6 py-3 text-right font-bold text-emerald-600">${window.formatIDR(a.value)}</td>
+                    <td class="px-6 py-3 text-center">
+                        <button onclick="deleteAsset('${a.id}')" class="text-slate-400 hover:text-rose-500 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
             `;
         });
     }
-    document.getElementById('asset-total').innerText = window.formatIDR(total);
+    const totalEl = document.getElementById('total-assets-val');
+    if (totalEl) totalEl.innerText = window.formatIDR(total);
     if (window.lucide) window.lucide.createIcons();
 }
 
 // --- FINANCIAL LOGIC: INVESTMENTS ---
 document.getElementById('invest-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('invest-name').value;
-    const amount = window.parseIDR(document.getElementById('invest-amount').value);
-    const returnRate = parseFloat(document.getElementById('invest-return').value);
+    const name     = document.getElementById('inv-name').value;
+    const platform = document.getElementById('inv-platform')?.value || '';
+    const amount   = window.parseIDR(document.getElementById('inv-value').value);
 
-    window.state.investments.push({ id: window.generateId(), name, amount, returnRate });
+    window.state.investments.push({ id: window.generateId(), name, platform, amount });
     window.saveData();
     window.updateInvestmentsView();
     
     e.target.reset();
-    document.getElementById('invest-modal')?.classList.add('hidden');
 });
 
 window.deleteInvest = function(id) {
@@ -153,47 +167,49 @@ window.deleteInvest = function(id) {
 }
 
 window.updateInvestmentsView = function() {
-    const list = document.getElementById('invest-list');
-    list.innerHTML = '';
+    const tbody = document.getElementById('inv-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
     let total = 0;
 
+    const emptyState = document.getElementById('inv-empty-state');
+
     if (window.state.investments.length === 0) {
-        list.innerHTML = '<p class="text-slate-500 text-sm">Belum ada data investasi.</p>';
+        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-slate-500">Belum ada portofolio investasi.</td></tr>';
+        if (emptyState) emptyState.classList.remove('hidden');
     } else {
+        if (emptyState) emptyState.classList.add('hidden');
         window.state.investments.forEach(i => {
             total += i.amount;
-            list.innerHTML += `
-                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
-                    <div>
-                        <p class="font-bold text-slate-800">${i.name}</p>
-                        <p class="text-xs text-emerald-600 font-medium">Return Est: ${i.returnRate}%</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="font-bold text-blue-600">${window.formatIDR(i.amount)}</span>
-                        <button onclick="deleteInvest('${i.id}')" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </div>
-                </div>
+            tbody.innerHTML += `
+                <tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0 transition-colors">
+                    <td class="px-6 py-3 font-medium text-slate-800">${i.name}</td>
+                    <td class="px-6 py-3 text-sm text-slate-500">${i.platform || '-'}</td>
+                    <td class="px-6 py-3 text-right font-bold text-blue-600">${window.formatIDR(i.amount)}</td>
+                    <td class="px-6 py-3 text-center">
+                        <button onclick="deleteInvest('${i.id}')" class="text-slate-400 hover:text-rose-500 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
             `;
         });
     }
-    document.getElementById('invest-total').innerText = window.formatIDR(total);
+    const totalEl = document.getElementById('total-inv-val');
+    if (totalEl) totalEl.innerText = window.formatIDR(total);
     if (window.lucide) window.lucide.createIcons();
 }
 
 // --- FINANCIAL LOGIC: DEBTS ---
 document.getElementById('debt-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const type = document.getElementById('debt-type').value; // hutang atau piutang
-    const name = document.getElementById('debt-name').value;
-    const amount = window.parseIDR(document.getElementById('debt-amount').value);
-    const desc = document.getElementById('debt-desc').value;
+    const type   = document.getElementById('debt-type').value; // hutang atau piutang
+    const name   = document.getElementById('debt-name').value;
+    const amount = window.parseIDR(document.getElementById('debt-value').value);
 
-    window.state.debts.push({ id: window.generateId(), type, name, amount, desc });
+    window.state.debts.push({ id: window.generateId(), type, name, amount, desc: '' });
     window.saveData();
     window.updateDebtsView();
     
     e.target.reset();
-    document.getElementById('debt-modal')?.classList.add('hidden');
 });
 
 window.deleteDebt = function(id) {
@@ -205,38 +221,42 @@ window.deleteDebt = function(id) {
 }
 
 window.updateDebtsView = function() {
-    const list = document.getElementById('debt-list');
-    list.innerHTML = '';
+    const tbody = document.getElementById('debt-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
     let totalHutang = 0;
     let totalPiutang = 0;
 
+    const emptyState = document.getElementById('debt-empty-state');
+
     if (window.state.debts.length === 0) {
-        list.innerHTML = '<p class="text-slate-500 text-sm">Belum ada data hutang/piutang.</p>';
+        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-slate-500">Belum ada catatan hutang/piutang.</td></tr>';
+        if (emptyState) emptyState.classList.remove('hidden');
     } else {
+        if (emptyState) emptyState.classList.add('hidden');
         window.state.debts.forEach(d => {
             const isHutang = d.type === 'hutang';
-            if(isHutang) totalHutang += d.amount;
+            if (isHutang) totalHutang += d.amount;
             else totalPiutang += d.amount;
 
-            list.innerHTML += `
-                <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100 border-l-4 ${isHutang ? 'border-l-rose-500' : 'border-l-emerald-500'}">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${isHutang ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'} uppercase">${d.type}</span>
-                            <p class="font-bold text-slate-800">${d.name}</p>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-1">${d.desc}</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="font-bold ${isHutang ? 'text-rose-600' : 'text-emerald-600'}">${window.formatIDR(d.amount)}</span>
-                        <button onclick="deleteDebt('${d.id}')" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </div>
-                </div>
+            tbody.innerHTML += `
+                <tr class="hover:bg-slate-50 border-b border-slate-100 last:border-0 transition-colors">
+                    <td class="px-6 py-3">
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-full ${isHutang ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'} uppercase">${d.type}</span>
+                    </td>
+                    <td class="px-6 py-3 font-medium text-slate-800">${d.name}</td>
+                    <td class="px-6 py-3 text-right font-bold ${isHutang ? 'text-rose-600' : 'text-emerald-600'}">${window.formatIDR(d.amount)}</td>
+                    <td class="px-6 py-3 text-center">
+                        <button onclick="deleteDebt('${d.id}')" class="text-slate-400 hover:text-rose-500 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
             `;
         });
     }
-    document.getElementById('debt-hutang-total').innerText = window.formatIDR(totalHutang);
-    document.getElementById('debt-piutang-total').innerText = window.formatIDR(totalPiutang);
+    const hutangEl  = document.getElementById('total-hutang-val');
+    const piutangEl = document.getElementById('total-piutang-val');
+    if (hutangEl)  hutangEl.innerText  = window.formatIDR(totalHutang);
+    if (piutangEl) piutangEl.innerText = window.formatIDR(totalPiutang);
     if (window.lucide) window.lucide.createIcons();
 }
 
