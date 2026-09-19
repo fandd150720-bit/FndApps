@@ -1,4 +1,4 @@
-﻿// Dashboard Logic
+// Dashboard Logic
 let dashChartInstance = null;
 
 window.updateDashboard = function() {
@@ -53,7 +53,9 @@ window.updateDashboard = function() {
     }
 
     // Chart
-    const ctx = document.getElementById('dashChart').getContext('2d');
+    const canvasEl = document.getElementById('cashflowChart');
+    if (!canvasEl) return;
+    const ctx = canvasEl.getContext('2d');
     if (dashChartInstance) dashChartInstance.destroy();
 
     const last6Months = [];
