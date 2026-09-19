@@ -7,7 +7,7 @@ document.getElementById('goal-form')?.addEventListener('submit', (e) => {
     const date = document.getElementById('goal-date').value;
 
     window.state.goals.push({ id: window.generateId(), name, target, current, date });
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     
     e.target.reset();
     document.getElementById('goal-modal').classList.add('hidden');
@@ -17,7 +17,7 @@ document.getElementById('goal-form')?.addEventListener('submit', (e) => {
 window.deleteGoal = function(id) {
     if(confirm('Hapus target ini?')) {
         window.state.goals = window.state.goals.filter(g => g.id !== id);
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.updateGoalsView();
     }
 }
@@ -69,6 +69,7 @@ window.updateGoalsView = function() {
     }
     if (window.lucide) window.lucide.createIcons();
 }
+
 
 
 

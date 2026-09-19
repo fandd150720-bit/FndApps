@@ -1,4 +1,4 @@
-// --- HOUSE PLANNER LOGIC ---
+﻿// --- HOUSE PLANNER LOGIC ---
 window.switchHouseTab = function(tabId) {
     ['kpr', 'maintenance', 'utilities', 'loan'].forEach(id => {
         const view = document.getElementById(`view-house-${id}`);
@@ -53,7 +53,7 @@ window.calcGeneralLoan = function() {
 window.saveHouseTargets = function() {
     window.state.house.kprTarget = window.parseIDR(document.getElementById('house-target-kpr')?.value || '0');
     window.state.house.dpTarget = window.parseIDR(document.getElementById('house-target-dp')?.value || '0');
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.updateHouseView();
     alert('Target House Planner berhasil disimpan!');
 }
@@ -75,7 +75,7 @@ document.getElementById('house-payment-form')?.addEventListener('submit', (e) =>
         });
         window.state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
         
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.updateHouseView();
         window.updateDashboard();
         
@@ -100,7 +100,7 @@ document.getElementById('utility-form')?.addEventListener('submit', (e) => {
         });
         window.state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
         
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.updateHouseView();
         window.updateDashboard();
         
@@ -131,7 +131,7 @@ document.getElementById('reno-form')?.addEventListener('submit', (e) => {
         window.state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
     
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.updateHouseView();
     window.updateDashboard();
     
@@ -142,7 +142,7 @@ document.getElementById('reno-form')?.addEventListener('submit', (e) => {
 window.deleteReno = function(id) {
     if(confirm('Hapus rencana renovasi ini?')) {
         window.state.house.renovations = window.state.house.renovations.filter(r => r.id !== id);
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.updateHouseView();
     }
 }
@@ -302,3 +302,4 @@ window.updateHouseView = function() {
 
     if (window.lucide) window.lucide.createIcons();
 }
+

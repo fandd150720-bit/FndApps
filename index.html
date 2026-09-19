@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -12,6 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -50,9 +51,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
     <style>
         /* ============================================
-           HORIZON UI — GLOBAL DESIGN SYSTEM
+           HORIZON UI â€” GLOBAL DESIGN SYSTEM
            ============================================ */
-        body { font-family: 'DM Sans', 'Inter', sans-serif; background: #F4F7FE; color: #2B3674; }
+        body { font-family: 'DM Sans', 'Inter', sans-serif;   }
 
         /* Section visibility & animation */
         .section-view { display: none; }
@@ -81,9 +82,9 @@
             font-weight: 500;
             position: relative;
         }
-        .nav-item:hover { color: #2B3674; background-color: #F4F7FE; }
+        .nav-item:hover {  background-color: #F4F7FE; }
         .nav-item.active {
-            color: #2B3674;
+            
             font-weight: 700;
             background-color: transparent;
         }
@@ -104,7 +105,7 @@
 
         /* ---- Horizon Card ---- */
         .card {
-            background: #fff;
+            
             border-radius: 20px;
             box-shadow: 0 18px 40px rgba(112,144,176,0.10);
             border: none;
@@ -113,10 +114,10 @@
         .card:hover { box-shadow: 0 18px 40px rgba(112,144,176,0.18); }
 
         /* ---- Pill Tab Nav ---- */
-        .pill-tabs { background: #F4F7FE; border-radius: 999px; padding: 4px; display: inline-flex; gap: 4px; }
+        .pill-tabs {  border-radius: 999px; padding: 4px; display: inline-flex; gap: 4px; }
         .pill-tab { padding: 6px 18px; font-size: 0.82rem; font-weight: 600; border-radius: 999px;
             color: #A3AED0; cursor: pointer; transition: all 0.2s; border: none; background: transparent; }
-        .pill-tab:hover { color: #2B3674; }
+        .pill-tab:hover {  }
         .pill-tab.active { background: #4318FF; color: #fff; box-shadow: 0 4px 16px rgba(67,24,255,0.20); }
 
         /* ---- Horizon Form Inputs ---- */
@@ -125,8 +126,8 @@
             padding: 10px 16px;
             border: 1.5px solid #E0E5F2;
             border-radius: 12px;
-            background: #fff;
-            color: #2B3674;
+            
+            
             font-size: 0.875rem;
             font-family: 'DM Sans', 'Inter', sans-serif;
             outline: none;
@@ -143,7 +144,7 @@
         }
         .btn-primary:hover { background: #3311DB; transform: translateY(-1px); }
         .btn-secondary {
-            background: #F4F7FE; color: #2B3674; font-weight: 600;
+              font-weight: 600;
             padding: 10px 24px; border-radius: 12px; border: 1.5px solid #E0E5F2; cursor: pointer;
             transition: all 0.2s;
         }
@@ -160,10 +161,10 @@
         .badge-red   { background: rgba(238,93,80,0.12); color: #EE5D50; }
         .badge-amber { background: rgba(255,181,71,0.14); color: #d97706; }
         .badge-blue  { background: rgba(67,24,255,0.10); color: #4318FF; }
-        .badge-gray  { background: #F4F7FE; color: #A3AED0; }
+        .badge-gray  {  color: #A3AED0; }
 
         /* ---- Icon Circle ---- */
-        .icon-circle { width: 48px; height: 48px; border-radius: 50%; background: #F4F7FE;
+        .icon-circle { width: 48px; height: 48px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
         /* ---- Scrollbars ---- */
@@ -173,38 +174,51 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #E0E5F2; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #A3AED0; }
+            /* Dark Mode Overrides */
+        .dark .card { background: #111C44; box-shadow: 0 18px 40px rgba(0,0,0,0.25); }
+        .dark .h-input { background: #0B1437; color: #fff; border-color: #1B2559; }
+        .dark .nav-item:hover { background: #1B2559; color: #fff; }
+        .dark .nav-item.active { color: #fff; }
+        .dark .pill-tabs { background: #0B1437; }
+        .dark .pill-tab:hover { color: #fff; }
+        .dark .btn-secondary { background: #111C44; color: #fff; border-color: #1B2559; }
+        .dark .badge-gray { background: #1B2559; color: #fff; }
+        .dark .icon-circle { background: #1B2559; }
+        .dark ::-webkit-scrollbar-thumb { background: #1B2559; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #A3AED0; }
+        .dark body { background: #0B1437; color: #fff; }
     </style>
 </head>
-<body class="bg-[#F4F7FE] text-[#2B3674] h-screen flex flex-col overflow-hidden">
+<body class="bg-[#F4F7FE] dark:bg-[#0B1437] text-[#2B3674] dark:text-white h-screen flex flex-col overflow-hidden">
 
     <!-- Topbar (Horizon UI) -->
-    <header class="bg-[#F4F7FE] z-50 h-20 flex-shrink-0 flex items-center justify-between px-6 md:px-8">
-        <!-- Left: Page Title (dynamic) -->
+    <header class="bg-[#F4F7FE] dark:bg-[#0B1437] z-50 h-20 flex-shrink-0 flex items-center justify-between px-6 md:px-8">
+        <!-- Left: Empty to push right items if needed -->
         <div id="topbar-left" class="flex flex-col justify-center">
-            <h2 id="topbar-title" class="text-2xl font-bold text-[#2B3674] leading-tight mt-1">Main Dashboard</h2>
+            <!-- Title removed as requested -->
         </div>
         <!-- Right: Capsule control bar -->
         <div class="flex items-center gap-3">
             <!-- Mobile sidebar toggle -->
-            <button onclick="toggleSidebar()" class="md:hidden p-2 text-[#A3AED0] hover:text-[#2B3674] rounded-xl hover:bg-white transition-colors">
+            <button onclick="toggleSidebar()" class="md:hidden p-2 text-[#A3AED0] hover:text-[#2B3674] dark:text-white rounded-xl hover:bg-white dark:bg-[#111C44] transition-colors">
                 <i data-lucide="menu" class="w-5 h-5"></i>
             </button>
             <!-- Control Capsule -->
-            <div class="hidden md:flex items-center gap-2 bg-white rounded-full shadow-topbar px-3 py-2">
+            <div class="hidden md:flex items-center gap-2 bg-white dark:bg-[#111C44] rounded-full shadow-topbar px-3 py-2">
                 <div class="relative">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#A3AED0]"></i>
-                    <input type="text" placeholder="Search..." class="bg-[#F4F7FE] text-sm rounded-full pl-9 pr-4 py-1.5 border-none outline-none w-52 text-[#2B3674] placeholder-[#A3AED0]">
+                    <input type="text" placeholder="Search..." class="bg-[#F4F7FE] dark:bg-[#0B1437] text-sm rounded-full pl-9 pr-4 py-1.5 border-none outline-none w-52 text-[#2B3674] dark:text-white placeholder-[#A3AED0]">
                 </div>
                 <div class="w-px h-5 bg-[#E0E5F2] mx-1"></div>
-                <button class="relative p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
+                <button id="bell-btn" onclick="clearNotificationBadge()" class="relative p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
                     <i data-lucide="bell" class="w-4.5 h-4.5"></i>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-[#EE5D50] rounded-full border border-white"></span>
+                    <span id="bell-badge" class="hidden absolute top-1.5 right-1.5 w-2 h-2 bg-[#EE5D50] rounded-full border border-white"></span>
                 </button>
-                <button class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
+                <button onclick="showSystemUpdate()" class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
                     <i data-lucide="info" class="w-4.5 h-4.5"></i>
                 </button>
-                <button class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors" title="Toggle Theme">
-                    <i data-lucide="sun" class="w-4.5 h-4.5"></i>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors" title="Toggle Theme">
+                    <i id="theme-icon" data-lucide="moon" class="w-4.5 h-4.5"></i>
                 </button>
                 <div class="w-px h-5 bg-[#E0E5F2] mx-1"></div>
                 <img id="user-profile-img-top" src="https://ui-avatars.com/api/?name=FD&background=4318FF&color=fff&bold=true" alt="Profile" class="w-8 h-8 rounded-full flex-shrink-0 cursor-pointer ring-2 ring-[#4318FF]/20">
@@ -216,13 +230,13 @@
 
     <!-- Login Screen -->
     <div id="login-screen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
+        <div class="bg-white dark:bg-[#111C44] p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
             <div class="bg-blue-600 text-white p-4 rounded-2xl inline-block mb-4">
                 <i data-lucide="layers" class="w-8 h-8"></i>
             </div>
             <h1 class="text-2xl font-bold text-slate-900 mb-2">Fnd Apps</h1>
             <p class="text-slate-500 mb-8">Family & Life Planner</p>
-            <button id="login-btn" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-3">
+            <button id="login-btn" class="w-full bg-white dark:bg-[#111C44] border border-slate-300 hover:bg-slate-50 dark:bg-[#1B2559] dark:text-white text-slate-700 font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-3">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5">
                 Masuk dengan Google
             </button>
@@ -230,19 +244,19 @@
     </div>
 
     <!-- Sidebar (Horizon UI) -->
-    <aside id="sidebar" class="w-64 bg-white border-r border-[#E0E5F2] flex-col h-full relative z-30 flex fixed md:relative -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <aside id="sidebar" class="w-64 bg-white dark:bg-[#111C44] border-r border-[#E0E5F2] dark:border-[#1B2559] flex-col h-full relative z-30 flex fixed md:relative -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
         <!-- Logo Area -->
-        <div class="px-6 pt-7 pb-5 border-b border-[#E0E5F2] flex items-center justify-between">
+        <div class="px-6 pt-4 pb-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex items-center justify-between">
             <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#4318FF] to-[#868CFF] flex items-center justify-center shadow-md">
                     <i data-lucide="layers" class="w-5 h-5 text-white"></i>
                 </div>
                 <div>
-                    <p class="text-sm font-extrabold text-[#2B3674] tracking-wide leading-none">FND APPS</p>
+                    <p class="text-sm font-extrabold text-[#2B3674] dark:text-white tracking-wide leading-none">FND APPS</p>
                     <p class="text-[10px] text-[#A3AED0] font-medium mt-0.5">Family & Life Planner</p>
                 </div>
             </div>
-            <button onclick="toggleSidebar()" class="md:hidden text-[#A3AED0] hover:text-[#2B3674] p-1">
+            <button onclick="toggleSidebar()" class="md:hidden text-[#A3AED0] hover:text-[#2B3674] dark:text-white p-1">
                 <i data-lucide="x" class="w-4 h-4"></i>
             </button>
         </div>
@@ -302,14 +316,14 @@
         </nav>
 
         <!-- User Info -->
-        <div class="px-4 pb-5 pt-3 border-t border-[#E0E5F2]">
+        <div class="px-4 pb-5 pt-3 border-t border-[#E0E5F2] dark:border-[#1B2559]">
             <div class="flex items-center gap-3">
                 <img id="user-profile-img" src="" alt="Profile" class="w-9 h-9 rounded-full border-2 border-[#4318FF]/20 hidden">
                 <div class="flex-1 min-w-0">
                     <p class="text-[10px] text-[#A3AED0] font-medium">Logged in as</p>
-                    <p id="user-profile-name" class="text-sm font-bold text-[#2B3674] truncate">F&D</p>
+                    <p id="user-profile-name" class="text-sm font-bold text-[#2B3674] dark:text-white truncate">F&D</p>
                 </div>
-                <button onclick="logout()" class="text-[10px] text-[#4318FF] hover:text-[#3311DB] font-bold bg-[#F4F7FE] px-2 py-1 rounded-lg transition-colors flex-shrink-0">Sign Out</button>
+                <button onclick="logout()" class="text-[10px] text-[#4318FF] hover:text-[#3311DB] font-bold bg-[#F4F7FE] dark:bg-[#0B1437] px-2 py-1 rounded-lg transition-colors flex-shrink-0">Sign Out</button>
             </div>
         </div>
     </aside>
@@ -318,7 +332,7 @@
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden"></div>
 
     <!-- Main Content -->
-    <main class="flex-1 h-full overflow-y-auto relative w-full bg-[#F4F7FE]">
+    <main class="flex-1 h-full overflow-y-auto relative w-full bg-[#F4F7FE] dark:bg-[#0B1437]">
 
 
         <div class="p-6 md:p-8 max-w-7xl mx-auto pb-24">
@@ -335,7 +349,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Total Net Worth</p>
-                            <h3 class="text-xl font-extrabold text-[#2B3674] truncate" id="dash-net-worth">Rp 0</h3>
+                            <h3 class="text-xl font-extrabold text-[#2B3674] dark:text-white truncate" id="dash-net-worth">Rp 0</h3>
                         </div>
                     </div>
                     <!-- Card 2: Income -->
@@ -345,7 +359,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Pemasukan Bulan Ini</p>
-                            <h3 class="text-xl font-extrabold text-[#2B3674] truncate" id="dash-income">Rp 0</h3>
+                            <h3 class="text-xl font-extrabold text-[#2B3674] dark:text-white truncate" id="dash-income">Rp 0</h3>
                         </div>
                     </div>
                     <!-- Card 3: Expense -->
@@ -355,7 +369,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Pengeluaran Bulan Ini</p>
-                            <h3 class="text-xl font-extrabold text-[#2B3674] truncate" id="dash-expense">Rp 0</h3>
+                            <h3 class="text-xl font-extrabold text-[#2B3674] dark:text-white truncate" id="dash-expense">Rp 0</h3>
                         </div>
                     </div>
                     <!-- Card 4: Assets -->
@@ -365,7 +379,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Total Aset & Goals</p>
-                            <h3 class="text-xl font-extrabold text-[#2B3674] truncate" id="dash-assets-inv">Rp 0</h3>
+                            <h3 class="text-xl font-extrabold text-[#2B3674] dark:text-white truncate" id="dash-assets-inv">Rp 0</h3>
                         </div>
                     </div>
                 </div>
@@ -376,7 +390,7 @@
                     <div class="card p-5">
                         <div class="flex justify-between items-center mb-4">
                             <div>
-                                <h3 class="text-base font-bold text-[#2B3674]">Arus Kas 6 Bulan</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Arus Kas 6 Bulan</h3>
                                 <p class="text-xs text-[#A3AED0] font-medium">Pemasukan vs Pengeluaran</p>
                             </div>
                             <button class="text-[#A3AED0] hover:text-[#4318FF] transition-colors">
@@ -392,7 +406,7 @@
                     <div class="card p-5">
                         <div class="flex justify-between items-center mb-4">
                             <div>
-                                <h3 class="text-base font-bold text-[#2B3674]">Distribusi Kekayaan</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Distribusi Kekayaan</h3>
                                 <p class="text-xs text-[#A3AED0] font-medium">Aset, Investasi & Net Worth</p>
                             </div>
                             <button class="text-[#A3AED0] hover:text-[#4318FF] transition-colors">
@@ -413,7 +427,7 @@
             <!-- Financial Section -->
             <section id="financial" class="section-view">
                 <div class="mb-6">
-                    <h2 class="text-2xl font-extrabold text-[#2B3674]">Wealth Management</h2>
+                    <h2 class="text-2xl font-extrabold text-[#2B3674] dark:text-white">Wealth Management</h2>
                     <p class="text-xs text-[#A3AED0] font-medium mt-0.5">Kelola arus kas, aset, investasi, dan hutang Anda</p>
                 </div>
                 
@@ -433,7 +447,7 @@
                         <!-- Form -->
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Input Transaksi</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-4">Input Transaksi</h3>
                                 <form id="transaction-form" class="space-y-4">
                                     <div>
                                         <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Tanggal</label>
@@ -464,13 +478,13 @@
                         <!-- Table -->
                         <div class="lg:col-span-2">
                             <div class="card overflow-hidden">
-                                <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center">
-                                    <h3 class="text-base font-bold text-[#2B3674]">Riwayat Transaksi</h3>
+                                <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex justify-between items-center">
+                                    <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Riwayat Transaksi</h3>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="border-b border-[#E0E5F2]">
+                                            <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                                 <th class="th-horizon">Tanggal</th>
                                                 <th class="th-horizon">Kategori</th>
                                                 <th class="th-horizon text-right">Nominal</th>
@@ -480,7 +494,7 @@
                                         <tbody id="transaction-table-body" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                                     </table>
                                 </div>
-                                <div class="p-4 border-t border-[#E0E5F2] text-center text-sm text-[#A3AED0] hidden" id="trans-empty-state">Belum ada transaksi.</div>
+                                <div class="p-4 border-t border-[#E0E5F2] dark:border-[#1B2559] text-center text-sm text-[#A3AED0] hidden" id="trans-empty-state">Belum ada transaksi.</div>
                             </div>
                         </div>
                     </div>
@@ -490,7 +504,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Tambah Aset</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-4">Tambah Aset</h3>
                                 <form id="asset-form" class="space-y-4">
                                     <div>
                                         <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama Aset</label>
@@ -513,15 +527,15 @@
                                 </div>
                                 <div>
                                     <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Total Nilai Aset Tetap</p>
-                                    <h3 class="text-2xl font-extrabold text-[#2B3674]" id="total-assets-val">Rp 0</h3>
+                                    <h3 class="text-2xl font-extrabold text-[#2B3674] dark:text-white" id="total-assets-val">Rp 0</h3>
                                 </div>
                             </div>
                             <div class="card overflow-hidden">
-                                <div class="p-5 border-b border-[#E0E5F2]"><h3 class="text-base font-bold text-[#2B3674]">Daftar Aset</h3></div>
+                                <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559]"><h3 class="text-base font-bold text-[#2B3674] dark:text-white">Daftar Aset</h3></div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="border-b border-[#E0E5F2]">
+                                            <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                                 <th class="th-horizon">Nama Aset</th>
                                                 <th class="th-horizon text-right">Nilai Estimasi</th>
                                                 <th class="th-horizon text-center">Aksi</th>
@@ -541,7 +555,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Tambah Investasi</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-4">Tambah Investasi</h3>
                                 <form id="invest-form" class="space-y-4">
                                     <div>
                                         <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Nama / Instrumen</label>
@@ -568,15 +582,15 @@
                                 </div>
                                 <div>
                                     <p class="text-xs font-semibold text-[#A3AED0] mb-0.5">Total Nilai Investasi</p>
-                                    <h3 class="text-2xl font-extrabold text-[#2B3674]" id="total-inv-val">Rp 0</h3>
+                                    <h3 class="text-2xl font-extrabold text-[#2B3674] dark:text-white" id="total-inv-val">Rp 0</h3>
                                 </div>
                             </div>
                             <div class="card overflow-hidden">
-                                <div class="p-5 border-b border-[#E0E5F2]"><h3 class="text-base font-bold text-[#2B3674]">Daftar Portofolio</h3></div>
+                                <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559]"><h3 class="text-base font-bold text-[#2B3674] dark:text-white">Daftar Portofolio</h3></div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="border-b border-[#E0E5F2]">
+                                            <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                                 <th class="th-horizon">Instrumen</th>
                                                 <th class="th-horizon">Platform</th>
                                                 <th class="th-horizon text-right">Saldo</th>
@@ -597,7 +611,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Catat Hutang/Piutang</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-4">Catat Hutang/Piutang</h3>
                                 <form id="debt-form" class="space-y-4">
                                     <div>
                                         <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Tipe</label>
@@ -628,7 +642,7 @@
                                     </div>
                                     <div>
                                         <p class="text-xs font-semibold text-[#A3AED0]">Total Piutang</p>
-                                        <h3 class="text-xl font-extrabold text-[#2B3674]" id="total-piutang-val">Rp 0</h3>
+                                        <h3 class="text-xl font-extrabold text-[#2B3674] dark:text-white" id="total-piutang-val">Rp 0</h3>
                                     </div>
                                 </div>
                                 <div class="card p-5 flex items-center gap-4">
@@ -637,16 +651,16 @@
                                     </div>
                                     <div>
                                         <p class="text-xs font-semibold text-[#A3AED0]">Total Hutang</p>
-                                        <h3 class="text-xl font-extrabold text-[#2B3674]" id="total-hutang-val">Rp 0</h3>
+                                        <h3 class="text-xl font-extrabold text-[#2B3674] dark:text-white" id="total-hutang-val">Rp 0</h3>
                                     </div>
                                 </div>
                             </div>
                             <div class="card overflow-hidden">
-                                <div class="p-5 border-b border-[#E0E5F2]"><h3 class="text-base font-bold text-[#2B3674]">Daftar Hutang & Piutang</h3></div>
+                                <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559]"><h3 class="text-base font-bold text-[#2B3674] dark:text-white">Daftar Hutang & Piutang</h3></div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="border-b border-[#E0E5F2]">
+                                            <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                                 <th class="th-horizon">Tipe</th>
                                                 <th class="th-horizon">Pihak</th>
                                                 <th class="th-horizon text-right">Nominal</th>
@@ -667,7 +681,7 @@
             <!-- House Planner Section -->
             <section id="house" class="section-view">
                 <div class="mb-6">
-                    <h2 class="text-2xl font-extrabold text-[#2B3674]">House Planner</h2>
+                    <h2 class="text-2xl font-extrabold text-[#2B3674] dark:text-white">House Planner</h2>
                     <p class="text-xs text-[#A3AED0] font-medium mt-0.5">KPR, DP, perawatan, utilitas, dan kalkulator pinjaman</p>
                 </div>
 
@@ -687,7 +701,7 @@
                         <div class="lg:col-span-1 space-y-6">
                             <!-- Target Settings -->
                             <div class="card p-6">
-                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Pengaturan Target</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-4">Pengaturan Target</h3>
                                 <form id="house-target-form" class="space-y-4">
                                     <div>
                                         <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Total Kewajiban KPR (Rp)</label>
@@ -702,7 +716,7 @@
                             
                             <!-- Input Payment -->
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Catat Pembayaran</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-4">Catat Pembayaran</h3>
                                 <form id="house-payment-form" class="space-y-4">
                                     <div>
                                         <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Tipe Pembayaran</label>
@@ -762,14 +776,14 @@
                             </div>
                             
                             <div class="card overflow-hidden">
-                                <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center">
-                                    <h3 class="text-base font-bold text-[#2B3674]">Riwayat Pembayaran KPR & DP</h3>
+                                <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex justify-between items-center">
+                                    <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Riwayat Pembayaran KPR & DP</h3>
                                     <span class="badge badge-blue">Disinkronkan ke Financial</span>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="border-b border-[#E0E5F2]">
+                                            <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                                 <th class="th-horizon">Tanggal</th>
                                                 <th class="th-horizon">Tipe</th>
                                                 <th class="th-horizon">Catatan</th>
@@ -779,7 +793,7 @@
                                         <tbody id="hp-payment-table" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                                     </table>
                                 </div>
-                                <div class="p-4 border-t border-[#E0E5F2] text-center text-sm text-[#A3AED0] hidden" id="hp-payment-empty">Belum ada catatan pembayaran.</div>
+                                <div class="p-4 border-t border-[#E0E5F2] dark:border-[#1B2559] text-center text-sm text-[#A3AED0] hidden" id="hp-payment-empty">Belum ada catatan pembayaran.</div>
                             </div>
                         </div>
                     </div>
@@ -811,7 +825,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1">
                             <div class="card p-6 sticky top-6">
-                                <h3 class="text-base font-bold text-[#2B3674] mb-4">Catat Tagihan Utilitas</h3>
+                                <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-4">Catat Tagihan Utilitas</h3>
                                 <form id="utility-form" class="space-y-4">
                                     <div>
                                         <label class="block text-xs font-semibold text-[#A3AED0] mb-1.5 uppercase tracking-wide">Jenis Tagihan / Utilitas</label>
@@ -829,13 +843,13 @@
                         </div>
                         <div class="lg:col-span-2">
                             <div class="card overflow-hidden">
-                                <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center">
-                                    <h3 class="text-base font-bold text-[#2B3674]">Riwayat Pembayaran Utilitas</h3>
+                                <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex justify-between items-center">
+                                    <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Riwayat Pembayaran Utilitas</h3>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="border-b border-[#E0E5F2]">
+                                            <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                                 <th class="th-horizon">Tanggal</th>
                                                 <th class="th-horizon">Jenis Tagihan</th>
                                                 <th class="th-horizon text-right">Nominal</th>
@@ -844,7 +858,7 @@
                                         <tbody id="util-table-body" class="text-sm divide-y divide-[#E0E5F2]"></tbody>
                                     </table>
                                 </div>
-                                <div class="p-4 border-t border-[#E0E5F2] text-center text-sm text-[#A3AED0] hidden" id="util-empty-state">Belum ada pembayaran dicatat.</div>
+                                <div class="p-4 border-t border-[#E0E5F2] dark:border-[#1B2559] text-center text-sm text-[#A3AED0] hidden" id="util-empty-state">Belum ada pembayaran dicatat.</div>
                             </div>
                         </div>
                     </div>
@@ -854,7 +868,7 @@
                 <div id="view-house-loan" class="house-view hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="card p-6">
-                            <h3 class="text-base font-bold text-[#2B3674] mb-1">Kalkulator Cicilan Umum</h3>
+                            <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-1">Kalkulator Cicilan Umum</h3>
                             <p class="text-sm text-[#A3AED0] mb-6">Gunakan untuk simulasi cicilan KPR, Kendaraan, atau pinjaman bank lainnya (Bunga Anuitas).</p>
                             <div class="space-y-4">
                                 <div>
@@ -879,13 +893,13 @@
                         </div>
                         
                         <div class="card p-6 flex flex-col justify-center">
-                            <h3 class="text-base font-bold text-[#2B3674] mb-6 text-center">Hasil Simulasi</h3>
+                            <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-6 text-center">Hasil Simulasi</h3>
                             <div class="space-y-5">
                                 <div class="text-center">
                                     <p class="text-xs font-semibold text-[#A3AED0] mb-1 uppercase tracking-wide">Pokok Hutang (Setelah DP)</p>
-                                    <h4 class="text-xl font-extrabold text-[#2B3674]" id="loan-result-principal">Rp 0</h4>
+                                    <h4 class="text-xl font-extrabold text-[#2B3674] dark:text-white" id="loan-result-principal">Rp 0</h4>
                                 </div>
-                                <div class="p-5 bg-[#F4F7FE] rounded-20 text-center">
+                                <div class="p-5 bg-[#F4F7FE] dark:bg-[#0B1437] rounded-20 text-center">
                                     <p class="text-xs font-semibold text-[#A3AED0] mb-2 uppercase tracking-wide">Estimasi Cicilan per Bulan</p>
                                     <h4 class="text-3xl font-extrabold text-[#4318FF]" id="loan-result-installment">Rp 0</h4>
                                 </div>
@@ -903,7 +917,7 @@
             <!-- Wedding Planner Section -->
             <section id="married" class="section-view">
                 <div class="mb-5">
-                    <h2 class="text-2xl font-extrabold text-[#2B3674]">Wedding Planner</h2>
+                    <h2 class="text-2xl font-extrabold text-[#2B3674] dark:text-white">Wedding Planner</h2>
                     <p class="text-xs text-[#A3AED0] font-medium mt-0.5">Rencanakan pernikahan Febi Wahyudi & Debi Apriani</p>
                 </div>
                 <!-- Wedding Sub-Nav -->
@@ -922,17 +936,17 @@
                 <!-- Wed Tab: Dashboard -->
                 <div id="view-wed-dashboard" class="wedding-view block">
                     <div class="card mb-6 overflow-hidden">
-                        <div class="p-5 border-b border-[#E0E5F2]">
-                            <h2 class="text-lg font-bold text-[#2B3674]">WEDDING PLANNING DASHBOARD</h2>
+                        <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559]">
+                            <h2 class="text-lg font-bold text-[#2B3674] dark:text-white">WEDDING PLANNING DASHBOARD</h2>
                             <p class="text-xs text-[#A3AED0] mt-1">Rencana Pernikahan: Febi Wahyudi & Debi Apriani | Tanggal Acara: <span id="wed-dash-date">-</span></p>
                         </div>
                         
                         <div class="p-5">
-                            <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">RINGKASAN KEUANGAN</h3></div>
+                            <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674] dark:text-white">RINGKASAN KEUANGAN</h3></div>
                             <div class="overflow-x-auto mb-6">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
-                                        <tr class="border-b border-[#E0E5F2]">
+                                        <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                             <th class="th-horizon">Total Estimasi</th>
                                             <th class="th-horizon">Total Realisasi</th>
                                             <th class="th-horizon">Selisih (Hemat/Over)</th>
@@ -942,10 +956,10 @@
                                     </thead>
                                     <tbody class="text-sm divide-y divide-[#E0E5F2]">
                                         <tr>
-                                            <td class="py-3 px-2 font-bold text-[#2B3674]" id="wed-dash-tot-est">Rp 0</td>
-                                            <td class="py-3 px-2 font-bold text-[#2B3674]" id="wed-dash-tot-real">Rp 0</td>
+                                            <td class="py-3 px-2 font-bold text-[#2B3674] dark:text-white" id="wed-dash-tot-est">Rp 0</td>
+                                            <td class="py-3 px-2 font-bold text-[#2B3674] dark:text-white" id="wed-dash-tot-real">Rp 0</td>
                                             <td class="py-3 px-2 font-bold text-emerald-600" id="wed-dash-tot-selisih">Rp 0</td>
-                                            <td class="py-3 px-2 text-right font-bold text-[#2B3674]" id="wed-dash-tot-bayar">Rp 0</td>
+                                            <td class="py-3 px-2 text-right font-bold text-[#2B3674] dark:text-white" id="wed-dash-tot-bayar">Rp 0</td>
                                             <td class="py-3 px-2 text-right font-bold text-rose-600" id="wed-dash-tot-sisa">Rp 0</td>
                                         </tr>
                                     </tbody>
@@ -954,11 +968,11 @@
 
                             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
                                 <div>
-                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">PROGRESS PERSIAPAN (CHECKLIST)</h3></div>
+                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674] dark:text-white">PROGRESS PERSIAPAN (CHECKLIST)</h3></div>
                                     <div class="overflow-x-auto">
                                         <table class="w-full text-left border-collapse">
                                             <thead>
-                                                <tr class="border-b border-[#E0E5F2]">
+                                                <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                                     <th class="th-horizon">Status Persiapan</th>
                                                     <th class="th-horizon text-center">Jumlah Tugas</th>
                                                     <th class="th-horizon text-right">Persentase</th>
@@ -968,17 +982,17 @@
                                                 <tr><td class="py-3 px-2">Selesai (Done)</td><td class="py-3 px-2 text-center" id="wed-chk-done">0</td><td class="py-3 px-2 text-right text-[#A3AED0]" id="wed-chk-done-pct">0.0%</td></tr>
                                                 <tr><td class="py-3 px-2">Dalam Proses (In Progress)</td><td class="py-3 px-2 text-center" id="wed-chk-prog">0</td><td class="py-3 px-2 text-right text-[#A3AED0]" id="wed-chk-prog-pct">0.0%</td></tr>
                                                 <tr><td class="py-3 px-2">Belum Dimulai (Not Started)</td><td class="py-3 px-2 text-center" id="wed-chk-not">0</td><td class="py-3 px-2 text-right text-[#A3AED0]" id="wed-chk-not-pct">0.0%</td></tr>
-                                                <tr class="font-bold bg-[#F4F7FE]"><td class="py-3 px-2 text-[#2B3674]">Total Tugas</td><td class="py-3 px-2 text-center text-[#2B3674]" id="wed-chk-tot">0</td><td class="py-3 px-2 text-right text-[#2B3674]">100.0%</td></tr>
+                                                <tr class="font-bold bg-[#F4F7FE] dark:bg-[#0B1437]"><td class="py-3 px-2 text-[#2B3674] dark:text-white">Total Tugas</td><td class="py-3 px-2 text-center text-[#2B3674] dark:text-white" id="wed-chk-tot">0</td><td class="py-3 px-2 text-right text-[#2B3674] dark:text-white">100.0%</td></tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">RINGKASAN TAMU & RSVP</h3></div>
+                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674] dark:text-white">RINGKASAN TAMU & RSVP</h3></div>
                                     <div class="overflow-x-auto">
                                         <table class="w-full text-left border-collapse">
                                             <tbody class="text-sm divide-y divide-[#E0E5F2]">
-                                                <tr class="bg-[#F4F7FE]"><td class="py-3 px-2 font-bold text-[#2B3674]">Total Target Tamu</td><td class="py-3 px-2 text-right font-bold text-[#2B3674]" id="wed-guest-tot">0</td></tr>
+                                                <tr class="bg-[#F4F7FE] dark:bg-[#0B1437]"><td class="py-3 px-2 font-bold text-[#2B3674] dark:text-white">Total Target Tamu</td><td class="py-3 px-2 text-right font-bold text-[#2B3674] dark:text-white" id="wed-guest-tot">0</td></tr>
                                                 <tr><td class="py-3 px-2 text-[#A3AED0]">Konfirmasi Hadir</td><td class="py-3 px-2 text-right text-emerald-600 font-bold" id="wed-guest-hadir">0</td></tr>
                                                 <tr><td class="py-3 px-2 text-[#A3AED0]">Tidak Hadir</td><td class="py-3 px-2 text-right text-rose-600 font-bold" id="wed-guest-tidak">0</td></tr>
                                                 <tr><td class="py-3 px-2 text-[#A3AED0]">Belum Konfirmasi</td><td class="py-3 px-2 text-right text-amber-500 font-bold" id="wed-guest-belum">0</td></tr>
@@ -990,11 +1004,11 @@
 
                             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                                 <div>
-                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">RINCIAN BIAYA PER KATEGORI</h3></div>
+                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674] dark:text-white">RINCIAN BIAYA PER KATEGORI</h3></div>
                                     <div class="overflow-x-auto">
                                         <table class="w-full text-left border-collapse">
                                             <thead>
-                                                <tr class="border-b border-[#E0E5F2]">
+                                                <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                                     <th class="th-horizon w-1/3">Kategori Pengeluaran</th>
                                                     <th class="th-horizon text-right">Estimasi Biaya</th>
                                                     <th class="th-horizon text-right">Realisasi Biaya</th>
@@ -1004,20 +1018,20 @@
                                             <tbody class="text-sm divide-y divide-[#E0E5F2]" id="wed-dash-budget-tbody">
                                                 <!-- JS will populate this -->
                                             </tbody>
-                                            <tfoot class="border-t border-[#E0E5F2] font-bold bg-[#F4F7FE]">
+                                            <tfoot class="border-t border-[#E0E5F2] dark:border-[#1B2559] font-bold bg-[#F4F7FE] dark:bg-[#0B1437]">
                                                 <tr>
-                                                    <td class="py-3 px-2 text-[#2B3674]">TOTAL</td>
-                                                    <td class="py-3 px-2 text-right text-[#2B3674]" id="wed-dash-budget-tot-est">Rp 0</td>
-                                                    <td class="py-3 px-2 text-right text-[#2B3674]" id="wed-dash-budget-tot-real">Rp 0</td>
-                                                    <td class="py-3 px-2 text-right text-[#2B3674]" id="wed-dash-budget-tot-selisih">Rp 0</td>
+                                                    <td class="py-3 px-2 text-[#2B3674] dark:text-white">TOTAL</td>
+                                                    <td class="py-3 px-2 text-right text-[#2B3674] dark:text-white" id="wed-dash-budget-tot-est">Rp 0</td>
+                                                    <td class="py-3 px-2 text-right text-[#2B3674] dark:text-white" id="wed-dash-budget-tot-real">Rp 0</td>
+                                                    <td class="py-3 px-2 text-right text-[#2B3674] dark:text-white" id="wed-dash-budget-tot-selisih">Rp 0</td>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
                                 </div>
                                 <div class="flex flex-col">
-                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">Perbandingan Estimasi vs Realisasi Biaya</h3></div>
-                                    <div class="border border-[#E0E5F2] p-4 rounded-xl bg-white flex-1 relative" style="min-height: 350px;">
+                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674] dark:text-white">Perbandingan Estimasi vs Realisasi Biaya</h3></div>
+                                    <div class="border border-[#E0E5F2] dark:border-[#1B2559] p-4 rounded-xl bg-white dark:bg-[#111C44] flex-1 relative" style="min-height: 350px;">
                                         <canvas id="wedBudgetChart"></canvas>
                                     </div>
                                 </div>
@@ -1034,13 +1048,13 @@
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div>
                                     <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                        <span>📋</span> Master Checklist Persiapan Pernikahan
+                                        <span>ðŸ“‹</span> Master Checklist Persiapan Pernikahan
                                     </h3>
                                     <p class="text-sm text-slate-500 mt-1">Kelola semua tugas timeline dari 12 bulan sebelum hingga Hari H</p>
                                 </div>
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <button onclick="window.loadDefaultWedChecklist(true)"
-                                        class="bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 font-medium py-2 px-3 rounded-xl flex items-center gap-1.5 whitespace-nowrap text-sm shadow-sm transition-all" title="Muat template standar checklist rekomendasi">
+                                        class="bg-white dark:bg-[#111C44] hover:bg-rose-50 text-rose-700 border border-rose-200 font-medium py-2 px-3 rounded-xl flex items-center gap-1.5 whitespace-nowrap text-sm shadow-sm transition-all" title="Muat template standar checklist rekomendasi">
                                         <i data-lucide="sparkles" class="w-4 h-4 text-rose-500"></i> Muat Template Standar
                                     </button>
                                     <button onclick="document.getElementById('wed-chk-edit-id').value=''; document.getElementById('wed-chk-form').reset(); document.getElementById('wed-chk-modal-title').innerText='Tambah Tugas Persiapan'; document.getElementById('wed-chk-modal').classList.remove('hidden')"
@@ -1052,32 +1066,32 @@
 
                             <!-- Mini Summary Badges -->
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-rose-100/60">
-                                <div class="bg-white/80 backdrop-blur rounded-xl p-3 border border-rose-100 shadow-xs">
+                                <div class="bg-white dark:bg-[#111C44]/80 backdrop-blur rounded-xl p-3 border border-rose-100 shadow-xs">
                                     <span class="text-xs text-slate-500 block font-medium">Total Tugas</span>
                                     <span id="wed-chk-stat-total" class="text-lg font-bold text-slate-800">0</span>
                                 </div>
-                                <div class="bg-white/80 backdrop-blur rounded-xl p-3 border border-emerald-100 shadow-xs">
-                                    <span class="text-xs text-emerald-600 block font-medium">✅ Selesai</span>
+                                <div class="bg-white dark:bg-[#111C44]/80 backdrop-blur rounded-xl p-3 border border-emerald-100 shadow-xs">
+                                    <span class="text-xs text-emerald-600 block font-medium">âœ… Selesai</span>
                                     <div class="flex items-baseline gap-1.5">
                                         <span id="wed-chk-stat-done" class="text-lg font-bold text-emerald-600">0</span>
                                         <span id="wed-chk-stat-done-pct" class="text-xs text-emerald-600 font-semibold">(0%)</span>
                                     </div>
                                 </div>
-                                <div class="bg-white/80 backdrop-blur rounded-xl p-3 border border-amber-100 shadow-xs">
-                                    <span class="text-xs text-amber-600 block font-medium">🔄 Dalam Proses</span>
+                                <div class="bg-white dark:bg-[#111C44]/80 backdrop-blur rounded-xl p-3 border border-amber-100 shadow-xs">
+                                    <span class="text-xs text-amber-600 block font-medium">ðŸ”„ Dalam Proses</span>
                                     <span id="wed-chk-stat-prog" class="text-lg font-bold text-amber-600">0</span>
                                 </div>
-                                <div class="bg-white/80 backdrop-blur rounded-xl p-3 border border-slate-200 shadow-xs">
-                                    <span class="text-xs text-slate-500 block font-medium">⬜ Belum Dimulai</span>
+                                <div class="bg-white dark:bg-[#111C44]/80 backdrop-blur rounded-xl p-3 border border-slate-200 shadow-xs">
+                                    <span class="text-xs text-slate-500 block font-medium">â¬œ Belum Dimulai</span>
                                     <span id="wed-chk-stat-not" class="text-lg font-bold text-slate-600">0</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Filters -->
-                        <div class="px-6 py-4 bg-white border-b border-slate-100 flex flex-wrap gap-3">
+                        <div class="px-6 py-4 bg-white dark:bg-[#111C44] border-b border-slate-100 flex flex-wrap gap-3">
                             <div class="flex-1 min-w-40">
-                                <input type="text" id="wed-chk-search" placeholder="🔍 Cari tugas, kategori, PIC..."
+                                <input type="text" id="wed-chk-search" placeholder="ðŸ” Cari tugas, kategori, PIC..."
                                     oninput="window.renderWedChecklist()"
                                     class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-400 outline-none">
                             </div>
@@ -1096,9 +1110,9 @@
                             <select id="wed-chk-filter-status" onchange="window.renderWedChecklist()"
                                 class="px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-400 outline-none">
                                 <option value="all">Semua Status</option>
-                                <option value="Not Started">⬜ Not Started</option>
-                                <option value="In Progress">🔄 In Progress</option>
-                                <option value="Done">✅ Done</option>
+                                <option value="Not Started">â¬œ Not Started</option>
+                                <option value="In Progress">ðŸ”„ In Progress</option>
+                                <option value="Done">âœ… Done</option>
                             </select>
                         </div>
 
@@ -1124,7 +1138,7 @@
                 <!-- Wed Tab: Anggaran -->
                 <div id="view-wed-anggaran" class="wedding-view hidden">
                     <div class="card p-6">
-                        <h3 class="text-base font-bold text-[#2B3674] mb-1">Update Anggaran & Pengeluaran</h3>
+                        <h3 class="text-base font-bold text-[#2B3674] dark:text-white mb-1">Update Anggaran & Pengeluaran</h3>
                         <p class="text-sm text-[#A3AED0] mb-6">Masukkan estimasi dan realisasi biaya untuk setiap kategori. Realisasi pengeluaran akan otomatis disinkronkan ke Cashflow utama.</p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="wed-anggaran-inputs">
@@ -1146,7 +1160,7 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-50 text-slate-500 text-sm">
+                                    <tr class="bg-slate-50 dark:bg-[#1B2559] dark:text-white text-slate-500 text-sm">
                                         <th class="px-4 py-3 font-medium">Nama Tamu</th>
                                         <th class="px-4 py-3 font-medium">Status RSVP</th>
                                         <th class="px-4 py-3 font-medium text-right">Aksi</th>
@@ -1200,7 +1214,7 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="border-b border-[#E0E5F2]">
+                                    <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
                                         <th class="th-horizon">Item</th>
                                         <th class="th-horizon">Status</th>
                                         <th class="th-horizon text-right">Aksi</th>
@@ -1217,7 +1231,7 @@
             <section id="goals" class="section-view">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                     <div>
-                        <h2 class="text-2xl font-extrabold text-[#2B3674]">Goals & Projections</h2>
+                        <h2 class="text-2xl font-extrabold text-[#2B3674] dark:text-white">Goals & Projections</h2>
                         <p class="text-xs text-[#A3AED0] font-medium mt-0.5">Pantau dan capai target keuangan Anda</p>
                     </div>
                     <button onclick="document.getElementById('goal-modal').classList.remove('hidden')" class="btn-primary flex-shrink-0">
@@ -1230,7 +1244,7 @@
                 </div>
                 
                 <div id="goals-empty" class="text-center py-12 hidden">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#F4F7FE] mb-4">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#F4F7FE] dark:bg-[#0B1437] mb-4">
                         <i data-lucide="target" class="w-8 h-8" style="color:#4318FF;"></i>
                     </div>
                     <h3 class="text-lg font-bold text-slate-700 mb-1">Belum ada target</h3>
@@ -1243,9 +1257,9 @@
 
     <!-- Wedding Checklist Modal -->
     <div id="wed-chk-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white sticky top-0">
-                <h3 id="wed-chk-modal-title" class="text-base font-bold text-[#2B3674]">Tambah Tugas Persiapan</h3>
+        <div class="bg-white dark:bg-[#111C44] rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex justify-between items-center bg-white dark:bg-[#111C44] sticky top-0">
+                <h3 id="wed-chk-modal-title" class="text-base font-bold text-[#2B3674] dark:text-white">Tambah Tugas Persiapan</h3>
                 <button type="button" onclick="document.getElementById('wed-chk-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
             </div>
             <form id="wed-chk-form" class="p-6 space-y-4">
@@ -1319,7 +1333,7 @@
                     <textarea id="wed-chk-notes" rows="2" placeholder="Catatan tambahan..." class="h-input resize-none"></textarea>
                 </div>
                 <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="document.getElementById('wed-chk-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-[#F4F7FE] text-[#A3AED0] rounded-xl font-bold transition-colors hover:text-[#2B3674]">Batal</button>
+                    <button type="button" onclick="document.getElementById('wed-chk-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-[#F4F7FE] dark:bg-[#0B1437] text-[#A3AED0] rounded-xl font-bold transition-colors hover:text-[#2B3674] dark:text-white">Batal</button>
                     <button type="submit" class="btn-primary flex-1 justify-center">Simpan</button>
                 </div>
             </form>
@@ -1328,9 +1342,9 @@
 
     <!-- Wedding Guest Modal -->
     <div id="wed-tamu-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
-                <h3 class="text-base font-bold text-[#2B3674]">Tambah Tamu</h3>
+        <div class="bg-white dark:bg-[#111C44] rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex justify-between items-center bg-white dark:bg-[#111C44]">
+                <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Tambah Tamu</h3>
                 <button type="button" onclick="document.getElementById('wed-tamu-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
             </div>
             <form id="wed-tamu-form" class="p-6 space-y-4">
@@ -1353,9 +1367,9 @@
 
     <!-- Wedding Vendor Modal -->
     <div id="wed-vendor-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
-                <h3 class="text-base font-bold text-[#2B3674]">Tambah Vendor</h3>
+        <div class="bg-white dark:bg-[#111C44] rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex justify-between items-center bg-white dark:bg-[#111C44]">
+                <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Tambah Vendor</h3>
                 <button type="button" onclick="document.getElementById('wed-vendor-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
             </div>
             <form id="wed-vendor-form" class="p-6 space-y-4">
@@ -1379,9 +1393,9 @@
 
     <!-- Wedding Seserahan Modal -->
     <div id="wed-ses-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
-                <h3 class="text-base font-bold text-[#2B3674]">Tambah Seserahan</h3>
+        <div class="bg-white dark:bg-[#111C44] rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex justify-between items-center bg-white dark:bg-[#111C44]">
+                <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Tambah Seserahan</h3>
                 <button type="button" onclick="document.getElementById('wed-ses-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
             </div>
             <form id="wed-ses-form" class="p-6 space-y-4">
@@ -1402,9 +1416,9 @@
     </div>
 
     <div id="goal-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
-            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
-                <h3 class="text-base font-bold text-[#2B3674]">Tambah Target Baru</h3>
+        <div class="bg-white dark:bg-[#111C44] rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
+            <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex justify-between items-center bg-white dark:bg-[#111C44]">
+                <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Tambah Target Baru</h3>
                 <button type="button" onclick="document.getElementById('goal-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
@@ -1427,7 +1441,7 @@
                     <input type="date" id="goal-date" required class="h-input">
                 </div>
                 <div class="pt-4 flex gap-3">
-                    <button type="button" onclick="document.getElementById('goal-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-[#F4F7FE] text-[#A3AED0] rounded-xl font-bold transition-colors hover:text-[#2B3674]">Batal</button>
+                    <button type="button" onclick="document.getElementById('goal-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-[#F4F7FE] dark:bg-[#0B1437] text-[#A3AED0] rounded-xl font-bold transition-colors hover:text-[#2B3674] dark:text-white">Batal</button>
                     <button type="submit" class="btn-primary flex-1 justify-center">Simpan Goal</button>
                 </div>
             </form>
@@ -1436,9 +1450,9 @@
 
     <!-- Modal Form Renovation -->
     <div id="reno-modal" class="fixed inset-0 bg-[#111C44]/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
-            <div class="p-5 border-b border-[#E0E5F2] flex justify-between items-center bg-white">
-                <h3 class="text-base font-bold text-[#2B3674]">Catat Rencana / Perawatan</h3>
+        <div class="bg-white dark:bg-[#111C44] rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
+            <div class="p-5 border-b border-[#E0E5F2] dark:border-[#1B2559] flex justify-between items-center bg-white dark:bg-[#111C44]">
+                <h3 class="text-base font-bold text-[#2B3674] dark:text-white">Catat Rencana / Perawatan</h3>
                 <button type="button" onclick="document.getElementById('reno-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
@@ -1457,7 +1471,7 @@
                     <input type="text" id="reno-current" placeholder="0" class="h-input" oninput="formatCurrencyInput(this)">
                 </div>
                 <div class="pt-4 flex gap-3">
-                    <button type="button" onclick="document.getElementById('reno-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-[#F4F7FE] text-[#A3AED0] rounded-xl font-bold transition-colors hover:text-[#2B3674]">Batal</button>
+                    <button type="button" onclick="document.getElementById('reno-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-[#F4F7FE] dark:bg-[#0B1437] text-[#A3AED0] rounded-xl font-bold transition-colors hover:text-[#2B3674] dark:text-white">Batal</button>
                     <button type="submit" class="btn-primary flex-1 justify-center">Simpan</button>
                 </div>
             </form>
@@ -1467,6 +1481,9 @@
         </div>
     </main>
 </div>
+
+<!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2"></div>
 
 <!-- Application Scripts -->
     <script src="js/firebase-config.js"></script>
@@ -1479,11 +1496,9 @@
     <script src="js/goals.js"></script>
     <script src="js/main.js"></script>
 </body>
+
+
+
 </html>
-
-
-
-
-
 
 

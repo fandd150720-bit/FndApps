@@ -1,4 +1,4 @@
-// --- WEDDING PLANNER LOGIC ---
+﻿// --- WEDDING PLANNER LOGIC ---
 let wedChartInstance = null;
 
 // Standard Template Checklist Persiapan Pernikahan
@@ -252,7 +252,7 @@ window.saveWeddingAnggaran = function() {
         }
     }
     window.state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.updateAllViews();
     alert('Anggaran & Pengeluaran berhasil disimpan dan disinkronkan!');
 };
@@ -269,7 +269,7 @@ window.loadDefaultWedChecklist = function(force = false) {
     }
     
     window.state.wedding.checklist = JSON.parse(JSON.stringify(window.DEFAULT_WEDDING_CHECKLIST));
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.renderWedChecklist();
     window.updateWeddingDashboard();
 };
@@ -299,7 +299,7 @@ document.getElementById('wed-chk-form')?.addEventListener('submit', (e) => {
         window.state.wedding.checklist.push(item);
     }
 
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.renderWedChecklist();
     window.updateWeddingDashboard();
     document.getElementById('wed-chk-modal')?.classList.add('hidden');
@@ -313,7 +313,7 @@ document.getElementById('wed-chk-form')?.addEventListener('submit', (e) => {
 window.deleteWedChk = function(id) {
     if (confirm('Hapus tugas ini?')) {
         window.state.wedding.checklist = (window.state.wedding.checklist || []).filter(c => c.id !== id);
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.renderWedChecklist();
         window.updateWeddingDashboard();
     }
@@ -346,7 +346,7 @@ window.toggleWedChkStatus = function(id, selectElem) {
     const item = (window.state.wedding.checklist || []).find(c => c.id === id);
     if (item) {
         item.status = selectElem.value;
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.renderWedChecklist();
         window.updateWeddingDashboard();
     }
@@ -366,7 +366,7 @@ window.renderWedChecklist = function() {
     if (!window.state.wedding) window.state.wedding = {};
     if (!window.state.wedding.checklist || window.state.wedding.checklist.length === 0) {
         window.state.wedding.checklist = JSON.parse(JSON.stringify(window.DEFAULT_WEDDING_CHECKLIST));
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     }
 
     const allItems = window.state.wedding.checklist || [];
@@ -433,7 +433,7 @@ window.renderWedChecklist = function() {
             const tlClass = isHariH ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white' : 'bg-slate-700 text-white';
             groupRow = `<tr>
                 <td colspan="6" class="${tlClass} text-xs font-bold px-4 py-2.5 uppercase tracking-wide">
-                    📅 ${c.timeline}
+                    ðŸ“… ${c.timeline}
                 </td>
             </tr>`;
         }
@@ -451,15 +451,15 @@ window.renderWedChecklist = function() {
             </td>
             <td class="px-3 py-2.5 text-xs text-slate-600 whitespace-nowrap">
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                    👤 ${c.pic || '-'}
+                    ðŸ‘¤ ${c.pic || '-'}
                 </span>
             </td>
             <td class="px-3 py-2.5 whitespace-nowrap">
                 <select onchange="window.toggleWedChkStatus('${c.id}', this)"
                     class="text-xs px-2.5 py-1 rounded-lg border-0 font-semibold ${statusColor} cursor-pointer outline-none shadow-sm">
-                    <option value="Not Started" ${c.status === 'Not Started' ? 'selected' : ''}>⬜ Belum Mulai</option>
-                    <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>🔄 Dalam Proses</option>
-                    <option value="Done" ${c.status === 'Done' ? 'selected' : ''}>✅ Selesai</option>
+                    <option value="Not Started" ${c.status === 'Not Started' ? 'selected' : ''}>â¬œ Belum Mulai</option>
+                    <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>ðŸ”„ Dalam Proses</option>
+                    <option value="Done" ${c.status === 'Done' ? 'selected' : ''}>âœ… Selesai</option>
                 </select>
             </td>
             <td class="px-3 py-2.5 text-xs text-slate-500 whitespace-nowrap">${targetFmt}</td>
@@ -488,7 +488,7 @@ document.getElementById('wed-tamu-form')?.addEventListener('submit', (e) => {
     if (!window.state.wedding) window.state.wedding = {};
     if (!window.state.wedding.guests) window.state.wedding.guests = [];
     window.state.wedding.guests.push({ id: window.generateId(), name, status });
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.renderWedTamu();
     document.getElementById('wed-tamu-modal')?.classList.add('hidden');
     e.target.reset();
@@ -498,7 +498,7 @@ document.getElementById('wed-tamu-form')?.addEventListener('submit', (e) => {
 window.deleteWedTamu = function(id) {
     if(confirm('Hapus tamu ini?')) {
         window.state.wedding.guests = (window.state.wedding.guests || []).filter(g => g.id !== id);
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.renderWedTamu();
         window.updateWeddingDashboard();
     }
@@ -508,7 +508,7 @@ window.toggleWedTamu = function(id, selectElem) {
     const item = (window.state.wedding.guests || []).find(g => g.id === id);
     if(item) {
         item.status = selectElem.value;
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.renderWedTamu();
         window.updateWeddingDashboard();
     }
@@ -568,7 +568,7 @@ document.getElementById('wed-vendor-form')?.addEventListener('submit', (e) => {
     } else {
         window.state.wedding.kandidatVendors.push(v);
     }
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.renderWedVendors();
     document.getElementById('wed-vendor-modal')?.classList.add('hidden');
     e.target.reset();
@@ -581,7 +581,7 @@ window.deleteWedVendor = function(id, type) {
         } else {
             window.state.wedding.kandidatVendors = (window.state.wedding.kandidatVendors || []).filter(v => v.id !== id);
         }
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.renderWedVendors();
     }
 };
@@ -633,7 +633,7 @@ document.getElementById('wed-ses-form')?.addEventListener('submit', (e) => {
     if (!window.state.wedding) window.state.wedding = {};
     if (!window.state.wedding.seserahan) window.state.wedding.seserahan = [];
     window.state.wedding.seserahan.push({ id: window.generateId(), item, status });
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.renderWedSeserahan();
     document.getElementById('wed-ses-modal')?.classList.add('hidden');
     e.target.reset();
@@ -642,7 +642,7 @@ document.getElementById('wed-ses-form')?.addEventListener('submit', (e) => {
 window.deleteWedSes = function(id) {
     if(confirm('Hapus item ini?')) {
         window.state.wedding.seserahan = (window.state.wedding.seserahan || []).filter(s => s.id !== id);
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.renderWedSeserahan();
     }
 };
@@ -651,7 +651,7 @@ window.toggleWedSes = function(id, selectElem) {
     const s = (window.state.wedding?.seserahan || []).find(x => x.id === id);
     if(s) {
         s.status = selectElem.value;
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.renderWedSeserahan();
     }
 };
@@ -684,3 +684,4 @@ window.renderWedSeserahan = function() {
     }
     if (window.lucide) window.lucide.createIcons();
 };
+

@@ -1,4 +1,4 @@
-// Financial Sub-Nav Logic
+﻿// Financial Sub-Nav Logic
 window.switchFinTab = function(tabId) {
     // Map tab IDs to view/button IDs used in HTML
     const tabs = ['cashflow', 'assets', 'investments', 'debts'];
@@ -38,7 +38,7 @@ document.getElementById('transaction-form')?.addEventListener('submit', (e) => {
     });
     
     window.state.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.updateFinancialTable();
     window.updateDashboard();
     
@@ -50,7 +50,7 @@ document.getElementById('transaction-form')?.addEventListener('submit', (e) => {
 window.deleteTransaction = function(id) {
     if(confirm('Hapus transaksi ini?')) {
         window.state.transactions = window.state.transactions.filter(t => t.id !== id);
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.updateFinancialTable();
         window.updateDashboard();
     }
@@ -96,7 +96,7 @@ document.getElementById('asset-form')?.addEventListener('submit', (e) => {
     const value = window.parseIDR(document.getElementById('asset-value').value);
 
     window.state.assets.push({ id: window.generateId(), name, value });
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.updateAssetsView();
     
     e.target.reset();
@@ -106,7 +106,7 @@ document.getElementById('asset-form')?.addEventListener('submit', (e) => {
 window.deleteAsset = function(id) {
     if(confirm('Hapus aset ini?')) {
         window.state.assets = window.state.assets.filter(a => a.id !== id);
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.updateAssetsView();
     }
 }
@@ -150,7 +150,7 @@ document.getElementById('invest-form')?.addEventListener('submit', (e) => {
     const amount   = window.parseIDR(document.getElementById('inv-value').value);
 
     window.state.investments.push({ id: window.generateId(), name, platform, amount });
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.updateInvestmentsView();
     
     e.target.reset();
@@ -159,7 +159,7 @@ document.getElementById('invest-form')?.addEventListener('submit', (e) => {
 window.deleteInvest = function(id) {
     if(confirm('Hapus investasi ini?')) {
         window.state.investments = window.state.investments.filter(i => i.id !== id);
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.updateInvestmentsView();
     }
 }
@@ -204,7 +204,7 @@ document.getElementById('debt-form')?.addEventListener('submit', (e) => {
     const amount = window.parseIDR(document.getElementById('debt-value').value);
 
     window.state.debts.push({ id: window.generateId(), type, name, amount, desc: '' });
-    window.saveData();
+    window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
     window.updateDebtsView();
     
     e.target.reset();
@@ -213,7 +213,7 @@ document.getElementById('debt-form')?.addEventListener('submit', (e) => {
 window.deleteDebt = function(id) {
     if(confirm('Hapus data ini?')) {
         window.state.debts = window.state.debts.filter(d => d.id !== id);
-        window.saveData();
+        window.saveData(); if(window.showNotification) window.showNotification('Input berhasil disimpan');
         window.updateDebtsView();
     }
 }
@@ -257,6 +257,7 @@ window.updateDebtsView = function() {
     if (piutangEl) piutangEl.innerText = window.formatIDR(totalPiutang);
     if (window.lucide) window.lucide.createIcons();
 }
+
 
 
 
