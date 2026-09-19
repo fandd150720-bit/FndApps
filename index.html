@@ -934,101 +934,105 @@
 
                 <!-- Wed Tab: Dashboard -->
                 <div id="view-wed-dashboard" class="wedding-view block">
-                    <div class="card p-6 mb-6 overflow-hidden">
-                        <h2 class="text-xl font-bold text-slate-900 mb-1">WEDDING PLANNING DASHBOARD</h2>
-                        <p class="text-sm text-slate-500 italic mb-6">Rencana Pernikahan: Febi Wahyudi & Debi Apriani | Tanggal Acara: <span id="wed-dash-date">-</span></p>
+                    <div class="card mb-6 overflow-hidden">
+                        <div class="p-5 border-b border-[#E0E5F2]">
+                            <h2 class="text-lg font-bold text-[#2B3674]">WEDDING PLANNING DASHBOARD</h2>
+                            <p class="text-xs text-[#A3AED0] mt-1">Rencana Pernikahan: Febi Wahyudi & Debi Apriani | Tanggal Acara: <span id="wed-dash-date">-</span></p>
+                        </div>
                         
-                        <h3 class="font-bold text-slate-800 mb-2">RINGKASAN KEUANGAN</h3>
-                        <div class="overflow-x-auto mb-6">
-                            <table class="w-full text-sm text-left border-collapse border border-slate-200">
-                                <thead class="bg-slate-800 text-white">
-                                    <tr>
-                                        <th class="px-4 py-2 border border-slate-700">Total Estimasi</th>
-                                        <th class="px-4 py-2 border border-slate-700">Total Realisasi</th>
-                                        <th class="px-4 py-2 border border-slate-700">Selisih (Hemat/Over)</th>
-                                        <th class="px-4 py-2 border border-slate-700">Total Terbayar</th>
-                                        <th class="px-4 py-2 border border-slate-700">Sisa Tagihan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="font-medium text-slate-900 bg-white">
-                                        <td class="px-4 py-2 border border-slate-200" id="wed-dash-tot-est">Rp 0</td>
-                                        <td class="px-4 py-2 border border-slate-200" id="wed-dash-tot-real">Rp 0</td>
-                                        <td class="px-4 py-2 border border-slate-200" id="wed-dash-tot-selisih">Rp 0</td>
-                                        <td class="px-4 py-2 border border-slate-200" id="wed-dash-tot-bayar">Rp 0</td>
-                                        <td class="px-4 py-2 border border-slate-200" id="wed-dash-tot-sisa">Rp 0</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <div class="p-5">
+                            <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">RINGKASAN KEUANGAN</h3></div>
+                            <div class="overflow-x-auto mb-6">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-[#E0E5F2]">
+                                            <th class="th-horizon">Total Estimasi</th>
+                                            <th class="th-horizon">Total Realisasi</th>
+                                            <th class="th-horizon">Selisih (Hemat/Over)</th>
+                                            <th class="th-horizon text-right">Total Terbayar</th>
+                                            <th class="th-horizon text-right">Sisa Tagihan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm divide-y divide-[#E0E5F2]">
+                                        <tr>
+                                            <td class="py-3 px-2 font-bold text-[#2B3674]" id="wed-dash-tot-est">Rp 0</td>
+                                            <td class="py-3 px-2 font-bold text-[#2B3674]" id="wed-dash-tot-real">Rp 0</td>
+                                            <td class="py-3 px-2 font-bold text-emerald-600" id="wed-dash-tot-selisih">Rp 0</td>
+                                            <td class="py-3 px-2 text-right font-bold text-[#2B3674]" id="wed-dash-tot-bayar">Rp 0</td>
+                                            <td class="py-3 px-2 text-right font-bold text-rose-600" id="wed-dash-tot-sisa">Rp 0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-                            <div>
-                                <h3 class="font-bold text-slate-800 mb-2">PROGRESS PERSIAPAN (CHECKLIST)</h3>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-sm text-left border-collapse border border-slate-200">
-                                        <thead class="bg-slate-800 text-white">
-                                            <tr>
-                                                <th class="px-4 py-2 border border-slate-700">Status Persiapan</th>
-                                                <th class="px-4 py-2 border border-slate-700 text-center">Jumlah Tugas</th>
-                                                <th class="px-4 py-2 border border-slate-700 text-right">Persentase</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="bg-white">
-                                            <tr><td class="px-4 py-2 border border-slate-200">Selesai (Done)</td><td class="px-4 py-2 border border-slate-200 text-center" id="wed-chk-done">0</td><td class="px-4 py-2 border border-slate-200 text-right" id="wed-chk-done-pct">0.0%</td></tr>
-                                            <tr><td class="px-4 py-2 border border-slate-200">Dalam Proses (In Progress)</td><td class="px-4 py-2 border border-slate-200 text-center" id="wed-chk-prog">0</td><td class="px-4 py-2 border border-slate-200 text-right" id="wed-chk-prog-pct">0.0%</td></tr>
-                                            <tr><td class="px-4 py-2 border border-slate-200">Belum Dimulai (Not Started)</td><td class="px-4 py-2 border border-slate-200 text-center" id="wed-chk-not">0</td><td class="px-4 py-2 border border-slate-200 text-right" id="wed-chk-not-pct">0.0%</td></tr>
-                                            <tr class="font-bold bg-slate-50"><td class="px-4 py-2 border border-slate-200">Total Tugas</td><td class="px-4 py-2 border border-slate-200 text-center" id="wed-chk-tot">0</td><td class="px-4 py-2 border border-slate-200 text-right">100.0%</td></tr>
-                                        </tbody>
-                                    </table>
+                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">PROGRESS PERSIAPAN (CHECKLIST)</h3></div>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="border-b border-[#E0E5F2]">
+                                                    <th class="th-horizon">Status Persiapan</th>
+                                                    <th class="th-horizon text-center">Jumlah Tugas</th>
+                                                    <th class="th-horizon text-right">Persentase</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-sm divide-y divide-[#E0E5F2]">
+                                                <tr><td class="py-3 px-2">Selesai (Done)</td><td class="py-3 px-2 text-center" id="wed-chk-done">0</td><td class="py-3 px-2 text-right text-[#A3AED0]" id="wed-chk-done-pct">0.0%</td></tr>
+                                                <tr><td class="py-3 px-2">Dalam Proses (In Progress)</td><td class="py-3 px-2 text-center" id="wed-chk-prog">0</td><td class="py-3 px-2 text-right text-[#A3AED0]" id="wed-chk-prog-pct">0.0%</td></tr>
+                                                <tr><td class="py-3 px-2">Belum Dimulai (Not Started)</td><td class="py-3 px-2 text-center" id="wed-chk-not">0</td><td class="py-3 px-2 text-right text-[#A3AED0]" id="wed-chk-not-pct">0.0%</td></tr>
+                                                <tr class="font-bold bg-[#F4F7FE]"><td class="py-3 px-2 text-[#2B3674]">Total Tugas</td><td class="py-3 px-2 text-center text-[#2B3674]" id="wed-chk-tot">0</td><td class="py-3 px-2 text-right text-[#2B3674]">100.0%</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">RINGKASAN TAMU & RSVP</h3></div>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-left border-collapse">
+                                            <tbody class="text-sm divide-y divide-[#E0E5F2]">
+                                                <tr class="bg-[#F4F7FE]"><td class="py-3 px-2 font-bold text-[#2B3674]">Total Target Tamu</td><td class="py-3 px-2 text-right font-bold text-[#2B3674]" id="wed-guest-tot">0</td></tr>
+                                                <tr><td class="py-3 px-2 text-[#A3AED0]">Konfirmasi Hadir</td><td class="py-3 px-2 text-right text-emerald-600 font-bold" id="wed-guest-hadir">0</td></tr>
+                                                <tr><td class="py-3 px-2 text-[#A3AED0]">Tidak Hadir</td><td class="py-3 px-2 text-right text-rose-600 font-bold" id="wed-guest-tidak">0</td></tr>
+                                                <tr><td class="py-3 px-2 text-[#A3AED0]">Belum Konfirmasi</td><td class="py-3 px-2 text-right text-amber-500 font-bold" id="wed-guest-belum">0</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <h3 class="font-bold text-slate-800 mb-2">RINGKASAN TAMU & RSVP</h3>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-sm text-left border-collapse border border-slate-200">
-                                        <tbody class="bg-white">
-                                            <tr><td class="px-4 py-2 border border-slate-200 bg-slate-50">Total Target Tamu</td><td class="px-4 py-2 border border-slate-200 text-right font-bold bg-slate-50" id="wed-guest-tot">0</td></tr>
-                                            <tr><td class="px-4 py-2 border border-slate-200">Konfirmasi Hadir</td><td class="px-4 py-2 border border-slate-200 text-right text-blue-600 font-medium" id="wed-guest-hadir">0</td></tr>
-                                            <tr><td class="px-4 py-2 border border-slate-200">Tidak Hadir</td><td class="px-4 py-2 border border-slate-200 text-right text-rose-600 font-medium" id="wed-guest-tidak">0</td></tr>
-                                            <tr><td class="px-4 py-2 border border-slate-200">Belum Konfirmasi</td><td class="px-4 py-2 border border-slate-200 text-right text-slate-500 font-medium" id="wed-guest-belum">0</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                            <div>
-                                <h3 class="font-bold text-slate-800 mb-2">RINCIAN BIAYA PER KATEGORI</h3>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-xs text-left border-collapse border border-slate-200">
-                                        <thead class="bg-slate-800 text-white">
-                                            <tr>
-                                                <th class="px-2 py-2 border border-slate-700 w-1/3">Kategori Pengeluaran</th>
-                                                <th class="px-2 py-2 border border-slate-700 text-right">Estimasi Biaya</th>
-                                                <th class="px-2 py-2 border border-slate-700 text-right">Realisasi Biaya</th>
-                                                <th class="px-2 py-2 border border-slate-700 text-right">Selisih</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="bg-white divide-y divide-slate-200" id="wed-dash-budget-tbody">
-                                            <!-- JS will populate this -->
-                                        </tbody>
-                                        <tfoot class="bg-slate-100 font-bold border-t border-slate-200">
-                                            <tr>
-                                                <td class="px-2 py-2 border border-slate-200">TOTAL</td>
-                                                <td class="px-2 py-2 text-right border border-slate-200" id="wed-dash-budget-tot-est">Rp 0</td>
-                                                <td class="px-2 py-2 text-right border border-slate-200" id="wed-dash-budget-tot-real">Rp 0</td>
-                                                <td class="px-2 py-2 text-right border border-slate-200" id="wed-dash-budget-tot-selisih">Rp 0</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                                <div>
+                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">RINCIAN BIAYA PER KATEGORI</h3></div>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="border-b border-[#E0E5F2]">
+                                                    <th class="th-horizon w-1/3">Kategori Pengeluaran</th>
+                                                    <th class="th-horizon text-right">Estimasi Biaya</th>
+                                                    <th class="th-horizon text-right">Realisasi Biaya</th>
+                                                    <th class="th-horizon text-right">Selisih</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-sm divide-y divide-[#E0E5F2]" id="wed-dash-budget-tbody">
+                                                <!-- JS will populate this -->
+                                            </tbody>
+                                            <tfoot class="border-t border-[#E0E5F2] font-bold bg-[#F4F7FE]">
+                                                <tr>
+                                                    <td class="py-3 px-2 text-[#2B3674]">TOTAL</td>
+                                                    <td class="py-3 px-2 text-right text-[#2B3674]" id="wed-dash-budget-tot-est">Rp 0</td>
+                                                    <td class="py-3 px-2 text-right text-[#2B3674]" id="wed-dash-budget-tot-real">Rp 0</td>
+                                                    <td class="py-3 px-2 text-right text-[#2B3674]" id="wed-dash-budget-tot-selisih">Rp 0</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <h3 class="font-bold text-slate-800 mb-2">Perbandingan Estimasi vs Realisasi Biaya</h3>
-                                <div class="border border-slate-200 p-4 rounded-xl bg-white flex-1 relative" style="min-height: 350px;">
-                                    <canvas id="wedBudgetChart"></canvas>
+                                <div class="flex flex-col">
+                                    <div class="mb-4"><h3 class="text-base font-bold text-[#2B3674]">Perbandingan Estimasi vs Realisasi Biaya</h3></div>
+                                    <div class="border border-[#E0E5F2] p-4 rounded-xl bg-white flex-1 relative" style="min-height: 350px;">
+                                        <canvas id="wedBudgetChart"></canvas>
+                                    </div>
                                 </div>
                             </div>
                         </div>

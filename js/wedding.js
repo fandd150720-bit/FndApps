@@ -121,11 +121,11 @@ window.updateWeddingDashboard = function() {
             
             const selisih = (cat.estimasi || 0) - (cat.realisasi || 0);
             tbody.innerHTML += `
-                <tr>
-                    <td class="px-2 py-2 border border-slate-200">${cat.name || key}</td>
-                    <td class="px-2 py-2 border border-slate-200 text-right">${window.formatIDR(cat.estimasi || 0)}</td>
-                    <td class="px-2 py-2 border border-slate-200 text-right">${window.formatIDR(cat.realisasi || 0)}</td>
-                    <td class="px-2 py-2 border border-slate-200 text-right ${selisih >= 0 ? 'text-emerald-600' : 'text-rose-600'} font-medium">${window.formatIDR(selisih)}</td>
+                <tr class="hover:bg-[#F4F7FE] transition-colors">
+                    <td class="py-2 px-2 text-[#2B3674] font-medium">${cat.name || key}</td>
+                    <td class="py-2 px-2 text-[#2B3674] text-right">${window.formatIDR(cat.estimasi || 0)}</td>
+                    <td class="py-2 px-2 text-[#2B3674] text-right">${window.formatIDR(cat.realisasi || 0)}</td>
+                    <td class="py-2 px-2 text-right ${selisih >= 0 ? 'text-emerald-500' : 'text-rose-500'} font-bold">${window.formatIDR(selisih)}</td>
                 </tr>
             `;
         }
@@ -141,7 +141,7 @@ window.updateWeddingDashboard = function() {
     setElemText('wed-dash-tot-real', window.formatIDR(totalReal));
     setElemText('wed-dash-tot-selisih', window.formatIDR(totalSelisih));
     const selisihEl = document.getElementById('wed-dash-tot-selisih');
-    if (selisihEl) selisihEl.className = `px-4 py-2 border border-slate-200 font-bold ${totalSelisih >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+    if (selisihEl) selisihEl.className = `px-4 py-2 font-bold ${totalSelisih >= 0 ? 'text-emerald-500' : 'text-rose-500'}`;
     
     setElemText('wed-dash-tot-bayar', window.formatIDR(totalReal));
     setElemText('wed-dash-tot-sisa', window.formatIDR(totalEst - totalReal > 0 ? totalEst - totalReal : 0));
@@ -187,8 +187,8 @@ window.updateWeddingDashboard = function() {
             data: {
                 labels: labels,
                 datasets: [
-                    { label: 'Estimasi Biaya', data: dataEst, backgroundColor: '#3b82f6', categoryPercentage: 0.8, barPercentage: 0.9 },
-                    { label: 'Realisasi Biaya', data: dataReal, backgroundColor: '#f43f5e', categoryPercentage: 0.8, barPercentage: 0.9 }
+                    { label: 'Estimasi Biaya', data: dataEst, backgroundColor: '#4318FF', categoryPercentage: 0.8, barPercentage: 0.9, borderRadius: 4 },
+                    { label: 'Realisasi Biaya', data: dataReal, backgroundColor: '#39B8FF', categoryPercentage: 0.8, barPercentage: 0.9, borderRadius: 4 }
                 ]
             },
             options: {
