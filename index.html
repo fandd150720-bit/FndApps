@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -51,7 +51,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
     <style>
         /* ============================================
-           HORIZON UI â€” GLOBAL DESIGN SYSTEM
+           HORIZON UI — GLOBAL DESIGN SYSTEM
            ============================================ */
         body { font-family: 'DM Sans', 'Inter', sans-serif;   }
 
@@ -189,46 +189,11 @@
         .dark body { background: #0B1437; color: #fff; }
     </style>
 </head>
-<body class="bg-[#F4F7FE] dark:bg-[#0B1437] text-[#2B3674] dark:text-white h-screen flex flex-col overflow-hidden">
+<body class="bg-[#F4F7FE] dark:bg-[#0B1437] text-[#2B3674] dark:text-white h-screen flex overflow-hidden">
 
-    <!-- Topbar (Horizon UI) -->
-    <header class="bg-[#F4F7FE] dark:bg-[#0B1437] z-50 h-20 flex-shrink-0 flex items-center justify-between px-6 md:px-8">
-        <!-- Left: Empty to push right items if needed -->
-        <div id="topbar-left" class="flex flex-col justify-center">
-            <!-- Title removed as requested -->
-        </div>
-        <!-- Right: Capsule control bar -->
-        <div class="flex items-center gap-3">
-            <!-- Mobile sidebar toggle -->
-            <button onclick="toggleSidebar()" class="md:hidden p-2 text-[#A3AED0] hover:text-[#2B3674] dark:text-white rounded-xl hover:bg-white dark:bg-[#111C44] transition-colors">
-                <i data-lucide="menu" class="w-5 h-5"></i>
-            </button>
-            <!-- Control Capsule -->
-            <div class="hidden md:flex items-center gap-2 bg-white dark:bg-[#111C44] rounded-full shadow-topbar px-3 py-2">
-                <div class="relative">
-                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#A3AED0]"></i>
-                    <input type="text" placeholder="Search..." class="bg-[#F4F7FE] dark:bg-[#0B1437] text-sm rounded-full pl-9 pr-4 py-1.5 border-none outline-none w-52 text-[#2B3674] dark:text-white placeholder-[#A3AED0]">
-                </div>
-                <div class="w-px h-5 bg-[#E0E5F2] mx-1"></div>
-                <button id="bell-btn" onclick="clearNotificationBadge()" class="relative p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
-                    <i data-lucide="bell" class="w-4.5 h-4.5"></i>
-                    <span id="bell-badge" class="hidden absolute top-1.5 right-1.5 w-2 h-2 bg-[#EE5D50] rounded-full border border-white"></span>
-                </button>
-                <button onclick="showSystemUpdate()" class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
-                    <i data-lucide="info" class="w-4.5 h-4.5"></i>
-                </button>
-                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors" title="Toggle Theme">
-                    <i id="theme-icon" data-lucide="moon" class="w-4.5 h-4.5"></i>
-                </button>
-                <div class="w-px h-5 bg-[#E0E5F2] mx-1"></div>
-                <img id="user-profile-img-top" src="https://ui-avatars.com/api/?name=FD&background=4318FF&color=fff&bold=true" alt="Profile" class="w-8 h-8 rounded-full flex-shrink-0 cursor-pointer ring-2 ring-[#4318FF]/20">
-            </div>
-        </div>
-    </header>
+    
 
-    <div class="flex flex-1 overflow-hidden">
-
-    <!-- Login Screen -->
+        <!-- Login Screen -->
     <div id="login-screen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center p-4">
         <div class="bg-white dark:bg-[#111C44] p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
             <div class="bg-blue-600 text-white p-4 rounded-2xl inline-block mb-4">
@@ -328,10 +293,49 @@
         </div>
     </aside>
 
+<div class="flex flex-col flex-1 overflow-hidden relative">
+
+
+
     <!-- Overlay for mobile sidebar -->
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden"></div>
 
     <!-- Main Content -->
+<!-- Topbar (Horizon UI) -->
+    <header class="bg-[#F4F7FE] dark:bg-[#0B1437] z-50 h-20 flex-shrink-0 flex items-center justify-between px-6 md:px-8">
+        <!-- Left: Empty to push right items if needed -->
+        <div id="topbar-left" class="flex flex-col justify-center">
+            <!-- Title removed as requested -->
+        </div>
+        <!-- Right: Capsule control bar -->
+        <div class="flex items-center gap-3">
+            <!-- Mobile sidebar toggle -->
+            <button onclick="toggleSidebar()" class="md:hidden p-2 text-[#A3AED0] hover:text-[#2B3674] dark:text-white rounded-xl hover:bg-white dark:bg-[#111C44] transition-colors">
+                <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+            <!-- Control Capsule -->
+            <div class="hidden md:flex items-center gap-2 bg-white dark:bg-[#111C44] rounded-full shadow-topbar px-3 py-2">
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#A3AED0]"></i>
+                    <input type="text" placeholder="Search..." class="bg-[#F4F7FE] dark:bg-[#0B1437] text-sm rounded-full pl-9 pr-4 py-1.5 border-none outline-none w-52 text-[#2B3674] dark:text-white placeholder-[#A3AED0]">
+                </div>
+                <div class="w-px h-5 bg-[#E0E5F2] mx-1"></div>
+                <button id="bell-btn" onclick="clearNotificationBadge()" class="relative p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
+                    <i data-lucide="bell" class="w-4.5 h-4.5"></i>
+                    <span id="bell-badge" class="hidden absolute top-1.5 right-1.5 w-2 h-2 bg-[#EE5D50] rounded-full border border-white"></span>
+                </button>
+                <button onclick="showSystemUpdate()" class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors">
+                    <i data-lucide="info" class="w-4.5 h-4.5"></i>
+                </button>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 text-[#A3AED0] hover:text-[#4318FF] transition-colors" title="Toggle Theme">
+                    <i id="theme-icon" data-lucide="moon" class="w-4.5 h-4.5"></i>
+                </button>
+                <div class="w-px h-5 bg-[#E0E5F2] mx-1"></div>
+                <img id="user-profile-img-top" src="https://ui-avatars.com/api/?name=FD&background=4318FF&color=fff&bold=true" alt="Profile" class="w-8 h-8 rounded-full flex-shrink-0 cursor-pointer ring-2 ring-[#4318FF]/20">
+            </div>
+        </div>
+    </header>
+
     <main class="flex-1 h-full overflow-y-auto relative w-full bg-[#F4F7FE] dark:bg-[#0B1437]">
 
 
@@ -1048,7 +1052,7 @@
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div>
                                     <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                        <span>ðŸ“‹</span> Master Checklist Persiapan Pernikahan
+                                        <span>📋</span> Master Checklist Persiapan Pernikahan
                                     </h3>
                                     <p class="text-sm text-slate-500 mt-1">Kelola semua tugas timeline dari 12 bulan sebelum hingga Hari H</p>
                                 </div>
@@ -1071,18 +1075,18 @@
                                     <span id="wed-chk-stat-total" class="text-lg font-bold text-slate-800">0</span>
                                 </div>
                                 <div class="bg-white dark:bg-[#111C44]/80 backdrop-blur rounded-xl p-3 border border-emerald-100 shadow-xs">
-                                    <span class="text-xs text-emerald-600 block font-medium">âœ… Selesai</span>
+                                    <span class="text-xs text-emerald-600 block font-medium">✅ Selesai</span>
                                     <div class="flex items-baseline gap-1.5">
                                         <span id="wed-chk-stat-done" class="text-lg font-bold text-emerald-600">0</span>
                                         <span id="wed-chk-stat-done-pct" class="text-xs text-emerald-600 font-semibold">(0%)</span>
                                     </div>
                                 </div>
                                 <div class="bg-white dark:bg-[#111C44]/80 backdrop-blur rounded-xl p-3 border border-amber-100 shadow-xs">
-                                    <span class="text-xs text-amber-600 block font-medium">ðŸ”„ Dalam Proses</span>
+                                    <span class="text-xs text-amber-600 block font-medium">🔄 Dalam Proses</span>
                                     <span id="wed-chk-stat-prog" class="text-lg font-bold text-amber-600">0</span>
                                 </div>
                                 <div class="bg-white dark:bg-[#111C44]/80 backdrop-blur rounded-xl p-3 border border-slate-200 shadow-xs">
-                                    <span class="text-xs text-slate-500 block font-medium">â¬œ Belum Dimulai</span>
+                                    <span class="text-xs text-slate-500 block font-medium">⬜ Belum Dimulai</span>
                                     <span id="wed-chk-stat-not" class="text-lg font-bold text-slate-600">0</span>
                                 </div>
                             </div>
@@ -1091,7 +1095,7 @@
                         <!-- Filters -->
                         <div class="px-6 py-4 bg-white dark:bg-[#111C44] border-b border-slate-100 flex flex-wrap gap-3">
                             <div class="flex-1 min-w-40">
-                                <input type="text" id="wed-chk-search" placeholder="ðŸ” Cari tugas, kategori, PIC..."
+                                <input type="text" id="wed-chk-search" placeholder="🔍 Cari tugas, kategori, PIC..."
                                     oninput="window.renderWedChecklist()"
                                     class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-400 outline-none">
                             </div>
@@ -1110,9 +1114,9 @@
                             <select id="wed-chk-filter-status" onchange="window.renderWedChecklist()"
                                 class="px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-rose-400 outline-none">
                                 <option value="all">Semua Status</option>
-                                <option value="Not Started">â¬œ Not Started</option>
-                                <option value="In Progress">ðŸ”„ In Progress</option>
-                                <option value="Done">âœ… Done</option>
+                                <option value="Not Started">⬜ Not Started</option>
+                                <option value="In Progress">🔄 In Progress</option>
+                                <option value="Done">✅ Done</option>
                             </select>
                         </div>
 
@@ -1500,5 +1504,6 @@
 
 
 </html>
+
 
 
