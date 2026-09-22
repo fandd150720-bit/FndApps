@@ -1,4 +1,4 @@
-﻿// --- WEDDING PLANNER LOGIC ---
+// --- WEDDING PLANNER LOGIC ---
 let wedChartInstance = null;
 
 // Standard Template Checklist Persiapan Pernikahan
@@ -420,20 +420,20 @@ window.renderWedChecklist = function() {
     let lastTimeline = '';
     items.forEach(c => {
         const statusColor = c.status === 'Done'
-            ? 'bg-emerald-100 text-emerald-700'
+            ? 'bg-[rgba(5,205,153,0.12)] text-[#05CD99]'
             : c.status === 'In Progress'
-            ? 'bg-amber-100 text-amber-700'
-            : 'bg-slate-100 text-slate-600';
+            ? 'bg-[rgba(255,181,71,0.14)] text-[#d97706]'
+            : 'bg-[rgba(163,174,208,0.12)] text-[#A3AED0]';
 
         // Group header row per timeline
         let groupRow = '';
         if (c.timeline !== lastTimeline) {
             lastTimeline = c.timeline;
             const isHariH = c.timeline === 'HARI H';
-            const tlClass = isHariH ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white' : 'bg-slate-700 text-white';
+            const tlClass = isHariH ? 'bg-gradient-to-r from-[#4318FF] to-[#868CFF] text-white border-y border-[#4318FF]' : 'bg-[#F4F7FE] dark:bg-[#0B1437] text-[#2B3674] dark:text-white border-y border-[#E0E5F2] dark:border-[#1B2559]';
             groupRow = `<tr>
-                <td colspan="6" class="${tlClass} text-xs font-bold px-4 py-2.5 uppercase tracking-wide">
-                    ðŸ“… ${c.timeline}
+                <td colspan="6" class="${tlClass} text-xs font-bold px-4 py-3 uppercase tracking-wide">
+                    <i data-lucide="calendar" class="w-4 h-4 inline mr-1 -mt-0.5"></i> ${c.timeline}
                 </td>
             </tr>`;
         }
@@ -441,37 +441,37 @@ window.renderWedChecklist = function() {
         const targetFmt = c.target ? new Date(c.target).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}) : '-';
 
         tbody.innerHTML += groupRow + `
-        <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition-colors ${c.status === 'Done' ? 'bg-slate-50/50' : ''}">
-            <td class="px-3 py-2.5 text-xs font-medium text-slate-600 whitespace-nowrap">
-                <span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md border border-slate-200">${c.kategori || 'Umum'}</span>
+        <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559] hover:bg-[#F4F7FE] dark:hover:bg-[#0B1437]/50 transition-colors ${c.status === 'Done' ? 'opacity-75' : ''}">
+            <td class="px-3 py-3 text-xs font-medium text-[#2B3674] dark:text-white whitespace-nowrap">
+                <span class="px-2 py-1 bg-[#F4F7FE] dark:bg-[#0B1437] text-[#4318FF] dark:text-[#868CFF] rounded-md font-bold">${c.kategori || 'Umum'}</span>
             </td>
-            <td class="px-3 py-2.5 text-sm text-slate-800">
-                <div class="font-medium ${c.status === 'Done' ? 'line-through text-slate-400' : ''}">${c.name}</div>
-                ${c.notes ? `<div class="text-xs text-slate-400 mt-0.5 flex items-center gap-1"><i data-lucide="info" class="w-3 h-3 text-slate-400 inline"></i> ${c.notes}</div>` : ''}
+            <td class="px-3 py-3 text-sm text-[#2B3674] dark:text-white">
+                <div class="font-medium ${c.status === 'Done' ? 'line-through text-[#A3AED0]' : ''}">${c.name}</div>
+                ${c.notes ? `<div class="text-xs text-[#A3AED0] mt-1 flex items-center gap-1"><i data-lucide="info" class="w-3.5 h-3.5 inline"></i> ${c.notes}</div>` : ''}
             </td>
-            <td class="px-3 py-2.5 text-xs text-slate-600 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                    ðŸ‘¤ ${c.pic || '-'}
+            <td class="px-3 py-3 text-xs text-[#2B3674] dark:text-white whitespace-nowrap">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F4F7FE] dark:bg-[#0B1437] font-medium border border-[#E0E5F2] dark:border-[#1B2559]">
+                    <i data-lucide="user" class="w-3 h-3 text-[#A3AED0]"></i> ${c.pic || '-'}
                 </span>
             </td>
-            <td class="px-3 py-2.5 whitespace-nowrap">
+            <td class="px-3 py-3 whitespace-nowrap">
                 <select onchange="window.toggleWedChkStatus('${c.id}', this)"
-                    class="text-xs px-2.5 py-1 rounded-lg border-0 font-semibold ${statusColor} cursor-pointer outline-none shadow-sm">
-                    <option value="Not Started" ${c.status === 'Not Started' ? 'selected' : ''}>â¬œ Belum Mulai</option>
-                    <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>ðŸ”„ Dalam Proses</option>
-                    <option value="Done" ${c.status === 'Done' ? 'selected' : ''}>âœ… Selesai</option>
+                    class="text-xs px-2.5 py-1.5 rounded-lg border-0 font-bold ${statusColor} cursor-pointer outline-none shadow-sm dark:bg-[#1B2559] dark:text-white">
+                    <option value="Not Started" ${c.status === 'Not Started' ? 'selected' : ''}>Belum Mulai</option>
+                    <option value="In Progress" ${c.status === 'In Progress' ? 'selected' : ''}>Dalam Proses</option>
+                    <option value="Done" ${c.status === 'Done' ? 'selected' : ''}>Selesai</option>
                 </select>
             </td>
-            <td class="px-3 py-2.5 text-xs text-slate-500 whitespace-nowrap">${targetFmt}</td>
-            <td class="px-3 py-2.5 whitespace-nowrap text-right">
+            <td class="px-3 py-3 text-xs text-[#A3AED0] whitespace-nowrap font-medium">${targetFmt}</td>
+            <td class="px-3 py-3 whitespace-nowrap text-right">
                 <div class="flex items-center justify-end gap-1">
                     <button onclick="window.editWedChk('${c.id}')"
-                        class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit Tugas">
-                        <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                        class="p-1.5 text-[#A3AED0] hover:text-[#4318FF] hover:bg-[#F4F7FE] dark:hover:bg-[#1B2559] rounded-lg transition-colors" title="Edit Tugas">
+                        <i data-lucide="pencil" class="w-4 h-4"></i>
                     </button>
                     <button onclick="window.deleteWedChk('${c.id}')"
-                        class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus Tugas">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        class="p-1.5 text-[#A3AED0] hover:text-[#EE5D50] hover:bg-[#F4F7FE] dark:hover:bg-[#1B2559] rounded-lg transition-colors" title="Hapus Tugas">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
             </td>
@@ -520,22 +520,22 @@ window.renderWedTamu = function() {
     tbody.innerHTML = '';
     const guests = window.state.wedding?.guests || [];
     if(guests.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-slate-500">Belum ada daftar tamu.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-[#A3AED0]">Belum ada daftar tamu.</td></tr>';
     } else {
         guests.forEach(g => {
-            let stColor = g.status === 'Hadir' ? 'text-blue-600 bg-blue-50' : (g.status === 'Tidak Hadir' ? 'text-rose-600 bg-rose-50' : 'text-slate-600 bg-slate-100');
+            let stColor = g.status === 'Hadir' ? 'text-[#4318FF] bg-[rgba(67,24,255,0.1)]' : (g.status === 'Tidak Hadir' ? 'text-[#EE5D50] bg-[rgba(238,93,80,0.1)]' : 'text-[#A3AED0] bg-[#F4F7FE] dark:bg-[#0B1437]');
             tbody.innerHTML += `
-                <tr>
-                    <td class="px-4 py-3 font-medium">${g.name}</td>
+                <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
+                    <td class="px-4 py-3 font-medium text-[#2B3674] dark:text-white">${g.name}</td>
                     <td class="px-4 py-3">
-                        <select onchange="window.toggleWedTamu('${g.id}', this)" class="${stColor} text-xs font-bold px-2 py-1 rounded outline-none cursor-pointer border border-transparent hover:border-slate-300">
+                        <select onchange="window.toggleWedTamu('${g.id}', this)" class="${stColor} text-xs font-bold px-2 py-1 rounded outline-none cursor-pointer border border-transparent dark:bg-[#1B2559] dark:text-white">
                             <option value="Belum Konfirmasi" ${g.status === 'Belum Konfirmasi' ? 'selected' : ''}>Belum Konfirmasi</option>
                             <option value="Hadir" ${g.status === 'Hadir' ? 'selected' : ''}>Konfirmasi Hadir</option>
                             <option value="Tidak Hadir" ${g.status === 'Tidak Hadir' ? 'selected' : ''}>Tidak Hadir</option>
                         </select>
                     </td>
                     <td class="px-4 py-3 text-right">
-                        <button onclick="window.deleteWedTamu('${g.id}')" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        <button onclick="window.deleteWedTamu('${g.id}')" class="text-[#A3AED0] hover:text-[#EE5D50]"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </td>
                 </tr>
             `;
@@ -662,21 +662,21 @@ window.renderWedSeserahan = function() {
     tbody.innerHTML = '';
     const items = window.state.wedding?.seserahan || [];
     if(items.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-slate-500">Belum ada daftar seserahan.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-center text-[#A3AED0]">Belum ada daftar seserahan.</td></tr>';
     } else {
         items.forEach(s => {
-            let stColor = s.status === 'Sudah Dibeli' ? 'text-emerald-600 bg-emerald-50' : 'text-slate-600 bg-slate-100';
+            let stColor = s.status === 'Sudah Dibeli' ? 'text-[#05CD99] bg-[rgba(5,205,153,0.12)]' : 'text-[#A3AED0] bg-[#F4F7FE] dark:bg-[#0B1437]';
             tbody.innerHTML += `
-                <tr>
-                    <td class="px-4 py-3 font-medium">${s.item}</td>
+                <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
+                    <td class="px-4 py-3 font-medium text-[#2B3674] dark:text-white">${s.item}</td>
                     <td class="px-4 py-3">
-                        <select onchange="window.toggleWedSes('${s.id}', this)" class="${stColor} text-xs font-bold px-2 py-1 rounded outline-none cursor-pointer border border-transparent hover:border-slate-300">
+                        <select onchange="window.toggleWedSes('${s.id}', this)" class="${stColor} text-xs font-bold px-2 py-1 rounded outline-none cursor-pointer border border-transparent dark:bg-[#1B2559] dark:text-white">
                             <option value="Belum Dibeli" ${s.status === 'Belum Dibeli' ? 'selected' : ''}>Belum Dibeli</option>
                             <option value="Sudah Dibeli" ${s.status === 'Sudah Dibeli' ? 'selected' : ''}>Sudah Dibeli</option>
                         </select>
                     </td>
                     <td class="px-4 py-3 text-right">
-                        <button onclick="window.deleteWedSes('${s.id}')" class="text-slate-400 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        <button onclick="window.deleteWedSes('${s.id}')" class="text-[#A3AED0] hover:text-[#EE5D50]"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </td>
                 </tr>
             `;
