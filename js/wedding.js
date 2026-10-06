@@ -484,20 +484,24 @@ window.renderWedChecklist = function() {
         const targetFmt = c.target ? new Date(c.target).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}) : '-';
 
         tbody.innerHTML += groupRow + `
-        <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559] hover:bg-[#F4F7FE] dark:hover:bg-[#0B1437]/50 transition-colors ${c.status === 'Done' ? 'opacity-75' : ''}">
-            <td class="px-3 py-3 text-xs font-medium text-[#2B3674] dark:text-white whitespace-nowrap">
+        <tr class="block md:table-row border-b border-[#E0E5F2] dark:border-[#1B2559] hover:bg-[#F4F7FE] dark:hover:bg-[#0B1437]/50 transition-colors ${c.status === 'Done' ? 'opacity-75' : ''} mb-3 md:mb-0">
+            <td class="block md:table-cell px-4 py-2 md:py-3 text-xs font-medium text-[#2B3674] dark:text-white whitespace-nowrap">
+                <span class="inline-block md:hidden text-[#A3AED0] w-24">Kategori</span>
                 <span class="px-2 py-1 bg-[#F4F7FE] dark:bg-[#0B1437] text-[#4318FF] dark:text-[#868CFF] rounded-md font-bold">${c.kategori || 'Umum'}</span>
             </td>
-            <td class="px-3 py-3 text-sm text-[#2B3674] dark:text-white">
-                <div class="font-medium ${c.status === 'Done' ? 'line-through text-[#A3AED0]' : ''}">${c.name}</div>
-                ${c.notes ? `<div class="text-xs text-[#A3AED0] mt-1 flex items-center gap-1"><i data-lucide="info" class="w-3.5 h-3.5 inline"></i> ${c.notes}</div>` : ''}
+            <td class="block md:table-cell px-4 py-2 md:py-3 text-sm text-[#2B3674] dark:text-white">
+                <span class="inline-block md:hidden text-[#A3AED0] text-xs w-24 align-top">Tugas</span>
+                <div class="inline-block font-medium ${c.status === 'Done' ? 'line-through text-[#A3AED0]' : ''}">${c.name}</div>
+                ${c.notes ? `<div class="text-xs text-[#A3AED0] mt-1 flex items-center gap-1 md:block ml-24 md:ml-0"><i data-lucide="info" class="w-3.5 h-3.5 inline"></i> ${c.notes}</div>` : ''}
             </td>
-            <td class="px-3 py-3 text-xs text-[#2B3674] dark:text-white whitespace-nowrap">
+            <td class="block md:table-cell px-4 py-2 md:py-3 text-xs text-[#2B3674] dark:text-white whitespace-nowrap">
+                <span class="inline-block md:hidden text-[#A3AED0] w-24">PIC</span>
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F4F7FE] dark:bg-[#0B1437] font-medium border border-[#E0E5F2] dark:border-[#1B2559]">
                     <i data-lucide="user" class="w-3 h-3 text-[#A3AED0]"></i> ${c.pic || '-'}
                 </span>
             </td>
-            <td class="px-3 py-3 whitespace-nowrap">
+            <td class="block md:table-cell px-4 py-2 md:py-3 whitespace-nowrap">
+                <span class="inline-block md:hidden text-[#A3AED0] text-xs w-24">Status</span>
                 <select onchange="window.toggleWedChkStatus('${c.id}', this)"
                     class="text-xs px-2.5 py-1.5 rounded-lg border-0 font-bold ${statusColor} cursor-pointer outline-none shadow-sm dark:bg-[#1B2559] dark:text-white">
                     <option value="Not Started" ${c.status === 'Not Started' ? 'selected' : ''}>Belum Mulai</option>
@@ -505,16 +509,18 @@ window.renderWedChecklist = function() {
                     <option value="Done" ${c.status === 'Done' ? 'selected' : ''}>Selesai</option>
                 </select>
             </td>
-            <td class="px-3 py-3 text-xs text-[#A3AED0] whitespace-nowrap font-medium">${targetFmt}</td>
-            <td class="px-3 py-3 whitespace-nowrap text-right">
-                <div class="flex items-center justify-end gap-1">
+            <td class="block md:table-cell px-4 py-2 md:py-3 text-xs text-[#A3AED0] whitespace-nowrap font-medium">
+                <span class="inline-block md:hidden w-24">Target</span>${targetFmt}
+            </td>
+            <td class="block md:table-cell px-4 py-2 md:py-3 whitespace-nowrap text-right border-t border-slate-100 md:border-0 dark:border-slate-800 mt-2 md:mt-0">
+                <div class="flex items-center md:justify-end gap-1">
                     <button onclick="window.editWedChk('${c.id}')"
-                        class="p-1.5 text-[#A3AED0] hover:text-[#4318FF] hover:bg-[#F4F7FE] dark:hover:bg-[#1B2559] rounded-lg transition-colors" title="Edit Tugas">
-                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                        class="p-1.5 text-[#A3AED0] hover:text-[#4318FF] hover:bg-[#F4F7FE] dark:hover:bg-[#1B2559] rounded-lg transition-colors flex items-center gap-1" title="Edit Tugas">
+                        <i data-lucide="pencil" class="w-4 h-4"></i> <span class="md:hidden text-xs">Edit</span>
                     </button>
                     <button onclick="window.deleteWedChk('${c.id}')"
-                        class="p-1.5 text-[#A3AED0] hover:text-[#EE5D50] hover:bg-[#F4F7FE] dark:hover:bg-[#1B2559] rounded-lg transition-colors" title="Hapus Tugas">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        class="p-1.5 text-[#A3AED0] hover:text-[#EE5D50] hover:bg-[#F4F7FE] dark:hover:bg-[#1B2559] rounded-lg transition-colors flex items-center gap-1" title="Hapus Tugas">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> <span class="md:hidden text-xs">Hapus</span>
                     </button>
                 </div>
             </td>
@@ -568,17 +574,23 @@ window.renderWedTamu = function() {
         guests.forEach(g => {
             let stColor = g.status === 'Hadir' ? 'text-[#4318FF] bg-[rgba(67,24,255,0.1)]' : (g.status === 'Tidak Hadir' ? 'text-[#EE5D50] bg-[rgba(238,93,80,0.1)]' : 'text-[#A3AED0] bg-[#F4F7FE] dark:bg-[#0B1437]');
             tbody.innerHTML += `
-                <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
-                    <td class="px-4 py-3 font-medium text-[#2B3674] dark:text-white">${g.name}</td>
-                    <td class="px-4 py-3">
+                <tr class="block md:table-row border-b border-[#E0E5F2] dark:border-[#1B2559] mb-3 md:mb-0 pb-3 md:pb-0">
+                    <td class="block md:table-cell px-4 py-2 md:py-3 font-medium text-[#2B3674] dark:text-white">
+                        <span class="inline-block md:hidden text-[#A3AED0] w-24">Nama</span>
+                        ${g.name}
+                    </td>
+                    <td class="block md:table-cell px-4 py-2 md:py-3">
+                        <span class="inline-block md:hidden text-[#A3AED0] w-24">RSVP</span>
                         <select onchange="window.toggleWedTamu('${g.id}', this)" class="${stColor} text-xs font-bold px-2 py-1 rounded outline-none cursor-pointer border border-transparent dark:bg-[#1B2559] dark:text-white">
                             <option value="Belum Konfirmasi" ${g.status === 'Belum Konfirmasi' ? 'selected' : ''}>Belum Konfirmasi</option>
                             <option value="Hadir" ${g.status === 'Hadir' ? 'selected' : ''}>Konfirmasi Hadir</option>
                             <option value="Tidak Hadir" ${g.status === 'Tidak Hadir' ? 'selected' : ''}>Tidak Hadir</option>
                         </select>
                     </td>
-                    <td class="px-4 py-3 text-right">
-                        <button onclick="window.deleteWedTamu('${g.id}')" class="text-[#A3AED0] hover:text-[#EE5D50]"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <td class="block md:table-cell px-4 py-2 md:py-3 text-right border-t border-slate-100 md:border-0 mt-2 md:mt-0">
+                        <button onclick="window.deleteWedTamu('${g.id}')" class="text-[#A3AED0] hover:text-[#EE5D50] flex items-center justify-end w-full md:w-auto gap-1">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i> <span class="md:hidden text-xs">Hapus</span>
+                        </button>
                     </td>
                 </tr>
             `;
@@ -710,16 +722,22 @@ window.renderWedSeserahan = function() {
         items.forEach(s => {
             let stColor = s.status === 'Sudah Dibeli' ? 'text-[#05CD99] bg-[rgba(5,205,153,0.12)]' : 'text-[#A3AED0] bg-[#F4F7FE] dark:bg-[#0B1437]';
             tbody.innerHTML += `
-                <tr class="border-b border-[#E0E5F2] dark:border-[#1B2559]">
-                    <td class="px-4 py-3 font-medium text-[#2B3674] dark:text-white">${s.item}</td>
-                    <td class="px-4 py-3">
+                <tr class="block md:table-row border-b border-[#E0E5F2] dark:border-[#1B2559] mb-3 md:mb-0 pb-3 md:pb-0">
+                    <td class="block md:table-cell px-4 py-2 md:py-3 font-medium text-[#2B3674] dark:text-white">
+                        <span class="inline-block md:hidden text-[#A3AED0] w-24">Item</span>
+                        ${s.item}
+                    </td>
+                    <td class="block md:table-cell px-4 py-2 md:py-3">
+                        <span class="inline-block md:hidden text-[#A3AED0] w-24">Status</span>
                         <select onchange="window.toggleWedSes('${s.id}', this)" class="${stColor} text-xs font-bold px-2 py-1 rounded outline-none cursor-pointer border border-transparent dark:bg-[#1B2559] dark:text-white">
                             <option value="Belum Dibeli" ${s.status === 'Belum Dibeli' ? 'selected' : ''}>Belum Dibeli</option>
                             <option value="Sudah Dibeli" ${s.status === 'Sudah Dibeli' ? 'selected' : ''}>Sudah Dibeli</option>
                         </select>
                     </td>
-                    <td class="px-4 py-3 text-right">
-                        <button onclick="window.deleteWedSes('${s.id}')" class="text-[#A3AED0] hover:text-[#EE5D50]"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <td class="block md:table-cell px-4 py-2 md:py-3 text-right border-t border-slate-100 md:border-0 mt-2 md:mt-0">
+                        <button onclick="window.deleteWedSes('${s.id}')" class="text-[#A3AED0] hover:text-[#EE5D50] flex items-center justify-end w-full md:w-auto gap-1">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i> <span class="md:hidden text-xs">Hapus</span>
+                        </button>
                     </td>
                 </tr>
             `;
