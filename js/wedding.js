@@ -208,8 +208,12 @@ window.renderWedAnggaranForm = function() {
     for (const key in window.state.wedding.budget) {
         const cat = window.state.wedding.budget[key];
         container.innerHTML += `
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <h4 class="font-bold text-slate-800 mb-3 text-sm">${cat.name}</h4>
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 relative group">
+                <div class="absolute top-2 right-2 flex gap-1">
+                    <button onclick="editWedAnggaranCat('${key}')" class="text-slate-400 hover:text-blue-500 p-1 rounded-md hover:bg-slate-200 transition-colors" title="Edit Kategori"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                    <button onclick="deleteWedAnggaranCat('${key}')" class="text-slate-400 hover:text-rose-500 p-1 rounded-md hover:bg-slate-200 transition-colors" title="Hapus Kategori"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+                <h4 class="font-bold text-slate-800 mb-3 text-sm pr-12">${cat.name}</h4>
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs font-medium text-slate-600 mb-1">Estimasi (Rp)</label>
@@ -222,6 +226,45 @@ window.renderWedAnggaranForm = function() {
                 </div>
             </div>
         `;
+    }
+    container.innerHTML += `
+        <div class="border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center p-4 min-h-[160px] cursor-pointer hover:bg-slate-50 hover:border-blue-400 transition-colors group" onclick="addWedAnggaranCat()">
+            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mb-2 group-hover:bg-blue-100 transition-colors">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+            </div>
+            <span class="text-sm font-bold text-slate-600 group-hover:text-blue-500 transition-colors">Tambah Kategori</span>
+        </div>
+    `;
+    if (window.lucide) window.lucide.createIcons();
+};
+
+window.addWedAnggaranCat = function() {
+    const name = prompt('Masukkan nama kategori baru:');
+    if (!name || name.trim() === '') return;
+    const key = 'cat_' + window.generateId();
+    if (!window.state.wedding.budget) window.state.wedding.budget = {};
+    window.state.wedding.budget[key] = { name: name.trim(), estimasi: 0, realisasi: 0 };
+    window.saveData(); if(window.showNotification) window.showNotification('Kategori ditambahkan');
+    window.renderWedAnggaranForm();
+    window.updateWeddingDashboard();
+};
+
+window.editWedAnggaranCat = function(key) {
+    const currentName = window.state.wedding.budget[key].name;
+    const name = prompt('Edit nama kategori:', currentName);
+    if (!name || name.trim() === '' || name.trim() === currentName) return;
+    window.state.wedding.budget[key].name = name.trim();
+    window.saveData(); if(window.showNotification) window.showNotification('Kategori diperbarui');
+    window.renderWedAnggaranForm();
+    window.updateWeddingDashboard();
+};
+
+window.deleteWedAnggaranCat = function(key) {
+    if (confirm('Hapus kategori ini? Data estimasi dan realisasi pada kategori ini akan hilang.')) {
+        delete window.state.wedding.budget[key];
+        window.saveData(); if(window.showNotification) window.showNotification('Kategori dihapus');
+        window.renderWedAnggaranForm();
+        window.updateWeddingDashboard();
     }
 };
 
